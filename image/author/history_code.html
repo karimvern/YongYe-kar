@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>扩展更新日志</title>
+    <style>
+        /* --- 全局样式 --- */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+            color: #ffffff;
+            /* 默认背景色，防止图片加载失败 */
+            background-color: #2c3e50;
+            min-height: 100vh;
+        }
+
+        /* 背景图层（固定不滚动） */
+        #bg-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* 给背景加一点模糊，让文字更清晰（可选） */
+            filter: brightness(0.7);
+        }
+
+        /* 内容容器 */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* 标题样式 */
+        .main-title {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            letter-spacing: 2px;
+        }
+
+        /* 版本卡片样式 */
+        .version-card {
+            background-color: rgba(0, 0, 0, 0.65);
+            /* 半透明黑底 */
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            /* 毛玻璃效果 */
+
+            position: relative;
+            /* 必须有这个，否则动不了 */
+            cursor: move;
+            /* 鼠标放上去变十字 */
+            user-select: none;
+            /* 防止拖拽时选中文字 */
+            /*touch-action: none;*/
+            /* 手机端防误触 */
+            transition: box-shadow 0.2s, transform 0.1s linear; 
+            /* 让阴影有过渡，移动更丝滑 */
+
+        }
+
+        .version-card.dragging {
+            z-index: 1000;
+            /* 保证被拖动的卡片在最上层 */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8);
+            /* 阴影加深，产生悬浮感 */
+            background-color: rgba(0, 0, 0, 0.75);
+            transform: scale(1.02);
+            /* 拖动时稍微放大 */
+            /* transition: none; */
+            /* 拖动时不需要过渡动画，防止卡顿 */
+
+        }
+
+        /* 版本号标题 */
+        .version-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            touch-action: none; 
+        }
+
+        .version-num {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffd700;
+            /* 金色版本号 */
+        }
+
+        .version-date {
+            font-size: 14px;
+            color: #cccccc;
+        }
+
+        .author-name {
+            color: #00d2ff;
+            font-weight: bold;
+        }
+
+        /* 内容列表样式 */
+        .log-content ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .log-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        /* 分类标签样式 */
+        .tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .tag-new {
+            background-color: #2ecc71;
+            color: #fff;
+        }
+        /* 绿色-新增 */
+        .tag-fix {
+            background-color: #e74c3c;
+            color: #fff;
+        }
+        /* 红色-修复 */
+        .tag-opt {
+            background-color: #3498db;
+            color: #fff;
+        }
+        /* 蓝色-优化 */
+        .tag-info {
+            background-color: #9b59b6;
+            color: #fff;
+        }
+        /* 紫色-说明 */
+        .tag-tha {
+            background-color: #3E9FA3;
+            color: #fff;
+        }
+        /* 蓝绿-感谢 */
+
+        /* 尾巴动画效果 */
+        .tail-anim {
+            display: inline-block;
+            animation: bounce 1s infinite alternate;
+            color: #ff9ff3;
+        }
+
+        @keyframes bounce {
+            from {
+                transform: translateY(0);
+            }
+
+            to {
+                transform: translateY(-3px);
+            }
+        }
+
+        /* 引用/寄语样式 */
+        .quote-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid #ffd700;
+            padding: 10px 15px;
+            margin: 15px 0;
+            font-style: italic;
+            color: #e0e0e0;
+        }
+    </style>
+
+    <script type="text/javascript">
+        // 在这里配置你的背景图片路径
+        let backgrounds = [
+            //'url(https://w.wallhaven.cc/full/wq/wallhaven-wqery6.jpg)'
+            'url(./history_code_back.jpg)',
+            //'url(https://p.sda1.dev/30/ef146da58f48cb37d1c98e27cff91559/13222a4370e7e219ed43dc2dcb044517.jpg)'
+
+        ];
+
+        let setRandomBackground = function () {
+            let index = Math.floor(Math.random() * backgrounds.length);
+            let element = document.getElementById('bg-layer');
+            element.style.backgroundImage = backgrounds[index];
+        }
+        document.addEventListener('DOMContentLoaded', setRandomBackground);
+    </script>
+</head>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.version-card');
+
+        cards.forEach(card => {
+            let isDragging = false;
+            let startX, startY, initialLeft, initialTop;
+
+            // 鼠标按下：开始准备
+            card.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                card.classList.add('dragging'); // 改变外观
+
+                startX = e.clientX;
+                startY = e.clientY;
+
+                // 获取当前已经移动的位置
+                const style = window.getComputedStyle(card);
+                const matrix = new WebKitCSSMatrix(style.transform);
+                initialLeft = matrix.m41;
+                initialTop = matrix.m42;
+
+            });
+
+            // 鼠标移动：计算距离
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault(); // 防止乱选文字
+
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                // 移动元素
+                card.style.transform = `translate(${initialLeft + dx}px, ${initialTop + dy}px)`;
+            });
+
+            // 鼠标松开：结束拖拽
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    card.classList.remove('dragging');
+                }
+            });
+        });
+    });
+</script>
+
+
+<body>
+
+    <!-- 背景层 -->
+    <div id="bg-layer"></div>
+
+    <div class="container">
+        <h1 class="main-title">永夜之境 更新日志</h1>
+
+        <!-- 最新版本放在最上面 -->
+
+
+<!-- === 版本块开始 v1.2 === -->
+<div class="version-card">
+            <div class="version-header">
+                <span class="version-num">v1.2</span>
+                <span class="version-date">2026-03-01</span>
+            </div>
+            
+            <div class="log-content">
+                <p>🎇🎇🎇 <b style="color:#ff4757">新年快乐！</b> 🎇🎇🎇</p>
+                <p>——————— <span class="tail-anim">杏</span> 更新内容 ———————</p>
+                
+                <ul>
+                    <li><span class="tag tag-new">新增</span> <b>永夜之始</b>：</li>
+                    <li><span class="tag tag-new">新增</span> <b>风雨如晦</b>：</li>
+                    <li><span class="tag tag-new">新增</span> <b>卡牌</b>：</li>
+                </ul>
+                
+                <div class="quote-box">
+                    给您来个返场小段儿！<br>
+                    机会难得，给您拜个早年吧！
+                </div>
+            </div>
+        </div>
+<!-- === 版本块结束 === -->
+
+
+
+        <!-- === 版本块开始 v1.1 === -->
+        <div class="version-card">
+            <div class="version-header">
+                <span class="version-num">v1.1</span>
+                <span class="version-date">2026-02-01</span>
+            </div>
+
+            <div class="log-content">
+                <p>——————— <span class="tail-anim">杏</span> 更新内容 ———————</p>
+
+                <div class="quote-box">
+                    <b>《永夜之始》、《风雨如晦》分包继续扩充</b><br>
+                </div>
+
+                <ul>
+                    <li><span class="tag tag-new">新增</span> <b>永夜之始</b>：昔涟、希儿、布洛妮娅、丝柯克、星期日。</li>
+                    <li><span class="tag tag-new">新增</span> <b>风雨如晦</b>：荀灌、吴起、王莽、伍员、凌封、诸葛靓、李昭仪。</li>
+                    <li><span class="tag tag-new">新增</span> <b>卡牌</b>：侵晨（重做）、记忆标本（重做）、如我所书、拿来吧你、橙晖琥珀。</li>
+                    <li><span class="tag tag-new">新增</span> <b>皮肤</b>：遐蝶、白厄、长夜月、昔涟。</li>
+                    <li><span class="tag tag-opt">调整</span> 增强遐蝶【冥息】、调整星为3血、调整刃体力上限及【支离】。</li>
+                    <li><span class="tag tag-fix">修复</span> <b>BUG</b>：罗刹【运柩】实际置入牌未达到要求、陆逊【焚溃】、符玄【格泽】无法选择等问题。</li>
+                    <li><span class="tag tag-fix">修复</span> <b>BUG</b>：适配本体最新API。</li>
+                    <li><span class="tag tag-tha">感谢</span> 薛定谔の浅梦、一吨白糖提出的诸多bug反馈。</li>
+                    <li><span class="tag tag-opt">优化</span> 遐蝶、白厄新增变身及退场视频动画。</li>
+                    <li><span class="tag tag-opt">优化</span> <span style="color: #82e0aa; font-weight: bold;">华</span>流萤简介部分语句增加语音播放、添加势力图片、增加更新日志、武将语音补充。</li>
+                </ul>
+            </div>
+        </div>
+        <!-- === 版本块结束 === -->
+
+
+        <!-- === 版本块开始 v1.2 === -->
+        <!-- <div class="version-card">
+            <div class="version-header">
+                <span class="version-num">v3.1</span>
+                <span class="version-date">2025-01-01</span>
+            </div>
+            
+            <div class="log-content">
+                <p>🎇🎇🎇 <b style="color:#ff4757">新年快乐！</b> 🎇🎇🎇</p>
+                <p>——————— <span class="tail-anim">杏</span> 更新内容 ———————</p>
+                
+                <ul>
+                    <li><span class="tag tag-info">公告</span> <b>重大更新</b>：（注：）。</li>
+                    <li><span class="tag tag-new">新增</span> <b>弱</b>：每</li>
+                    <li><span class="tag tag-fix">修复</span> 虚</li>
+                    <li><span class="tag tag-fix">修复</span> 小</li>
+                </ul>
+                
+                <div class="quote-box">
+                    给您来个返场小段儿！<br>
+                    机会难得，给您拜个早年吧！
+                </div>
+            </div>
+        </div> -->
+        <!-- === 版本块结束 === -->
+
+
+        <!-- === 版本块开始 v2.7 === -->
+        <!-- <div class="version-card">
+            <div class="version-header">
+                <span class="version-num">v2.7</span>
+                <span class="version-date">2025-12-08</span>
+            </div>
+            <div class="log-content">
+                <ul>
+                    <li><span class="tag tag-new">新增</span> <b>永夜之始</b>：昔涟、希儿、布洛妮娅、丝柯克。</li>
+                    <li><span class="tag tag-opt">优化</span> 增加评级。</li>
+                    <li><span class="tag tag-fix">修复</span> <b>BUG</b>：修复bug。</li>
+                    <li><span class="tag tag-fix">修复</span> 修复的bug。</li>
+                    <li><span class="tag tag-opt">美化</span> 美化历史更新日志的界面。</li>
+                </ul>
+            </div>
+        </div> -->
+        <!-- === 版本块结束 === -->
+
+    </div>
+
+</body>
+
+</html>

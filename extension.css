@@ -1,0 +1,15 @@
+/*十周年样式＆手杀样式一＆一将成名样式*/
+.player > .camp-wrap[data-camp="xing"] > .camp-back {
+	background: linear-gradient(to bottom,rgb(78, 76, 62),rgb(48, 46, 36));
+}
+.player > .camp-wrap[data-camp="xinx"] > .camp-back {
+	background: linear-gradient(to bottom,rgb(78, 76, 62),rgb(48, 46, 36));
+}
+
+/*手杀样式二*/
+.player > .camp-wrap[data-camp="xing"] > .camp-name {
+	text-shadow: 0 0 5px rgb(170, 170, 170), 0 0 10px rgb(118, 118, 118), 0 0 15px rgb(118, 118, 118);
+}
+.player > .camp-wrap[data-camp="xinx"] > .camp-name {
+	text-shadow: 0 0 5px rgb(170, 170, 170), 0 0 10px rgb(118, 118, 118), 0 0 15px rgb(118, 118, 118);
+}
