@@ -8523,7 +8523,7 @@ export let info = {
                     if (card.name == "ying" && player.countCards("h", card => card.name == "ying") <= 1) return -5;
                     return 6 - get.value(card);
                 }).forResult();
-                if (result.bool) {
+                if (result?.bool&& result.cards?.length) {
                     game.log(player, "将 " + result.cards.length + "张牌置于了牌堆底");
                     player.lose(result.cards, ui.cardPile, 'bottom');
                     await player.$throw(result.cards.length, 1000);

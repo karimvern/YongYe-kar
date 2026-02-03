@@ -2181,7 +2181,7 @@ export let info = {
                                     return val;
                                 };
                                 let bestPlan = null;
-                                let minCost = Infinity; // 记录最小的代价
+                                let minCost = Infinity; 
                                 // === 策略 A：花色均相同 ===
                                 const suits = {};
                                 for (const c of allCards) {
@@ -2295,7 +2295,18 @@ export let info = {
             },
         },
         fyrhhuohuan:{
+            enable: "phaseUse",
+            filter(event, player) {
+                return !player.hasSkillTag("noCompareSource");
+            },
+            filterTarget(card, player, target) {
+                return player.canCompare(target);
+            },
+            async content(event, trigger, player) {
 
+
+
+            }
 
         }
 

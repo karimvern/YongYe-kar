@@ -326,9 +326,6 @@ export async function precontent(config, pack) {
                 }
             }
         },
-        subSkill:{
-        
-    }
     };
     //装备区无副类别，by《名将杀》暴暴龙
     const xorigin_player_canEquip = lib.element.player.canEquip;

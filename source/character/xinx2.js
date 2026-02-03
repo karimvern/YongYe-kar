@@ -251,7 +251,7 @@ export let info = {
         xinxzhupo: "筑珀",
         xinxzhupo_info: `当你获得此技能时，你与迷迷获得1枚${get.poptip('xinx_poshi')}，并可以选择一名角色，直到你的下回合开始，其使用【杀】只能指定你为目标。`,
         xinxyanqiang: "炎枪",
-        xinxyanqiang_info: `出牌阶段限一次，你可以将一张牌当不计入次数的【火攻】或火【杀】使用。若此牌造成过伤害，你获得1枚${get.poptip('xinx_poshi')}`,
+        xinxyanqiang_info: `出牌阶段限一次，你可以将一张牌当不计入次数的【火攻】或火【杀】使用。若此牌造成过伤害，你获得1枚${get.poptip('xinx_poshi')}。`,
         xinx_poshi: "珀石",
         xinx_poshi_info: "当你受到伤害后，你移去一枚“珀石”，回复1点体力。",
         xinxpojie: "破解",
@@ -721,6 +721,34 @@ export let info = {
             },
         },
         //锦囊技能
+        xinxyuheiyongwen_effect: {
+            trigger: {
+                player: 'phaseBefore',
+            },
+            forced: true,
+            popup: false,
+            firstDo: true,
+            silent: true,
+            charlotte: true,
+            async content(event, trigger, player) {
+               await player.draw();
+               await player.chooseToDiscard('he',true)
+                 .set("ai", card => {
+                    if (ui.selected.cards.length >= _status.event.max) {
+                        return 0;
+                    }
+                    const name = get.name(card);
+                    if (name === 'xinxruwosuoshu' || name === 'xinxwangshizhiyue') {
+                        return 20;
+                    }
+                    if (_status.event.goon) {
+                        return 4.5 - get.value(card);
+                    }
+                    return 0;
+                });
+            }
+
+        },
         xinxjinshouzhi_restore: {
             trigger: {
                 player: 'phaseBefore',
@@ -6368,12 +6396,12 @@ export let info = {
                 // 格式: [花色, 点数, 牌名]
                 // ================================== ['diamond', 7, 'xinxnilin'],
                 const deckConfig = [
-                    // --- 基础牌 ---
+                    // --- 基本牌 ---
                     ['heart', 9, 'tao'], ['diamond', 9, 'jiu'],
                     ['spade', 7, 'sha'], ['spade', 8, 'sha'],
                     ['heart', 5, 'shan'], ['diamond', 13, 'xinxkanpo'],
                     // --- 锦囊牌 ---
-                    ['diamond', 12, 'xinxyishenweiju'], ['club', 12, 'wuxie'], ['heart', 7, 'xinxmingxinzhiyue'],
+                    ['diamond', 12, 'xinxyishenweiju'], ['club', 12, 'wuxie'], ['heart', 7, 'xinxmingxinzhiyue'],['spade', 7, 'xinxyuheiyongwen'],
                     ['diamond', 12, 'shunshou'], ['spade', 12, 'guohe'], ['club', 12, 'xinxguiji'], ['heart', 4, 'xinxjiyibiaoben'],
                     ['diamond', 7, 'xinxnilin'],
                     // --- 装备牌 ---
@@ -6877,12 +6905,12 @@ export let info = {
                 return event.player == player || event.player == player.getNext() || event.player == player.getPrevious();
             },
             async content(event, trigger, player) {
-                player.addMark('xinxxsusheng', 1);
+                player.addMark('xinxxsusheng', 1,false);
                 game.log(player, '获得了一枚【新蕊】');
                 player.markSkill("xinxxsusheng");
                 let limit = player.maxHp;
                 if (player.countMark('xinxxsusheng') >= limit) {
-                    await player.clearMark('xinxxsusheng');
+                    await player.clearMark('xinxxsusheng',false);
                     await player.gainMaxHp();
                     player.drawTo(player.maxHp);
                     const currentName = 'xinx_xiadie';
@@ -6958,7 +6986,6 @@ export let info = {
                 },
             },
             group: ['xinxxsusheng_audio', 'xinxxsusheng_audio2'],
-            //'xinxxsusheng_ui'
             subSkill: {
                 audio: {
                     silent: true,
@@ -7030,7 +7057,7 @@ export let info = {
                     player.hp = 1;
                     player.update();
                 }
-                game.log(player, '遐蝶已就绪，状态还原为：', player.hp + '/' + player.maxHp);
+                game.log(player,'已就绪，状态还原为：', player.hp + '/' + player.maxHp);
                 let num = player.maxHp;
                 let useCount = 0;
                 while (true && useCount < num) {
@@ -7171,7 +7198,7 @@ export let info = {
                 }
                 if (allCards.length === 0) return;
                 let usedNames = [];
-                // 2. 【循环转化使用】
+                // 【循环转化使用】
                 while (allCards.length > 0) {
                     // 生成转化牌列表（每次循环重新生成或复用均可，这里复用逻辑）
                     let vcards = get.inpileVCardList(info => {
@@ -7185,7 +7212,6 @@ export let info = {
                     // // 2. 获取剩余所有实体牌的字数列表
                     const validVCardLengths = new Set(vcards.map(v => get.cardNameLength(v[2])));
                     const physicalLengths = allCards.map(c => get.cardNameLength(c.name));
-
                     // 3. 计算实体牌能组合出的所有可能字数和 (Subset Sum)
                     let possibleSums = new Set([0]);
                     for (const len of physicalLengths) {
@@ -7196,7 +7222,6 @@ export let info = {
                         }
                     }
                     possibleSums.delete(0); // 排除0字（至少选1张）
-
                     // 4. 核心判断：是否有交集？
                     // 检查“可能的组合和”中，是否有任何一个值存在于“虚拟牌字数集合”中
                     const canMatch = Array.from(possibleSums).some(sum => validVCardLengths.has(sum));
@@ -9281,7 +9306,6 @@ export let info = {
                 return "将" + get.translation(cards) + "中的至多四张牌分配给任意名角色";
             },
             async content(event, trigger, player) {
-                //player.logSkill("xinxkejie", null, null, null,[1]);
                 await player.awakenSkill(event.name);
                 const cards = get.discarded().filterInD("d");
                 if (!cards.length) {

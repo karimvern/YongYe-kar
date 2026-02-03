@@ -1349,6 +1349,11 @@ export default {
                 });
             },
             ai: {
+                wuxie(target, card, player, viewer) {
+                    if (!target.countCards("hej") || get.attitude(viewer, player._trueMe || player) > 0) {
+                        return 0;
+                    }
+                },
                 basic: {
                     order: 7,
                     useful: 8,
@@ -1448,6 +1453,52 @@ export default {
             image: 'ext:永夜之境/image/card/xinxyuheiyongwen.png',
             fullskin: true,
             type: "trick",
+            enable: true,
+            selectTarget: -1,
+            toself: true,
+            filterTarget(card, player, target) {
+                return target == player;
+            },
+            modTarget: true,
+            async content(event, trigger, player) {
+                const target = event.target;
+                const cards = event.cards;
+                game.playAudio("../extension/永夜之境/audio/", 'xinxyiyu' + [1, 3].randomGet() + '.mp3');
+                await target.addSkill('xinxyuheiyongwen_effect');
+                cards.forEach(card => {
+                    card.fix();
+                    card.remove();
+                    card.destroyed = true;
+                    game.log(card, "被销毁了");
+                });
+
+            },
+            ai: {
+                wuxie(target, card, player, viewer) {
+                    if (get.mode() == "guozhan") {
+                        if (!_status._aozhan) {
+                            if (!player.isMajor()) {
+                                if (!viewer.isMajor()) {
+                                    return 0;
+                                }
+                            }
+                        }
+                    }
+                    if (target.countCards("h") * Math.max(target.hp, 5) > 6) {
+                        return 0;
+                    }
+                },
+                basic: {
+                    order: (card, player) => {
+                        return 8;
+                    },
+                    useful: 5,
+                    value: 5,
+                },
+                result: {
+                    target: 1,
+                }
+            },
         },
        
 
@@ -1497,7 +1548,7 @@ export default {
         xinxchenghuihupo: '橙晖琥珀',
         xinxchenghuihupo_info: `出牌阶段，对自己使用。弃置至多三张牌，将专属弃牌堆洗入专属牌堆，然后你摸等量的牌。`,
         xinxyuheiyongwen: '与黑拥吻',
-        xinxyuheiyongwen_info: `${get.poptip('xinx_consume')}。`,
+        xinxyuheiyongwen_info: `${get.poptip('xinx_consume')}。出牌阶段，对自己使用。此后你回合开始前，你摸一张牌并弃置一张牌。`,
 
 
     },
