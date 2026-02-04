@@ -11,7 +11,7 @@ export let info = {
             // 分包: ["武将ID","武将ID"],
             'xuandiesheji': ['xinx_hanzhuo', 'xinx_zhuowenjun', 'xinx_limu', 'xinx_xunguan', 'xinx_wuqi', 'xinx_wangmang', 'xinx_wuyuan'],
             'xinx_xiaoyezisheji': ['xinx_lingfeng', 'xinx_zhugejing', 'xinx_lizhaoyi'],
-            'xinx_xiulisheji': ['fyrh_leisai'],
+            'xinx_xiulisheji': ['fyrh_leisai','fyrh_dianci'],
             'xinx_qitasheji': [],
 
 
@@ -37,7 +37,8 @@ export let info = {
             skills: ['fyrhzhiwen', 'fyrhminnian', 'fyrhfenjue'],
             dieAudios: ["clan_xuncai"],
         },
-        fyrh_leisai: ["female", "qun", 4, ['fyrhlihua'], ['epic']],
+        fyrh_leisai: ["female", "qun", 4, ['fyrhlihua','fyrhhuohuan'], ['epic']],
+        fyrh_dianci: ["male", "qun", 4, [''], ['legend']],
     },
     //武将称号
     characterTitle: {
@@ -69,6 +70,7 @@ export let info = {
         xinx_zhugejing: '诸葛靓',
         xinx_lizhaoyi: '李昭仪',
         fyrh_leisai: '蕾塞',
+        fyrh_dianci: '电次',
 
 
 
@@ -152,6 +154,9 @@ export let info = {
         fyrhfenjue: '焚玦',
         fyrhfenjue_info: `限定技，出牌阶段，若你没有手牌，你可以对自己造成1点火焰伤害，然后获得所有本回合进入弃牌堆的牌。`,
         fyrhlihua: '礼花',
+        fyrhlihua_info: `出牌阶段限一次，你可以重铸一张牌，然后你可以将手牌区和${get.poptip('xinx_central')}合计三张类别各不同或花色均相同的牌移出游戏直到本回合结束。若如此做，你对一名角色造成1点火焰伤害。`,
+        fyrhhuohuan: '火环',
+        fyrhhuohuan_info: `出牌阶段限一次，你可以与一名角色拼点: 若你赢，重置${get.poptip('fyrhlihua')}的使用次数；若你没赢，重置${get.poptip('fyrhhuohuan')}的使用次数。`,
 
 
     },
@@ -2246,7 +2251,16 @@ export let info = {
                             result1.targets[0].damage('fire');
                         }
                     }
+                    player.when('phaseAfter')
+                        .step(async (event, trigger, player) => {
+                            const cards = player.getExpansions("fyrhlihua");
+                            if (cards.length) {
+                                player.gain(cards, "draw");
+                                game.log(player, "收回了" + get.cnNumber(cards.length) + "张“礼花”牌");
+                            }
+                        });
                 }
+                
 
             },
             marktext: "花", 
@@ -2259,24 +2273,21 @@ export let info = {
                 },
                 mark(dialog, storage, player) {
                     // 设置弹窗宽度，大框显示
-                    dialog.css({ width: "80%" }); 
+                    dialog.css({ width: "50%" }); 
                     if (get.is.phoneLayout()) {
                         dialog.classList.add("fullheight"); // 手机端全屏高度
                     }
-            
                     const expCards = player.getExpansions("fyrhlihua");
                     const centerCards = get.discarded().filterInD("d"); 
-            
-                    // === 移出游戏区 (花) ===
+                    // === 移出游戏区===
                     // 添加一个居中的标题，加粗，稍微调大字号
-                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; border-bottom:1px solid rgba(128,128,128,0.3)">🌸 移出游戏区</div>');
+                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; border-bottom:1px solid rgba(128,128,128,0.3)">🌸移出游戏区</div>');
                     
                     if (expCards.length) {
-                        // 若是自己显示卡牌
                         if (player.isUnderControl(true)) {
                             dialog.addAuto(expCards);
                         } else {
-                            dialog.addText('<div class="text center">共有 ' + get.cnNumber(expCards.length) + ' 张牌（不可见）</div>');
+                            dialog.addText('<div class="text center">共有' + get.cnNumber(expCards.length) + '张牌</div>');
                         }
                     } else {
                         dialog.addText('<div class="text center" style="opacity:0.6">暂无卡牌</div>');
@@ -2284,7 +2295,7 @@ export let info = {
             
                     // === 中央区 (中) ===
                     // 添加标题，margin-top 用于拉开与上面卡牌的距离
-                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄 中央区</div>');
+                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄中央区</div>');
                     
                     if (centerCards.length) {
                         dialog.addAuto(centerCards);
@@ -2293,9 +2304,40 @@ export let info = {
                     }
                 }
             },
+            ai: {
+                order: 6,
+                result: {
+                    player(player, target) {
+                        const cecards = get.discarded().filterInD("d");
+                        const hscards = player.getCards("h");
+                        const checkHasValidCombo = () => {
+                            const allCards = [...cecards, ...hscards];
+                            if (allCards.length < 3) return false;
+                            const suitCounts = {};
+                            for (const card of allCards) {
+                                const suit = get.suit(card);
+                                suitCounts[suit] = (suitCounts[suit] || 0) + 1;
+                                if (suitCounts[suit] >= 3) return true;
+                            }
+                            const types = new Set();
+                            for (const card of allCards) {
+                                types.add(get.type2(card));
+                            }
+                            if (types.size >= 3) return true;
+                            return false;
+                        };
+                        if (checkHasValidCombo()) {
+                            return 5;
+                        }
+                        return 1;
+                    },
+                },
+
+            },
         },
         fyrhhuohuan:{
             enable: "phaseUse",
+            usable: 1,
             filter(event, player) {
                 return !player.hasSkillTag("noCompareSource");
             },
@@ -2303,12 +2345,51 @@ export let info = {
                 return player.canCompare(target);
             },
             async content(event, trigger, player) {
+                const target = event.targets[0];
+                const result = await player.chooseToCompare(target).forResult();
+                if (result?.winner == player) {
+                    delete player.getStat().skill.fyrhlihua;
+                    game.log(player,'重置了',"#g【礼花】");
+                } else {
+                    delete player.getStat().skill.fyrhhuohuan;
+                    game.log(player,'重置了',"#g【火环】");
+                }
+            },
+            ai: {
+                order: 6,
+                result: {
+                    target(player, target) {
+                        const cecards = get.discarded().filterInD("d");
+                        const hscards = player.getCards("h");
+                        const checkHasValidCombo = () => {
+                            const allCards = [...cecards, ...hscards];
+                            if (allCards.length < 3) return false;
+                            const suitCounts = {};
+                            for (const card of allCards) {
+                                const suit = get.suit(card);
+                                suitCounts[suit] = (suitCounts[suit] || 0) + 1;
+                                if (suitCounts[suit] >= 3) return true;
+                            }
+                            const types = new Set();
+                            for (const card of allCards) {
+                                types.add(get.type2(card));
+                            }
+                            if (types.size >= 3) return true;
+                            return false;
+                        };
+                        if (checkHasValidCombo()) {
+                            return -2;
+                        }
+                        return 0;
+                    },
+                },
+            },
+
+        },
+        fyrhzaoju:{
 
 
-
-            }
-
-        }
+        },
 
 
 

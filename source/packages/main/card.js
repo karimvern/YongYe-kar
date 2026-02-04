@@ -334,7 +334,7 @@ export default {
             async content(event, trigger, player) {
                 const target = event.target;
                 if (player.storage.xinxjiyibiaoben_gain){
-                game.playAudio("../extension/永夜之境/audio/card/", 'xinxjiyibiaoben' + [get.rand(1, 2)] + '.mp3');
+                game.playAudio("../extension/永夜之境/audio/card/", 'xinxjiyibiaoben' + [get.rand(1, 4)] + '.mp3');
                  await player.draw(2);
                  await player.chooseToDiscard('he',true)
                  .set("ai", card => {
@@ -578,6 +578,7 @@ export default {
                 basic: {
                     equipValue: 5,
                     order: (card, player) => {
+                        if (player.hp <= 2) { return 0; }
                       const equipValue = get.equipValue(card, player) / 20;
                       return player && player.hasSkillTag("reverseEquip") ? 8.5 - equipValue : 8 + equipValue;
                     },
@@ -863,7 +864,7 @@ export default {
                                 return true;
                             });
             
-                            let result = await next;
+                            let result = await next.forResult();
                             if (result.bool) {
                                 shanRequired--;
                             } else {
@@ -895,7 +896,7 @@ export default {
                                 }
                                 return 5 - get.useful(card);
                             });
-                            let resultDiscard = await nextDiscard;
+                            let resultDiscard = await nextDiscard.forResult();
                             if (!resultDiscard.bool) {
                                 shaned = false; 
                             }
@@ -1157,7 +1158,7 @@ export default {
             async content(event, trigger, player) {
                 var player = event.target;
                 const cards = event.cards;
-                game.playAudio("../extension/永夜之境/audio/", 'xinxyilian' + [9,10,11,12, 13, 14, 15].randomGet() + '.mp3');
+                game.playAudio("../extension/永夜之境/audio/", 'xinxyilian' + [12, 13, 14, 15].randomGet() + '.mp3');
                 if(player.storage.xinxruwosuoshu_use){
                    player.draw(2);
                 }
@@ -1366,12 +1367,6 @@ export default {
 
         },
 
-        xinxwangshizhiyue:{
-            image: 'ext:永夜之境/image/card/xinxwangshizhiyue.png',
-            fullskin: true,
-            type: "trick",
-
-        },
         xinxchenghuihupo:{
             image: 'ext:永夜之境/image/card/xinxchenghuihupo.png',
             fullskin: true,
@@ -1437,8 +1432,8 @@ export default {
                         }
                         return 1;
                     },
-                    useful: 5,
-                    value: 5,
+                    useful: 7,
+                    value: 8,
                 },
                 result: {
                     target: 1,
@@ -1463,6 +1458,7 @@ export default {
             async content(event, trigger, player) {
                 const target = event.target;
                 const cards = event.cards;
+                player.$fullscreenpop("后会有期", "thunder");
                 game.playAudio("../extension/永夜之境/audio/", 'xinxyiyu' + [1, 3].randomGet() + '.mp3');
                 await target.addSkill('xinxyuheiyongwen_effect');
                 cards.forEach(card => {
@@ -1500,6 +1496,38 @@ export default {
                 }
             },
         },
+        xinxwangshizhiyue:{
+            image: 'ext:永夜之境/image/card/xinxwangshizhiyue.png',
+            fullskin: true,
+            type: "basic",
+            enable: true,
+            selectTarget: -1,
+            toself: true,
+            filterTarget(card, player, target) {
+                return target == player;
+            },
+            modTarget: true,
+            async content(event, trigger, player) {
+                game.playAudio("../extension/永夜之境/audio/", 'xinxyilian' + [9,10,11].randomGet() + '.mp3');
+                const target = event.target;
+                if (target.storage?.xinxwangshizhiyue_add){
+                    player.addCharge(2);
+                }else{
+                    target.storage.xinxwangshizhiyue_add = true;
+                    target.addSkill('xinxchuangshi');
+                }
+        },
+        basic: {
+            order: (card, player) => {
+                return 2;
+            },
+            useful: 1,
+            value: 10,
+        },
+        result: {
+            target: 1,
+        }
+    },
        
 
 
@@ -1544,11 +1572,11 @@ export default {
         xinxceshicard: '测试卡牌',
         xinxceshicard_info: `测试用卡牌。`,
         xinxwangshizhiyue: '往世之约',
-        xinxwangshizhiyue_info: `${get.poptip('xinx_jiyi')}。`,
+        xinxwangshizhiyue_info: `${get.poptip('xinx_jiyi')}。若为你本局游戏首次使用，你获得${get.poptip('xinxchuangshi')}，否则获得2点蓄力点。`,
         xinxchenghuihupo: '橙晖琥珀',
         xinxchenghuihupo_info: `出牌阶段，对自己使用。弃置至多三张牌，将专属弃牌堆洗入专属牌堆，然后你摸等量的牌。`,
         xinxyuheiyongwen: '与黑拥吻',
-        xinxyuheiyongwen_info: `${get.poptip('xinx_consume')}。出牌阶段，对自己使用。此后你回合开始前，你摸一张牌并弃置一张牌。`,
+        xinxyuheiyongwen_info: `${get.poptip('xinx_consume')}。出牌阶段，对自己使用。此后你的回合开始前，你摸一张牌并弃置一张牌。`,
 
 
     },
