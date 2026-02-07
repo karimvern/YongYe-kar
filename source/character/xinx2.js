@@ -1,5 +1,5 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
-import { poptip } from '../poptip.js';
+
 
 
 
@@ -17,7 +17,7 @@ export let info = {
             'xinyiling': [],
             'heita': ['xinx_daheita', 'xinx_ruanmei'],
             'beiluoboge': ['xinx_xier', 'xinx_buluoniya'],
-            'yishilvren': ['xinx_sikeke'],
+            'yishilvren': ['xinx_sikeke', 'xinx_yeshunguang'],
             'gongsi': ['xinx_tuopa'],
 
 
@@ -69,6 +69,7 @@ export let info = {
         //xinx_tuopa: ["female", "xinx", 3, [], ['epic']],
         //xinx_hanya: ["female", "xinx", 3, [], ['rare']],
         xinx_sikeke: ["female", "qun", 4, ['xinxzhuiyuan', 'xinxliuduan'], ["border:xinx", 'legend']],
+        xinx_yeshunguang: ["female", "qun", 4, ['xinxmingxin','xinxguichen','xinxlingxiao'], ["border:xinx", 'legend']],//,'xinxlingxiao''xinxmingxin','xinxguichen',
 
 
 
@@ -192,6 +193,9 @@ export let info = {
         xinx_haiseyin_prefix: '杏',
         xinx_sikeke: '杏丝柯克',
         xinx_sikeke_prefix: '杏',
+        xinx_yeshunguang: '杏叶瞬光',
+        xinx_yeshunguang_prefix: '杏',
+
 
 
 
@@ -368,6 +372,24 @@ export let info = {
         xinxxunji_info: `结束阶段，你可令一名其他角色失去X点体力（X为其本回合回复过的体力值），然后你选择获得任意张${get.poptip('xinx_central')}的牌（剩余花色须含有3种）。`,
         xinxchuangshi: "创世",
         xinxchuangshi_info: `蓄力技（0/10）。你的蓄力点增加后，若不小于以下数值，你移出一名其他角色[1]张牌并执行当前最大值效果：<br>2.体力上限+1；<br>4.回复1点体力；<br>6.令可移出的牌数+1；<br>8.视为使用一张移出牌；<br>10.${get.poptip('xinx_ewaimopai')}+1，然后将此项替换为额定摸牌数+1，并清空蓄力点。`,
+        xinxmingxin: "明心",
+        xinxmingxin_info: `第一轮开始时，你令所有其他角色依次将其随机一张手牌及牌堆顶的一张牌置入其随机空置的装备栏。其他角色无法使用装备栏副类别有牌的对应装备牌。`,
+        xinxmingxinx: "明心",
+        xinxmingxinx_info: `准备阶段，你令所有其他角色依次将其随机一张手牌及牌堆顶的一张牌置入其随机空置的装备栏。其他角色无法使用装备栏副类别有牌的对应装备牌。`,
+        xinxguichen: "归尘",
+        xinxguichen_info: `当其他角色不因使用失去装备区的牌后，你获得之。你可以将其他角色场上的非锦囊牌如手牌般使用或打出。`,
+        xinxguichenx: "归尘",
+        xinxguichenx_info: `当其他角色不因使用失去装备区的牌后，你获得之，并可对失去此牌的角色造成等量伤害。你可以将其他角色场上的非锦囊牌如手牌般使用或打出。`,
+        xinxlingxiao: "凌霄",
+        xinxlingxiao_info: `你使用${get.poptip('xinx_jishipai')}指定其他角色为唯一目标后，将此牌置入其随机一个空置的装备区，若此时该角色装备区没有空置的装备栏。你入幻。`,
+        xinxlingxiaox: "凌霄",
+        xinxlingxiaox_info: `你使用${get.poptip('xinx_jishipai')}指定其他角色为唯一目标后，将此牌置入其随机空置的装备栏。若其装备区没有空置的装备栏，你可以弃置其装备区X张牌并退幻（X为其体力值）。`,
+        xinx_guichen: "尘",
+        xinx_guichen_info: `归于。`,
+      
+   
+
+       
 
 
 
@@ -557,6 +579,9 @@ export let info = {
         ],
         xinx_baie: [
             ['xinx_baie_shadow', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_baie_shadow.png']],
+        ],
+        xinx_yeshunguang: [
+            ['xinx_yeshunguang_shadow', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_yeshunguang_shadow.png']],
         ],
         // xinx_sanyueqi: [
         //     ['xinx_sanyueqi_shadow', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_sanyueqi_shadow.png']],
@@ -1370,13 +1395,12 @@ export let info = {
                         return get.color(event.card) == "red" && player.storage.xinxxinzhuiCount > 0;
                     },
                     async content(event, trigger, player) {
-                        const num = trigger.targets.length;
                         trigger.directHit.addArray(game.players);
                         game.log(trigger.cards, "不可被响应");
                         player.when({ global: 'useCardAfter' })
                             .filter(evt => evt.card === trigger.card)
                             .step(async (event, trigger, player) => {
-                                await player.draw(num);
+                                await player.draw();
                             });
 
                     },
@@ -4155,6 +4179,16 @@ export let info = {
                         if (shownCards.length) {
                             const fakes = game.createFakeCards(shownCards);
                             player.directgains(fakes, null, "xinxcanmeng");
+                            for (let i = 0; i < fakes.length; i++) {
+                                const fake = fakes[i];
+                                const real = shownCards[i]; // fakes 和 shownCards 一一对应
+                                if (fake.node && fake.node.gaintag && real) {
+                                    const owner = get.owner(real);
+                                    if (owner) {
+                                        fake.node.gaintag.innerHTML = owner.getName();
+                                    }
+                                }
+                            }
                         }
                     },
                     trigger: {
@@ -4524,12 +4558,11 @@ export let info = {
                         await target.addSkill('xinxleizhi_effect');
                         target.when({ global: 'useCardAfter' })
                             .filter(evt => evt === trigger.getParent())
-                            .then(() => player.removeSkill('xinxleizhi_effect'));
+                            .step(async (event, trigger, player) => {
+                                await player.removeSkill('xinxleizhi_effect');
+                            });
                     } else {
                         await target.addTempSkill('xinxleizhi_effect');
-                        // target.when({ global: 'phaseAfter' })
-                        //     .filter(evt => evt === trigger.getParent())
-                        //     .then(() => player.removeSkill('xinxleizhi_effect'));
                     }
                 }
             },
@@ -4644,9 +4677,7 @@ export let info = {
                     await player.addGaintag(cards, "eternal_xinxyunjiu_tag");
                     player.loseToDiscardpile(cards, ui.cardPile, "blank").set("log", false).insert_index = function () {
                         return ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length - 1)];
-
                     };
-                    //   await game.cardsGotoPile(cards, 'insert');
                     game.log(player, `将${get.translation(cards)}张牌置入了牌堆`);
 
                     //  await player.draw(cards.length);
@@ -5618,26 +5649,12 @@ export let info = {
                         player.gain(card, 'gain2');
                         player.$gain2(card);
                     } else {
-                        // 其余的：暂时存入数组
                         cardsToPile.push(card);
                     }
                 }
-                if (cardsToPile.length > 0) {
-                    for (let i = 0; i < cardsToPile.length; i++) {
-                        const c = cardsToPile[i];
-                        c.fix(); // 修正卡牌信息
-
-                        const pileLen = ui.cardPile.childElementCount;
-                        const randomPos = Math.floor(Math.random() * (pileLen + 1));
-
-                        // 插入到 UI 界面
-                        if (ui.cardPile.children[randomPos]) {
-                            ui.cardPile.insertBefore(c, ui.cardPile.children[randomPos]);
-                        } else {
-                            ui.cardPile.appendChild(c);
-                        }
-                    }
-                }
+                await game.cardsGotoPile(cardsToPile, () => {
+                    return ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length - 1)];
+                });
                 game.log(player, '将', cardsToPile.length, '张', '#r【火杀】', '洗入牌堆');
             },
             mod: {
@@ -6012,9 +6029,9 @@ export let info = {
                         // const topCards = player.storage.xinxzhuoxiao ? pile.slice(0, num) : [];
 
 
-                        // 【修改】默认顶
+                        // 顶
                         const topCards = pile.slice(0, num);
-                        // 【修改】卓效底
+                        // 底
                         const bottomCards = player.storage.xinxzhuoxiao ? pile.slice(-num) : [];
 
 
@@ -6048,7 +6065,6 @@ export let info = {
             // 
             group: ["xinxjueying_aocai", "xinxjueying_count"],
             subSkill: {
-                // 计数逻辑：造成伤害后 X+1
                 count: {
 
                 },
@@ -6085,10 +6101,10 @@ export let info = {
                             // const bottomCards = pile.slice(-num).filter(c => !topCards.includes(c));
 
 
-                            const hasBottom = player.storage.xinxzhuoxiao; // 【修改】开关
-                            // 【修改】默认生成顶部
+                            const hasBottom = player.storage.xinxzhuoxiao; // 开关
+                            // 生成顶部
                             const topCards = pile.slice(0, num);
-                            // 【修改】卓效生成底部（去重）
+                            // 生成底部（去重）
                             const bottomCards = hasBottom ? pile.slice(-num).filter(c => !topCards.includes(c)) : [];
 
 
@@ -6686,7 +6702,7 @@ export let info = {
                 const pool = [
                     //锦囊  ['heart', 13, 'suijiyingbian'],['heart', 4, 'xinxjiyibiaoben'],
                     ['spade', 12, 'xinxxuanshi'], ['heart', 8, 'xinxruwosuoshu'], ['club', 11, 'xinxnalaibani'], ['diamond', 10, 'xinxchenghuihupo'],
-                    ['heart', 7, 'juedou'], ['spade', 13, 'xinxjinshouzhi'], 
+                    ['heart', 7, 'juedou'], ['spade', 13, 'xinxjinshouzhi'],
                     //基本
                     ['heart', 9, 'tao'], ['spade', 8, 'sha'],
                     //装备
@@ -6808,8 +6824,8 @@ export let info = {
                             // if (targetCards.includes(card.name)) {
                             //     return -100;
                             // }
-                            const targetSet = new Set(['xinxqinchen','sha',
-                                'mb_qingnangshu', 'xinxnilin', 'xinxjinshouzhi', 'xinxwangshizhiyue', 'xinxruwosuoshu','xinxjiyibiaoben']);
+                            const targetSet = new Set(['xinxqinchen', 'sha',
+                                'mb_qingnangshu', 'xinxnilin', 'xinxjinshouzhi', 'xinxwangshizhiyue', 'xinxruwosuoshu', 'xinxjiyibiaoben']);
                             if (targetSet.has(card.name)) {
                                 return -100;
                             }
@@ -9513,7 +9529,7 @@ export let info = {
                     } else return "中央区无牌";
                 },
             }, */
-            marktext: "流", 
+            marktext: "流",
             mark: true,
             intro: {
                 markcount(storage, player) {
@@ -9522,16 +9538,16 @@ export let info = {
                 },
                 mark(dialog, storage, player) {
                     // 设置弹窗宽度，大框显示
-                    dialog.css({ width: "50%" }); 
+                    dialog.css({ width: "50%" });
                     if (get.is.phoneLayout()) {
-                        dialog.classList.add("fullheight"); 
+                        dialog.classList.add("fullheight");
                     }
                     const expCards = player.getExpansions("xinxzhuiyuan");
-                    const centerCards = get.discarded().filterInD("d"); 
+                    const centerCards = get.discarded().filterInD("d");
                     // === 移出游戏区===
                     // 添加一个居中的标题，加粗，稍微调大字号
                     dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; border-bottom:1px solid rgba(128,128,128,0.3)">🧊移出游戏区</div>');
-                    
+
                     if (expCards.length) {
                         if (player.isUnderControl(true)) {
                             dialog.addAuto(expCards);
@@ -9541,11 +9557,11 @@ export let info = {
                     } else {
                         dialog.addText('<div class="text center" style="opacity:0.6">暂无卡牌</div>');
                     }
-            
+
                     // === 中央区 (中) ===
                     // 添加标题，margin-top 用于拉开与上面卡牌的距离
                     dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄中央区</div>');
-                    
+
                     if (centerCards.length) {
                         dialog.addAuto(centerCards);
                     } else {
@@ -9838,6 +9854,7 @@ export let info = {
                         delete player.storage.xinxangang_mark2;
                     },
                     intro: {
+                        name: "中央区",
                         content(s, p) {
                             var str = "本回合已经进入过弃牌堆的卡牌的花色：";
                             for (var i = 0; i < s.length; i++) {
@@ -10228,6 +10245,400 @@ export let info = {
                     },
                 }
             }
+        },
+        xinxmingxin: {
+            audio: "ext:永夜之境/audio:3",
+            audioname: ["xinx_yeshunguang_shadow"],
+            derivation: "xinxmingxinx",
+            trigger: {
+                global: "roundStart",
+                player: ["phaseZhunbeiBegin"],
+            },
+            forced: true,
+            locked: false,
+            lastDo: true,
+            filter(event, player,name) {
+                if (name == "roundStart"&&game.phaseNumber > 1) return false;
+                if (!player.storage.xinxmingxinx && event.name == "phaseZhunbei") return false;
+                return game.hasPlayer(target => target !== player);
+    
+            },
+            async content(event, trigger, player) {
+                game.addGlobalSkill('xinxmingxin_effect');
+                const targets = game.filterPlayer(target => target !== player).sortBySeat();
+                player.line(targets);
+                for (const target of targets) {
+                        /* if (target.countCards('h') > 0) {
+                            const card = target.getCards('h').randomGet();
+                            await target.lose(card, ui.special);
+                            const subtype = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                                const card2 = get.autoViewAs(card);
+                                card2.subtypes = [subtype];
+                                return target.canEquip(card2);
+                            }).randomGet();
+                            const card2 = get.autoViewAs(card);
+                            card2.subtypes = [subtype]; 
+                            await target.equip(card2);
+                        }
+                    const pileCards = get.cards(1);
+                    if (pileCards.length) {
+                        const pileCard = pileCards[0];
+                        const subtype = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                            const tempCard = get.autoViewAs(pileCard);
+                            tempCard.subtypes = [subtype];
+                            return target.canEquip(tempCard);
+                        }).randomGet();
+                        const card2 = get.autoViewAs(pileCard);
+                        card2.subtypes = [subtype];
+                        await target.equip(card2);
+                    } */
+
+
+                        const cardsToProcess = [];
+                        if (target.countCards('h') > 0) {
+                            cardsToProcess.push(target.getCards('h').randomGet());
+                        }
+                        const pileCards = get.cards(1);
+                        if (pileCards.length) {
+                            cardsToProcess.push(pileCards[0]);
+                        }
+
+                        for (const card of cardsToProcess) {
+                            const subtype = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                                const card2 = get.autoViewAs(card);
+                                card2.subtypes = [subtype];
+                                return target.canEquip(card2);
+                            }).randomGet();
+                            const card2 = get.autoViewAs(card);
+                            card2.subtypes = [subtype]; 
+                            await target.equip(card2);
+                        }
+
+
+
+                }
+            },
+            subSkill: {
+                effect: {
+                    charlotte: true,
+                    mod: {
+                        cardEnabled2(card, player) {
+                            if (player.hasSkill('xinxmingxin')) return;
+                            if (get.type(card) == 'equip') {
+                                const subtype = get.subtype(card);
+                                if (player.getVEquips(subtype).length > 0) {
+                                    return false;
+                                }
+                            }
+                        },
+                    },
+
+                }
+            }
+        },
+        xinxmingxinx: {
+            audio: "ext:永夜之境/audio:3",
+            "audioname2": {
+                xinx_yeshunguang: "xinxmingxin",
+                xinx_yeshunguang_shadow: "xinxmingxin",
+            },
+        },
+        xinxguichenx:{
+            audio: "ext:永夜之境/audio:5",
+            "audioname2": {
+                xinx_yeshunguang: "xinxguichen",
+                xinx_yeshunguang_shadow: "xinxguichen",
+            },
+        },
+        xinxguichen: {
+            derivation: "xinxguichenx",
+            audio: "ext:永夜之境/audio:6",
+            audioname: ["xinx_yeshunguang_shadow"],
+            init: (player, skill) => player.markSkill(skill),
+            getCards(player) {
+                let cards = [];
+                game.countPlayer(current => {
+                    if (current !== player) {
+                    cards.addArray(current.getCards("xej", card => !card._cardid));
+                    }
+                });
+                return cards;
+            },
+            hiddenCard(player, name) {
+                if ( get.type2(name) == 'trick') {return false;}
+                const cards = get.info("xinxguichen").getCards(player);
+                return cards.some(card =>  card.name === name);
+            },
+            mod: {
+                cardEnabled2(card, player) {
+                    if (card?.hasGaintag?.("xinxguichen")) {
+                        if (get.type2(card) == "trick") {return false;}
+                    }
+                },
+                aiOrder(player, card, num) {
+                    if (card?.hasGaintag?.("xinxguichen")) {
+                        return num + 0.1;
+                    }
+                },
+            },
+            intro: {
+                markcount(storage, player) {
+                    let count = 0;
+                    return count || null;
+                },
+                mark(dialog, storage, player) {
+                    let cards = get.info("xinxguichen").getCards(player);
+                    if (cards.length && player.isUnderControl(true)) {
+                        dialog.addAuto(cards);
+                        return "场上";
+                    }
+                    return '共有' + get.cnNumber(cards.length) + '张';
+                },
+            },
+            forced: true,
+            mark: true,
+            marktext: "尘",
+            group: ["xinxguichen_handler",'xinxguichen_gain'],
+            subSkill: {
+                gain:{
+                    trigger: {
+                        global: ["loseAfter","equipAfter","addJudgeAfter","gainAfter","loseAsyncAfter","addToExpansionAfter"],
+                    },
+                    forced: true,
+                    filter(event, player, name, target) {
+                        if (target === player){return false;}
+                        if (event.name === "lose" && event.getParent().name === "useCard") {
+                            return false;
+                        }
+                        const evt = event.getl(target);
+                        return evt?.es?.length;
+                    },
+                    getIndex(event, player) {
+                        return game.filterPlayer(target => {
+                            const evt = event.getl(target);
+                            return evt?.es?.length;
+                        });
+                    },
+                    logTarget: (_1, _2, _3, target) => target,
+                    async content(event, trigger, player) {
+                        const target = event.indexedData;     
+                        const lostInfo = trigger.getl(target);
+                        const equipCardsLost = lostInfo ? lostInfo.es : [];
+                        const num = equipCardsLost.length;
+                        await player.gain(equipCardsLost, 'gian2');
+                        if (player.storage?.xinxmingxinx) {
+                            const {
+                                bool
+                            } = await player.chooseBool(`归尘：是否对${get.translation(target)}造成${num}点伤害？`)
+                                .set("choice", get.damageEffect(target, player, player) > 0).forResult();
+                            if (bool) {
+                                player.line(target);
+                                game.playAudio("../extension/永夜之境/audio/", 'xinxlingxiao_xinx_yeshunguang_shadow' + [get.rand(4, 6)] + '.mp3');
+                                await new Promise(resolve => {
+                                    lib.element.content.xinxplayVideo(
+                                        "extension/永夜之境/video/yeshunguang_end.mp4",
+                                        {
+                                            pauseGame: true,
+                                            skippable: true
+                                        },
+                                        resolve
+                                    );
+                                });
+                                await target.damage(num);
+                            }
+                        }
+                    },
+                },
+                handler: {
+                    onChooseToUse(event) {
+                        if (game.online) return;
+                        const player = event.player;
+        
+                        // 清理上一轮可能残留的虚拟牌
+                        let oldCards = player.getCards("s", card => card.hasGaintag("xinxguichen"));
+                        if (oldCards.length) {
+                            game.deleteFakeCards(oldCards);
+                        }
+                        // let shownCards = [];
+                        // game.countPlayer(current => {
+                        //     shownCards.push(...current.getCards('h', card => get.is.shownCard(card)));
+                        // });
+                        let shownCards = get.info("xinxguichen").getCards(player);
+
+
+                        if (shownCards.length) {
+                            // 生成虚拟牌并直接给予玩家（带有特定标签）
+                            const fakes = game.createFakeCards(shownCards);
+                            player.directgains(fakes, null, "xinxguichen");
+                            // 遍历生成的假牌，将右上角的标签改为原拥有者的名字
+                            for (let i = 0; i < fakes.length; i++) {
+                                const fake = fakes[i];
+                                const real = shownCards[i]; // fakes 和 shownCards 一一对应
+                                if (fake.node && fake.node.gaintag && real) {
+                                    const owner = get.owner(real);
+                                    if (owner) {
+                                        fake.node.gaintag.innerHTML = owner.getName();
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    onChooseToRespond(event) {
+                        if (game.online) return;
+                        const player = event.player;
+        
+                        let oldCards = player.getCards("s", card => card.hasGaintag("xinxguichen"));
+                        if (oldCards.length) {
+                            game.deleteFakeCards(oldCards);
+                        }
+        
+                        let shownCards = get.info("xinxguichen").getCards(player);
+        
+                        if (shownCards.length) {
+                            const fakes = game.createFakeCards(shownCards);
+                            player.directgains(fakes, null, "xinxguichen");
+                            for (let i = 0; i < fakes.length; i++) {
+                                const fake = fakes[i];
+                                const real = shownCards[i]; // fakes 和 shownCards 一一对应
+                                if (fake.node && fake.node.gaintag && real) {
+                                    const owner = get.owner(real);
+                                    if (owner) {
+                                        fake.node.gaintag.innerHTML = owner.getName();
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    trigger: {
+                        player: ["useCardBefore","respondBefore","chooseToUseAfter","chooseToRespondAfter"],
+                    },
+                    filter(event, player) {
+                        // 仅当玩家使用了带有技能标签的虚拟牌（或对应ID的真牌）时触发
+                        if (["useCard", "respond"].includes(event.name)) {
+                            let shownCards = get.info("xinxguichen").getCards(player);
+                            // 检查事件中的牌ID是否存在于当前列表中
+                            return event.cards?.some(card => shownCards.some(sc => sc.cardid == card._cardid));
+                        }
+                        return true;
+                    },
+                    forced: true,
+                    popup: false,
+                    async content(event, trigger, player) {
+                        if (["useCard", "respond"].includes(trigger.name)) {
+                            if (!trigger.skill) {
+                                trigger.skill = "xinxguichen";
+                            } else {
+                                await player.logSkill("xinxguichen");
+                            }
+        
+                           /*  if (trigger.name == 'useCard') {
+                                trigger.addCount = false; 
+                                if (player.storage.xinxmeng) {
+                                    if (!trigger.directHit) trigger.directHit = [];
+                                    trigger.directHit.addArray(game.players);
+                                }
+                            } */
+        
+                            // 重新获取最新的对象
+                            let shownCards = get.info("xinxguichen").getCards(player);
+        
+                            // 将玩家使用的虚拟牌替换为场上真实的牌
+                            for (let i = 0; i < trigger.cards.length; i++) {
+                                const card = trigger.cards[i];
+                                const realCard = shownCards.find(sc => sc.cardid == card._cardid);
+                                if (realCard) {
+                                    trigger.cards[i] = realCard;
+                                    if (trigger.card && trigger.card.cards) {
+                                        trigger.card.cards[i] = realCard;
+                                    }
+                                }
+                            }
+                        }
+                        // 清理虚拟牌
+                        let cards = player.getCards("s", card => card.hasGaintag("xinxguichen"));
+                        if (cards.length) {
+                            game.deleteFakeCards(cards);
+                        }
+                    },
+                    sub: true,
+                },
+            },
+        },
+        xinxlingxiaox:{
+            audio: "ext:永夜之境/audio:6",
+            "audioname2": {
+                xinx_yeshunguang: "xinxlingxiao",
+                xinx_yeshunguang_shadow: "xinxlingxiao",
+            },
+        },
+        xinxlingxiao:{
+            derivation: "xinxlingxiaox",
+            audio: "ext:永夜之境/audio:6",
+            audioname: ["xinx_yeshunguang_shadow"],
+            logAudio: index => (typeof index === "number" ? "ext:永夜之境/audio/xinxlingxiao" + index + ".mp3" : 2),
+            trigger: {
+                player: "useCardToPlayered",
+            },
+            filter(event, player) {
+                if (event.target === player) return false;
+                return event.targets?.length == 1 && event.cards && ['basic', 'trick'].includes(get.type(event.card));
+            },
+            forced: true,
+            locked: false,
+            popup: false,
+            async content(event, trigger, player) {
+                const card = trigger.cards[0];
+                const target = trigger.target;
+                if (!player.storage.xinxmingxinx){
+                    player.logSkill("xinxlingxiao", null, null, null, [get.rand(1,3)]);
+                }else{
+                    game.playAudio("../extension/永夜之境/audio/",'xinxlingxiao_xinx_yeshunguang_shadow'+[get.rand(1,3)]+'.mp3');
+                }
+                const subtype = Array.from({ length: 5 }).map((_, i) => `equip${i + 1}`).filter(subtype => {
+                    const card2 = get.autoViewAs(card);
+                    card2.subtypes = [subtype];
+                    return target.canEquip(card2);
+                }).randomGet();
+                const card2 = get.autoViewAs(card);
+                card2.subtypes = [subtype];
+                await target.equip(card2);
+
+        
+                const num = Array.from({ length: 5 }).map((_, i) => i + 1).reduce((sum, num) => sum + target.hasEmptySlot(num), 0);
+                if (num == 0) {
+                    if (!player.storage.xinxmingxinx){
+                    player.logSkill("xinxlingxiao", null, null, null, [get.rand(4, 6)]);
+                    player.changeSkin({ characterName: "xinx_yeshunguang" }, "xinx_yeshunguang_shadow");
+                    await new Promise(resolve => {
+                        lib.element.content.xinxplayVideo(
+                            "extension/永夜之境/video/yeshunguang_begin.mp4",
+                            {
+                                pauseGame: true,
+                                skippable: true
+                            },
+                            resolve
+                        );
+                    });
+                    player.storage.xinxmingxinx = true;
+                }else{
+                    if (target.countCards('e')) {
+                        let num = target.hp;
+                        const result = await player.choosePlayerCard(target, 'e',[1,num],`凌霄：你可以弃置${get.translation(target)}装备区至多${num}张牌`).forResult();
+                        if (result?.bool && result?.cards.length) {
+                            await target.discard(result.cards);
+                        }
+                    }
+                    player.changeSkin({ characterName: "xinx_yeshunguang" }, "xinx_yeshunguang");
+                    delete  player.storage.xinxmingxinx;
+                    
+                }
+                }
+            }
+
+        },
+        xinxzhanwang:{
+            
+
         },
 
 

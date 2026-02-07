@@ -1,4 +1,5 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
+import { poptip } from '../poptip.js';
 
 
 export let info = {
@@ -11,7 +12,7 @@ export let info = {
             // 分包: ["武将ID","武将ID"],
             'xuandiesheji': ['xinx_hanzhuo', 'xinx_zhuowenjun', 'xinx_limu', 'xinx_xunguan', 'xinx_wuqi', 'xinx_wangmang', 'xinx_wuyuan'],
             'xinx_xiaoyezisheji': ['xinx_lingfeng', 'xinx_zhugejing', 'xinx_lizhaoyi'],
-            'xinx_xiulisheji': ['fyrh_leisai','fyrh_dianci'],
+            'xinx_xiulisheji': ['fyrh_leisai','fyrh_dianci','fyrh_zaochuanqiu'],
             'xinx_qitasheji': [],
 
 
@@ -38,7 +39,8 @@ export let info = {
             dieAudios: ["clan_xuncai"],
         },
         fyrh_leisai: ["female", "qun", 4, ['fyrhlihua','fyrhhuohuan'], ['epic']],
-        fyrh_dianci: ["male", "qun", 4, [''], ['legend']],
+        fyrh_dianci: ["male", "qun", 4, ['fyrhzaoju','fyrhchongsheng'], ['legend']],
+        fyrh_zaochuanqiu: ["male", "qun", 4, [''], ['legend']],
     },
     //武将称号
     characterTitle: {
@@ -71,6 +73,7 @@ export let info = {
         xinx_lizhaoyi: '李昭仪',
         fyrh_leisai: '蕾塞',
         fyrh_dianci: '电次',
+        fyrh_zaochuanqiu: '早川秋',
 
 
 
@@ -157,6 +160,11 @@ export let info = {
         fyrhlihua_info: `出牌阶段限一次，你可以重铸一张牌，然后你可以将手牌区和${get.poptip('xinx_central')}合计三张类别各不同或花色均相同的牌移出游戏直到本回合结束。若如此做，你对一名角色造成1点火焰伤害。`,
         fyrhhuohuan: '火环',
         fyrhhuohuan_info: `出牌阶段限一次，你可以与一名角色拼点: 若你赢，重置${get.poptip('fyrhlihua')}的使用次数；若你没赢，重置${get.poptip('fyrhhuohuan')}的使用次数。`,
+        fyrhzaoju: '躁锯',
+        fyrhzaoju_info: `出牌阶段，你可以重铸两张牌，然后将因此法获得的一张牌当一张不计入次数且无距离限制的雷【杀】使用，结算后，若${get.poptip('xinx_central')}含有四种花色，本回合本技能失效，然后你摸两张牌。`,
+        fyrhchongsheng: '重生',
+        fyrhchongsheng_info: `你使用牌仅指定自己为目标后，可以回复1点体力或将${get.poptip('xinx_central')}两张牌洗入牌堆。`,
+
 
 
     },
@@ -2095,12 +2103,16 @@ export let info = {
             },
         },
         fyrhlihua: {
+            audio: "ext:永夜之境/audio:3",
             enable: "phaseUse",
             usable: 1,
             position: "he",
             lose: false,
             discard: false,
             delay: false,
+            filter(event, player) {
+                return player.countCards("he");
+            },
             filterCard: (card, player = get.owner(card), source, strict) => {
                 if (!player) {
                     if (player === null) {
@@ -2123,7 +2135,7 @@ export let info = {
             },
             check(card) {
                 var player = _status.event.player,
-                    val = 5 + ["shan", "tao"].includes(get.name(card)) * 1.5;
+                    val = 5 + ["shan"].includes(get.name(card)) * 1.5;
                 if (player.needsToDiscard() > 2 && get.name(card) == "sha" && player.countCards("hs", "sha") > 1) {
                     val += 0.5;
                 }
@@ -2336,6 +2348,7 @@ export let info = {
             },
         },
         fyrhhuohuan:{
+            audio: "ext:永夜之境/audio:2",
             enable: "phaseUse",
             usable: 1,
             filter(event, player) {
@@ -2387,8 +2400,193 @@ export let info = {
 
         },
         fyrhzaoju:{
+                enable: "phaseUse",
+                position: "he",
+                selectCard: 2,
+                lose: false,
+                discard: false,
+                delay: false,
+                filter(event, player) {
+                    return player.countCards("he");
+                },
+                filterCard: (card, player = get.owner(card), source, strict) => {
+                    if (!player) {
+                        if (player === null) {
+                            console.trace(`cardRecastable的player参数不应传入null,可以用void 0或undefined占位`);
+                        }
+                        player = get.owner(card);
+                    }
+                    const mod = game.checkMod(card, player, source, "unchanged", "cardRecastable", player);
+                    if (!mod) {
+                        return false;
+                    }
+                    if (strict && mod == "unchanged") {
+                        if (get.position(card) != "h") {
+                            return false;
+                        }
+                        const info = get.info(card), recastable = info.recastable || info.chongzhu;
+                        return Boolean(typeof recastable == "function" ? recastable(_status.event, player) : recastable);
+                    }
+                    return true;
+                },
+                check(card) {
+                    return 6 - get.value(card);
+                },
+                async content(event, trigger, player) {
+                    const { cards } = event;
+                    let drawEvent;
+                    await player.recast(cards, null, (player, cardsToRecast) => {
+                        drawEvent = player.draw(cardsToRecast.length);
+                        drawEvent.log = false;
+                        return drawEvent;
+                    }).forResult();
+                    const gainedCards = (drawEvent && drawEvent.result && drawEvent.result.cards) ? drawEvent.result.cards : [];
+                    if (gainedCards.length > 0) {
+                       /*  const result1 = await player.chooseButton(
+                            ["是否将一张牌当作雷杀使用？（不计次数）", gainedCards]
+                        ).set("ai", button => {
+                            return 6 - get.value(button.link);
+                        }).forResult(); */
+                        const result1 = await player.chooseCardButton(`是否将一张牌当作雷杀使用？（不计次数且无距离限制）`, gainedCards)
+                        .set("ai", button => 6 - get.value(button.link))
+                        .forResult();
+                        if (result1?.bool &&  result1?.links) {
+                            const card = result1.links;
+                            let sha = new lib.element.VCard({ name: "sha", nature: "thunder", isCard: true });
+                           let useresult = await player.chooseUseTarget('请选择雷【杀】的目标',sha,card,false)
+                           .set('nodistance',true)
+                           .forResult();
+                          if (useresult.bool) {
+                              await game.delayx();
+                              const cards = get.discarded().filterInD("d");
+                              const suits = new Set();
+                              for (const card of cards) {
+                                  const suit = get.suit(card);
+                                  if (suit && suit !== 'none') {
+                                      suits.add(suit);
+                                  }
+                              }
+                              if (suits.size >= 4) {
+                                  player.tempBanSkill("fyrhzaoju");
+                                  player.draw(2);
+                              }
+                          }
+                    }
+                }
+            },
+            ai: {
+                order: 7,
+                result: {
+                    player: 1,
+                },
+            },
+            marktext: "🪚", 
+            mark: true,
+            intro: {
+                markcount(storage, player) {
+                    const cards = get.discarded().filterInD("d");
+                    const suits = new Set();
+                    for (const card of cards) {
+                        const suit = get.suit(card);
+                        if (suit && suit !== 'none') {
+                            suits.add(suit);
+                        }
+                    }
+                    return suits.size;
+                },
+                mark(dialog, storage, player) {
+                    // 设置弹窗宽度，大框显示
+                    dialog.css({ width: "50%" }); 
+                    if (get.is.phoneLayout()) {
+                        dialog.classList.add("fullheight"); // 手机端全屏高度
+                    }
+                    const centerCards = get.discarded().filterInD("d"); 
+                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄中央区</div>');
+                    
+                    if (centerCards.length) {
+                        dialog.addAuto(centerCards);
+                    } else {
+                        dialog.addText('<div class="text center" style="opacity:0.6">暂无卡牌</div>');
+                    }
+                }
+            },
+            //group: 'xinxangang_add',
+            subSkill:{
 
-
+            }
+        },
+        fyrhchongsheng:{
+            trigger: {
+                player: "useCardToPlayered",
+            },
+            filter(event, player) {
+                if (event.target !== player || !event.isFirstTarget || event.targets.length !== 1) return false;
+                const cards = get.discarded().filterInD("d");
+                return cards.length >= 2 || player.isDamaged();
+            },
+            //usable: 1,
+            async cost(event, trigger, player) {
+                let list = [];
+                let choiceList = [];
+                const cards = get.discarded().filterInD("d");
+                if (player.isDamaged()) {
+                    list.push('回复');
+                    choiceList.push(`回复1点体力`);
+                }
+                if (cards.length >= 2) {
+                    list.push('洗入');
+                    choiceList.push(`将${get.poptip('xinx_central')}两张牌洗入牌堆`);
+                }
+                list.push("cancel2");
+                const { control } = await player.chooseControl(list)
+                    .set('prompt',get.prompt(event.skill)+':请选择一项')
+                    .set("choiceList", choiceList)
+                    .set("ai", () => {
+                        const player = get.player();
+                        if (player.hp <= 3 && list.includes('回复')) {
+                            return list.indexOf('回复');
+                        }
+                        if (list.includes('洗入')) {
+                            return list.indexOf('洗入');
+                        }
+                        return 0;
+                    })
+                    .forResult();
+                    event.result = {
+                        bool: control != "cancel2",
+                        cost_data: control,
+                    };
+            },
+            async content(event, trigger, player) {
+                const control = event.cost_data;
+            if (control === '回复') {
+                player.recover();
+            } else if (control === '洗入'){
+                let discards = get.discarded().filterInD("d");
+                const result = await player.chooseButton(
+                    ["是否将中央区两张牌洗入牌堆", discards],2
+                ).set("ai", button => {
+                    return 6 - get.value(button.link);
+                }).forResult();
+                if (result?.bool &&  result?.links) {
+                    let cards = result.links;
+                    game.log(player, "将", cards, "洗入牌堆");
+                    await game.cardsGotoPile(cards, () => {
+                        return ui.cardPile.childNodes[get.rand(0, ui.cardPile.childNodes.length - 1)];
+                    });
+                    player.markSkill('fyrhzaoju');
+                }
+            }
+            },
+            ai: {
+                order: 7,
+                result: {
+                    player: 1,
+                },
+            },
+        },
+        hyrhkeng:{
+            
         },
 
 

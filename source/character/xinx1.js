@@ -5015,16 +5015,15 @@ export let info = {
             popup: false,
             forced: true,
             filter: function (event, player) {
-                var evt1 = event.getParent();
+                const evt1 = event.getParent();
                 const evt = event.getParent("phaseDiscard");
                 if (evt && evt.name == "phaseDiscard") return false;
                 if (evt1.name != "useCard" && evt1.name != "discard" || !event.player.hasMark("xinxcangren")) return false;
-                for (var i = 0; i < event.cards2.length; i++) {
+                for (let i = 0; i < event.cards2.length; i++) {
                     if (get.type(event.cards2[i], null, event.hs.includes(event.cards2[i]) ? event.player : false) !== 'equip') {
                         return true;
                     }
                 }
-                //return event.player.hasMark("xinxcangren");
             },
             async content(event, trigger, player) {
                 let cards;
@@ -5071,7 +5070,6 @@ export let info = {
                     forced: true,
                     async content(event, trigger, player) {
                         const result = await player.chooseTarget('藏刃：令一名其他角色获得“藏”标记', (card, player, target) => {
-
                             return target != player && !target.hasMark("xinxcangren");
                         }, true).set('ai', target => {
                             const self = get.player();
@@ -5161,8 +5159,6 @@ export let info = {
             async content(event, trigger, player) {
                 const card = new lib.element.VCard({ name: "sha", nature: 'stab' });
                 await player.useCard(card, trigger.player, false);
-
-
             },
             //group: ['xinxfenglu_da'],
             //  ,'xinxfenglu_ch'

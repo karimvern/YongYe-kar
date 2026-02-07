@@ -246,6 +246,42 @@ export let voices = {
     '#ext:永夜之境/audio/xinxhongzhu5': '疗愈世间，还需更灿烂的色彩。',
     '#ext:永夜之境/audio/xinxhongzhu6': '天空一无所有，却能予人以安慰。',
     '#ext:永夜之境/audio/xinxhongzhu7': '前路，已被微光照亮。',
+
+    //叶瞬光
+    '#ext:永夜之境/audio/xinxlingxiao1': '破寒川。',
+    '#ext:永夜之境/audio/xinxlingxiao2': '流云意。',
+    '#ext:永夜之境/audio/xinxlingxiao3': '斩冥光。',
+    '#ext:永夜之境/audio/xinxlingxiao4': '剑随我意，风朔九天。',
+    '#ext:永夜之境/audio/xinxlingxiao5': '仗剑诛邪，此意凌霄。',
+    '#ext:永夜之境/audio/xinxlingxiao6': '三尺青锋，斩尽红尘。',
+    '#ext:永夜之境/audio/xinxlingxiao_xinx_yeshunguang_shadow1': '霜雪明。',
+    '#ext:永夜之境/audio/xinxlingxiao_xinx_yeshunguang_shadow2': '照云霓。',
+    '#ext:永夜之境/audio/xinxlingxiao_xinx_yeshunguang_shadow3': '向天横。',
+    '#ext:永夜之境/audio/xinxlingxiao_xinx_yeshunguang_shadow4': '以此剑阵，前来送你一程。',
+    '#ext:永夜之境/audio/xinxlingxiao_xinx_yeshunguang_shadow5': '云岿山叶瞬光，以此剑破妄。',
+    '#ext:永夜之境/audio/xinxlingxiao_xinx_yeshunguang_shadow6': '青溟浩荡，斩断九霄。',
+    '#ext:永夜之境/audio/xinxguichen1': '呀！',
+    '#ext:永夜之境/audio/xinxguichen2': '呀！',
+    '#ext:永夜之境/audio/xinxguichen3': '特！',
+    '#ext:永夜之境/audio/xinxguichen4': '嘿啊！',
+    '#ext:永夜之境/audio/xinxguichen5': '嘿！',
+    '#ext:永夜之境/audio/xinxguichen6': '喝！',
+    '#ext:永夜之境/audio/xinxguichen_xinx_yeshunguang_shadow1': '斥！',
+    '#ext:永夜之境/audio/xinxguichen_xinx_yeshunguang_shadow2': '喝！',
+    '#ext:永夜之境/audio/xinxguichen_xinx_yeshunguang_shadow3': '架！',
+    '#ext:永夜之境/audio/xinxguichen_xinx_yeshunguang_shadow4': '哼。',
+    '#ext:永夜之境/audio/xinxguichen_xinx_yeshunguang_shadow5': '呲呵。',
+    '#ext:永夜之境/audio/xinxguichen_xinx_yeshunguang_shadow6': '呵。',
+    '#ext:永夜之境/audio/xinxmingxin1': '剑随我意。',
+    '#ext:永夜之境/audio/xinxmingxin2': '仗剑诛邪。',
+    '#ext:永夜之境/audio/xinxmingxin3': '三尺青锋。',
+    '#ext:永夜之境/audio/xinxmingxin_xinx_yeshunguang_shadow1': '尺素寒霜。',
+    '#ext:永夜之境/audio/xinxmingxin_xinx_yeshunguang_shadow2': '点寒芒。',
+    '#ext:永夜之境/audio/xinxmingxin_xinx_yeshunguang_shadow3': '一线天。',
+
+
+
+
     
    
 
