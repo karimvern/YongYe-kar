@@ -1528,14 +1528,8 @@ export default {
             target: 1,
         }
     },
-   
-    xinx_lingxiao_shell: {
-        type: 'equip',
-        subtype: 'equip1', // 这里只是默认，实际装备时你会改成 equipX
-        skills: [],        // 空壳
-      },
 
-
+    
 
 
     },

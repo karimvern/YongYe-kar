@@ -308,9 +308,7 @@ export async function precontent(config, pack) {
                     cardInHand.delete(); 
                 }
                 if (result.bool) {
-                    if (result.winner === target) {
-                        
-                    }else {
+                    if (result.winner !== target) {
                         game.log(target, '拼点失败');
                         player.addSkill('xinxxuanshi_effect_buff');
                         //player.addSkill('xinxxuanshi_effect_source_timer');
@@ -321,8 +319,6 @@ export async function precontent(config, pack) {
                         target.addSkill('xinxxuanshi_effect_timer');
                         target.storage.xinxxuanshi_timer = player;
                     }
-                   
-                    
                 }
             }
         },

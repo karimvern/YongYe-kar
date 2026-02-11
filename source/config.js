@@ -25,20 +25,20 @@ export default {
 		clear: true,
 	},
 	qq: {
-			name: '<span style="font-size:17px; color:#65CCE6";">交流群·查看▶</span>',
+			name: '<span style="font-size:17px;">交流群·查看▶</span>',
 			clear: true,
 			onclick() {
 				if (this.group == undefined) {
 					var more = ui.create.div('.group',
-						`<b style=" color:#65CCE6" >永夜之境：</b>1076996650</br>
+						`永夜之境：</b>1076996650</br>
 						<img src ="${lib.assetURL}extension/永夜之境/image/author/author_qqun.jpg" style ="width: 220px">`);
 					this.parentNode.insertBefore(more, this.nextSibling);
 					this.group = more;
-					this.innerHTML = '<span style = "font-size:17px; color:#65CCE6;">交流群·查看▼</span>';
+					this.innerHTML = '<span style = "font-size:17px;">交流群·查看▼</span>';
 				} else {
 					this.parentNode.removeChild(this.group);
 					delete this.group;
-					this.innerHTML = '<span style = "font-size:17px; color:#65CCE6; ">交流群·查看▶</span>';
+					this.innerHTML = '<span style = "font-size:17px; ">交流群·查看▶</span>';
 				};
 			},
 	},

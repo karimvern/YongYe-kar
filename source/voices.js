@@ -279,6 +279,35 @@ export let voices = {
     '#ext:永夜之境/audio/xinxmingxin_xinx_yeshunguang_shadow2': '点寒芒。',
     '#ext:永夜之境/audio/xinxmingxin_xinx_yeshunguang_shadow3': '一线天。',
 
+    //卡芙卡
+    '#ext:永夜之境/audio/xinxmosuo1': '倘若命运无法将我推动，便由我来推动它。',
+    '#ext:永夜之境/audio/xinxmosuo2': '没有人能读懂另一个人…就连你我也不例外。',
+    '#ext:永夜之境/audio/xinxmosuo3': '一步、两步…迈向「未来」的路，就在脚下。',
+    '#ext:永夜之境/audio/xinxmosuo4': '喜欢么？我也喜欢。',
+    '#ext:永夜之境/audio/xinxmosuo5': '放轻松。',
+    '#ext:永夜之境/audio/xinxmosuo6': '站好了。',
+    '#ext:永夜之境/audio/xinxmosuo7': '躯体皆因脆弱而美丽。',
+    '#ext:永夜之境/audio/xinxmosuo8': '索性都干掉吧。',
+    '#ext:永夜之境/audio/xinxbeichan1': '美妙的时光总有尽头。',
+    '#ext:永夜之境/audio/xinxbeichan2': '记住还能呼吸的感觉。',
+    '#ext:永夜之境/audio/xinxbeichan3': '阿刃，准备好迎接「狩猎」了么？',
+    '#ext:永夜之境/audio/xinxbeichan4': '该说再见啦。',
+    '#ext:永夜之境/audio/xinxbeichan5': '猎物落网啰。',
+    '#ext:永夜之境/audio/xinxbeichan6': '唉…一旦停下来，就很难继续了哦？',
+
+    //新杏流萤
+    '#ext:永夜之境/audio/xinxnewxinzhui1': '正因我们注定死去，才会怀抱「想要改变」的希望！',
+    '#ext:永夜之境/audio/xinxnewxinzhui2': '只要我能一直燃烧下去，我所在的地方，就是「烈火」。',
+    '#ext:永夜之境/audio/xinxnewxinzhui3': '飞蛾扑火，不是渴望光芒。是要穿过火焰，点燃自己，发出最热烈的光。',
+    '#ext:永夜之境/audio/xinxnewxinzhui4': '我的世界总是会被烧成一片焦土啊，那就烧吧。',
+    '#ext:永夜之境/audio/xinxnewyingshi1': '我会拼尽全力，找到所爱之物，不让它们被命运夺走。',
+    '#ext:永夜之境/audio/xinxnewyingshi2': '即使一切烧绝烬尽，我也不会放弃！',
+    '#ext:永夜之境/audio/xinxnewyingshi3': '死若有时，生亦有时。',
+    '#ext:永夜之境/audio/xinxnewyingshi4': '即使拥抱曾经的力量，会让我更快死去。',
+   
+    
+
+
 
 
 
@@ -325,6 +354,14 @@ export let voices = {
     '#ext:永夜之境/audio/xinxcongzu2': '奇兵百出，敌军自溃。',
     '#ext:永夜之境/audio/xinxyibian1': '将贵专谋，兵以奇胜。',
     '#ext:永夜之境/audio/xinxyibian2': '兵善用奇，乃以决胜。',
+    '#ext:永夜之境/audio/fyrhzhansui1': '此城非朝夕可取，诚如是也。',
+    '#ext:永夜之境/audio/fyrhzhansui2': '兵法云久战不利，勿要贪功!',
+    '#ext:永夜之境/audio/fyrhzhansui3': '扬大汗之英气，无往而不利。',
+    '#ext:永夜之境/audio/fyrhzhansui4': '一击而下，何须再往。',
+    '#ext:永夜之境/audio/fyrhxiaoxian1': '击敌百里，一往无前!',
+    '#ext:永夜之境/audio/fyrhxiaoxian2': '精锐之师，何人能挡？',
+
+
     
 
 
