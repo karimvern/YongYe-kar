@@ -90,7 +90,6 @@ export let info = {
         xinxyuhui: '三分余晖',
         qiangu: '千古风流',
         qunxiong: '汉鹿争镞',
-        xuandiesheji: '玄蝶设计',
         zigou: '金焕刃',
         xinx_zhuowenjun: '玄蝶卓文君',
         xinx_zhuowenjun_prefix: '玄蝶',
@@ -3679,7 +3678,8 @@ export let info = {
                     cards = get.cards(3);
                 }
                 game.cardsGotoOrdering(cards);
-                while (cards.length > 0) {
+                while (cards.some(card => player.hasUseTarget(card))) {
+                if (cards.length > 0) {
                     const result = await player.chooseButton([
                         `使用其中一张牌`,
                         cards
@@ -3699,7 +3699,7 @@ export let info = {
                         break;
                     }
                 }
-                // 获得剩余的牌
+                }
                 if (cards.length > 0) {
                     player.gain(cards, 'gain2');
                 }

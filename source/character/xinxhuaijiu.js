@@ -768,7 +768,7 @@ export let info = {
 				const cards = event.cards;
 				const target = trigger.player;
 				await player.gain(cards, target, "bySelf");
-				const draw = await target.draw(cards.length).forResult();
+				const draw = (await target.draw(cards.length).forResult()).cards;
 				let types = [cards, draw]
 					.map(list => list.map(card => get.type2(card)))
 					.flat()

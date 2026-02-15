@@ -69,6 +69,11 @@ export async function precontent(config, pack) {
             nature: 'watermm',
             showName: '蝶',
         });
+        lib.namePrefix.set('廷', {
+            color: '#696AB5',
+            nature: "thundermm",
+            showName: '廷',
+        });
         const xinxCombinition = ['杏', '新杀谋', '势', '谋'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {

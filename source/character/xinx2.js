@@ -12,14 +12,15 @@ export let info = {
     characterSort: {
         xinx2: {
             'liechexinghe': ['xinx_liuying', 'xinx_ren', 'xinx_qiong', 'xinx_kafuka', 'xinx_sanyueqi', 'xinx_yinglang', 'xinx_danheng', 'xinx_xing', 'xinxnew_liuying'],
-            'wengfaluosi': ['xinx_xiadie', 'xinx_tilixibiesi', 'xinx_baie', 'xinx_xilian', 'xinx_fengjin', 'xinx_changyeyue', 'xinx_kelvdela', 'xinx_haiseyin'],
+            'wengfaluosi': ['xinx_xiadie', 'xinx_tilixibiesi', 'xinx_baie', 'xinx_xilian', 'xinx_fengjin', 'xinx_changyeyue', 'xinx_kelvdela', 'xinx_haiseyin', 'xinx_tenghuang'],
             'xianzhou': ['xinx_jingliu', 'xinx_hanya', 'xinx_yinyuejun', 'xinx_guinaifen', 'xinx_wangguiren', 'xinx_feixiao', 'xinx_fuxuan', 'xinx_luocha'],
             'pinuokangni': ['xinx_zhigengniao', 'xinx_huahuo', 'xinxmeng_liuying', 'xinx_huangquan', 'xinx_xingqiri', 'xinx_luanpo'],
             'xinyiling': [],
             'heita': ['xinx_daheita', 'xinx_ruanmei'],
             'beiluoboge': ['xinx_xier', 'xinx_buluoniya'],
-            'yishilvren': ['xinx_sikeke', 'xinx_yeshunguang'],
+            'yishilvren': ['xinx_sikeke', 'xinx_yeshunguang', 'xinx_laite'],
             'gongsi': ['xinx_tuopa'],
+            'xinxxugou': ['xinx_xiao'],
 
 
 
@@ -58,7 +59,7 @@ export let info = {
         xinx_xilian: ["female", "xinx", 3, ['xinxyilian'], ['legend']],
         // xinx_kelvdela: ["female", "xinx", 3, [], ['rare']],
         // xinx_luanpo: ["female", "xinx", 3, [], ['epic']],
-        // xinx_haiseyin: ["female", "xinx", 3, [], ['epic']],
+        xinx_haiseyin: ["female", "xinx", 3, [], ['epic']],
         // xinx_ruanmei: ["female", "xinx", 3, [], ['epic']],
         xinx_xingqiri: ["male", "xinx", 3, ['xinxangang', 'xinxxunji'], ['epic']],
         // xinx_sanyueqi: ["female", "xinx", 3, [], ['epic']],
@@ -72,6 +73,9 @@ export let info = {
         xinx_sikeke: ["female", "qun", 4, ['xinxzhuiyuan', 'xinxliuduan'], ["border:xinx", 'legend']],
         xinx_yeshunguang: ["female", "qun", 4, ['xinxmingxin', 'xinxguichen', 'xinxlingxiao'], ["border:xinx", 'legend']],//,'xinxlingxiao''xinxmingxin','xinxguichen',
         xinxnew_liuying: ["female", "xinx", 4, ['xinxnewxinzhui', 'xinxnewyingshi'], ['legend']],
+        xinx_tenghuang: ["male", "xinx", "4/6", ['xinxzhengrong', 'xinxbahuang'], ['epic']],
+        xinx_xiao: ["female", "xing", 4, ['xinxxuanren', 'xinxcuiren'], ['legend']],
+        //xinx_laite: ["male", "qun", 4, [], ["border:xinx",'legend']],
 
 
 
@@ -105,6 +109,8 @@ export let info = {
         xinx_yeshunguang: '<font color=#E15B5B>青溟司命</font>',
         xinx_kafuka: '<font color=#B60C83>听，终末在起舞</font>',
         xinxnew_liuying: '<font color=#91B9C5>无梦之境</font>',
+        xinx_tenghuang: '<font color=#F99010>磐岩之脊</font>',
+        xinx_xiao: '<font color=#D7D7DB>星辰之翼</font>',
         // 58A7A6
         //65B8B1
         //DA7CD2
@@ -116,6 +122,7 @@ export let info = {
         xianzhou: '仙舟',
         xinyiling: '忆灵',
         pinuokangni: '匹诺康尼的梦',
+        xinxxugou: '虚构',
         yinhe: '银河',
         heita: '空间站「黑塔」',
         beiluoboge: '贝洛伯格',
@@ -202,6 +209,16 @@ export let info = {
         xinx_sikeke_prefix: '杏',
         xinx_yeshunguang: '杏叶瞬光',
         xinx_yeshunguang_prefix: '杏',
+        xinx_laite: '杏莱特',
+        xinx_laite_prefix: '杏',
+        xinx_tenghuang: '杏腾荒',
+        xinx_tenghuang_prefix: '杏',
+        xinx_xiao: '杏骁',
+        xinx_xiao_prefix: '杏',
+
+
+
+
 
 
 
@@ -289,7 +306,7 @@ export let info = {
         xinxleizhi_info: "当你使用牌指定其他角色为目标后，你令其明置一张手牌，且此牌结算期间，其无法使用明置的牌。",
         xinxleizhix: "雷止",
         xinxleizhix_info: "锁定技。当你使用牌指定其他角色为目标后，或成为其他角色使用牌的目标后，你令其明置一张手牌，且本回合内，其无法使用明置的牌。",
-        visible_xinxleizhi: "雷止",
+        visible_xinxleizhi: "明置",
         xinxcanmeng: "残梦",
         xinxcanmeng_info: "锁定技。你可以将一名角色的明置牌如手牌般使用或打出（不计入次数限制）。",
         xinxcanmengx: "残梦",
@@ -399,8 +416,22 @@ export let info = {
         xinxnewxinzhui_info: `限定技，一名角色回合开始时，你可以视为使用一张【火攻】，并将展示改为弃置，弃置同花色改为重铸同颜色。结算后，你分配此期间内区域变动过的牌。`,
         xinxnewyingshi: "萤誓",
         xinxnewyingshi_info: `你体力值变化后，重置${get.poptip('xinxnewxinzhui')}和使用牌的次数。当你需要弃置牌时，可以改为失去1点体力并发动${get.poptip('xinxnewxinzhui')}。`,
+        xinxzhengrong: "峥嵘",
+        xinxzhengrong_info: `每轮开始时，你可以将超出体力值的X点体力上限与等量张牌交给一名其他角色（X至多为2，你与其称为“同袍”），然后与其各摸等量的牌并令其获得本技能。`,
+        xinxbahuang: "八荒",
+        xinxbahuang_info: `锁定技。当你/同袍造成伤害后，同袍/你增加等量体力上限。同袍每三次造成伤害后，你对受伤角色造成等量伤害。`,
+        xinxxuanren: "旋刃",
+        xinxxuanren_info: `你可以打出一张【杀】来抵消【杀】并摸一张牌。若两者：颜色相同，你获得两者。花色相同，此后你失去此花色的牌时，你摸一张牌。`,
+        xinxcuiren: "淬刃",
+        xinxcuiren_info: `昂扬技，出牌阶段，你可以将一张牌当【杀】对自己使用。<br>${get.poptip("rule_jiang")}：你杀死一名角色后。`,
 
-        
+
+
+
+
+
+
+
 
 
 
@@ -592,26 +623,26 @@ export let info = {
             ['xinx_liuying_shadow', ['ext:永夜之境/image/xinx_liuying_shadow.png']],
         ],
         xinx_qiong: [
-            ['xinx_qiong_shadow1', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_qiong_shadow1.png']],
-            ['xinx_qiong_shadow2', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_qiong_shadow2.png']],
-            ['xinx_qiong_shadow3', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_qiong_shadow3.png']],
+            ['xinx_qiong_shadow1', ['ext:永夜之境/image/xinx_qiong_shadow1.png']],
+            ['xinx_qiong_shadow2', ['ext:永夜之境/image/xinx_qiong_shadow2.png']],
+            ['xinx_qiong_shadow3', ['ext:永夜之境/image/xinx_qiong_shadow3.png']],
         ],
         xinx_feixiao: [
-            ['xinx_feixiao_shadow1', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_feixiao_shadow1.png']],
-            ['xinx_feixiao_shadow2', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_feixiao_shadow2.png']],
-            ['xinx_feixiao_shadow3', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_feixiao_shadow3.png']],
-            ['xinx_feixiao_shadow4', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_feixiao_shadow4.png']],
-            ['xinx_feixiao_shadow5', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_feixiao_shadow5.png']],
-            ['xinx_feixiao_shadow6', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_feixiao_shadow6.png']],
+            ['xinx_feixiao_shadow1', ['ext:永夜之境/image/xinx_feixiao_shadow1.png']],
+            ['xinx_feixiao_shadow2', ['ext:永夜之境/image/xinx_feixiao_shadow2.png']],
+            ['xinx_feixiao_shadow3', ['ext:永夜之境/image/xinx_feixiao_shadow3.png']],
+            ['xinx_feixiao_shadow4', ['ext:永夜之境/image/xinx_feixiao_shadow4.png']],
+            ['xinx_feixiao_shadow5', ['ext:永夜之境/image/xinx_feixiao_shadow5.png']],
+            ['xinx_feixiao_shadow6', ['ext:永夜之境/image/xinx_feixiao_shadow6.png']],
         ],
         xinx_huangquan: [
-            ['xinx_huangquan_shadow', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_huangquan_shadow.png']],
+            ['xinx_huangquan_shadow', ['ext:永夜之境/image/xinx_huangquan_shadow.png']],
         ],
         xinx_baie: [
-            ['xinx_baie_shadow', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_baie_shadow.png']],
+            ['xinx_baie_shadow', ['ext:永夜之境/image/xinx_baie_shadow.png']],
         ],
         xinx_yeshunguang: [
-            ['xinx_yeshunguang_shadow', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/xinx_yeshunguang_shadow.png']],
+            ['xinx_yeshunguang_shadow', ['ext:永夜之境/image/xinx_yeshunguang_shadow.png']],
         ],
 
 
@@ -10500,7 +10531,6 @@ export let info = {
                     if (num) {
                         str += `本局已切换形态${num}次`;
                     }
-                    // 如果 str 为空，显示默认文本
                     const statusContent = str ? str : "<li style='opacity:0.6'>暂未切换形态</li>";
                     // --- 构建 infoHtml ---
                     // 使用 ul 列表包裹 li，并添加一些内边距和字体样式
@@ -10741,7 +10771,7 @@ export let info = {
                         //let num = target.hp;
                         // let num = Math.ceil(target.maxHp / 2);
                         let num = Math.max(player.countMark('xinxguichen'), 1);
-                        const result = await player.chooseCardButton(target, xcards, [1, num], `凌霄：你可以弃置${get.translation(target)}非手牌区至多${num}张牌`)
+                        const result = await player.chooseCardButton(target, xcards, [1, num], `凌霄：你可以弃置${get.translation(target)}非手牌区至多${num}张牌并退幻`)
                             .set("ai", button => {
                                 return get.value(button.link);
                             })
@@ -10902,6 +10932,12 @@ export let info = {
                     });
 
             },
+            ai: {
+                order: 8,
+                result: {
+                    target: -1,
+                },
+            },
             global: "xinxmosuo_ying",
             subSkill: {
                 ones: {
@@ -10923,18 +10959,12 @@ export let info = {
 
                 }
             },
-            ai: {
-                order: 8,
-                result: {
-                    player: 1,
-                },
-            },
         },
         xinxbeichan: {
             audio: "ext:永夜之境/audio:6",
             logAudio: index => (typeof index === "number" ? "ext:永夜之境/audio/xinxbeichan" + index + ".mp3" : 2),
             trigger: {
-                global: ["loseHpAfter","damageAfter"],//, 
+                global: ["loseHpAfter", "damageAfter"],//, 
             },
             popup: false,
             forced: true,
@@ -11051,10 +11081,8 @@ export let info = {
             async content(event, trigger, player) {
                 await player.chooseUseTarget({ name: 'huogong', storage: { xinxnewxinzhui: true } }, true);
                 if (event.triggername == "phaseBegin") {
-                player.awakenSkill("xinxnewxinzhui");
+                    player.awakenSkill("xinxnewxinzhui");
                 }
-                
-                
             },
             group: ["xinxnewxinzhui_huogong", "xinxnewxinzhui_gather"],
             subSkill: {
@@ -11202,9 +11230,11 @@ export let info = {
         },
         xinxnewyingshi: {
             audio: "ext:永夜之境/audio:4",
+            logAudio: index => (typeof index === "number" ? "ext:永夜之境/audio/xinxnewyingshi" + index + ".mp3" : 2),
             trigger: {
                 player: ["discardBefore"],
             },
+            popup: false,
             filter(event, player) {
                 return event.cards.length && event.cards.someInD("he");
             },
@@ -11212,9 +11242,11 @@ export let info = {
                 return `即将弃置${get.translation(event.cards.filterInD("he"))}，失去1点体力防止之并发动${get.poptip('xinxnewxinzhui')}`;
             },
             check(event, player) {
-                return event.cards.filterInD("he").reduce((sum, card) => sum + player.getUseValue(card), -10) > 0 && player.hp > 1;
+                //return event.cards.filterInD("he").reduce((sum, card) => sum + player.getUseValue(card), -10) > 0 && player.hp > 1;
+                return player.hp > 1;
             },
             async content(event, trigger, player) {
+                player.logSkill("xinxnewyingshi", null, null, null, [get.rand(1, 2)]);
                 trigger.cancel();
                 await player.loseHp();
                 const next = game.createEvent("xinxnewxinzhui" + event.name);
@@ -11232,9 +11264,10 @@ export let info = {
                         return true;
                     },
                     forced: true,
+                    locked: false,
                     async content(event, trigger, player) {
-                        if (trigger.num > 0){
-                        game.playAudio("../extension/永夜之境/audio/",'xinxnewyingshi'+[get.rand(3,4)]+'.mp3');
+                        if (trigger.num > 0) {
+                            game.playAudio("../extension/永夜之境/audio/", 'xinxnewyingshi' + [get.rand(3, 4)] + '.mp3');
                         }
                         player.restoreSkill("xinxnewxinzhui");
                         var stat = player.getStat();
@@ -11244,6 +11277,350 @@ export let info = {
                     },
                 }
             }
+
+        },
+        xinxzhengrong: {
+            audio: "ext:永夜之境/audio:6",
+            logAudio: index => (typeof index === "number" ? "ext:永夜之境/audio/xinxzhengrong" + index + ".mp3" : 2),
+            trigger: {
+                global: ["roundStart"],
+            },
+            filter(event, player) {
+                return player.maxHp - player.getHp() > 0;
+            },
+            onremove(player, skill) {
+                player.clearMark("xinxzhengrong");
+            },
+            popup: false,
+            async cost(event, trigger, player) {
+                const num = Math.min(2, player.maxHp - player.getHp());
+                event.result = await player
+                    .chooseCardTarget({
+                        prompt: get.prompt2(event.skill),
+                        filterCard: true,
+                        position: "he",
+                        selectCard: [1, num],
+                        filterTarget: lib.filter.notMe,
+                        ai1(card) {
+                            const player = get.event().player;
+                            if (player.maxHp < 5) { return 8 - get.value(card); }
+                            return 15 - get.value(card);
+                        },
+                        ai2(target) {
+                            const player = get.event().player,
+                                att = get.attitude(player, target);
+                            if (target.hasSkillTag("nogain")) {
+                                att /= 6;
+                            }
+                            return att;
+                        },
+                    })
+                    .forResult();
+            },
+            async content(event, trigger, player) {
+                const target = event.targets[0];
+                const cards = event.cards;
+                if (cards.length == 0) return;
+                if (player.name === 'xinx_tenghuang') {
+                    player.logSkill("xinxzhengrong", [target], null, null, [get.rand(1, 3)]);
+                } else {
+                    player.logSkill("xinxzhengrong", [target], null, null, [get.rand(4, 6)]);
+                }
+                let num = cards.length;
+                await target.gain(cards, "gain2");
+                await player.loseMaxHp(num);
+                await target.gainMaxHp(num);
+                await target.addMark("xinxzhengrong", 1, false);
+                await player.addMark("xinxzhengrong", 1, false);
+                await game.asyncDraw([target, player].sortBySeat(), num);
+                //await game.asyncDraw([target, player]);
+                if (!target.hasSkill("xinxzhengrong")) {
+                    target.addSkill("xinxzhengrong");
+                }
+            },
+            markimage: 'extension/永夜之境/image/mark/xinxzhengrong.png',
+            intro: {
+                name: "同袍",
+                mark(dialog, player) {
+                    return '彼此守望';
+                },
+                markcount(storage, player) {
+                    return null;
+                },
+            },
+        },
+        xinxbahuang: {
+            audio: "ext:永夜之境/audio:6",
+            logAudio: index => (typeof index === "number" ? "ext:永夜之境/audio/xinxbahuang" + index + ".mp3" : 2),
+            onremove(player, skill) {
+                player.clearMark("xinxbahuang");
+            },
+            markimage: 'extension/永夜之境/image/mark/xinxbahuang.png',
+            intro: {
+                mark(dialog, storage, player) {
+                    let num = player.countMark("xinxbahuang");
+                    if (num != 0) dialog.addText(`当前同袍造成伤害次数:${num}`);
+                },
+                markcount(storage, player) {
+                    let num = player.countMark("xinxbahuang");
+                    if (num == 0) return null;
+                    return num;
+                },
+            },
+            trigger: {
+                global: "damageEnd",
+            },
+            priority: 1,
+            forced: true,
+            popup: false,
+            filter(event, player) {
+                const targets = game
+                    .filterPlayer(target => {
+                        return target.hasMark("xinxzhengrong");
+                    }).sortBySeat();
+                return targets.includes(event.source);
+            },
+            async content(event, trigger, player) {
+                player.addMark("xinxbahuang", 1, false);
+                if (trigger.source == player) {
+                    const targets = game
+                        .filterPlayer(target => {
+                            return target.hasMark("xinxzhengrong")
+                        }).sortBySeat();
+                    if (player.countMark("xinxbahuang") < 3) {
+                        player.logSkill("xinxbahuang", null, null, null, [get.rand(1, 4)]);
+                    }
+                    for (let target of targets) {
+                        await target.gainMaxHp(trigger.num);
+                    }
+                } else {
+                    if (player.countMark("xinxbahuang") < 3) {
+                        player.logSkill("xinxbahuang", null, null, null, [get.rand(2, 3)]);
+                    }
+                    await player.gainMaxHp(trigger.num);
+                    //await trigger.player.damage(trigger.num,'player', "unreal");
+                }
+                if (player.countMark("xinxbahuang") >= 3) {
+                    player.clearMark("xinxbahuang");
+                    if (trigger.player?.isIn()) {
+                        player.logSkill("xinxbahuang", [trigger.player], null, null, [get.rand(5, 6)]);
+                        await trigger.player.damage(trigger.num, player);
+                    }
+                }
+            },
+            ai: {
+                combo: "xinxzhengrong",
+            }
+
+        },
+        xinxxuanren: {
+            audio: "ext:永夜之境/audio:8",
+            logAudio: index => (typeof index === "number" ? `ext:永夜之境/audio/xinxxuanren${index}.mp3` : 2),
+            trigger: {
+                global: "useCard",
+            },
+            popup: false,
+            filter(event, player) {
+                return event.card.name == 'sha' && event.targets.includes(player)
+                    && player.countCards("hs", 'sha');
+                //&& player.countCards("hs");
+            },
+            check(event, player) {
+                let enemyCards = event.cards,
+                    mycards = player.getCards('h', 'sha');
+                return mycards.some(card => {
+                    return get.suit(card) === get.suit(enemyCards[0]);
+                });
+            },
+            async cost(event, trigger, player) {
+                event.result =
+                    await player.chooseToRespond(({ name: 'sha' }))
+                        //({ name: 'sha' })("hs")(({ name: 'sha' }))(({ type: 'basic' }))
+                        .set('prompt', get.prompt2('xinxxuanren'))
+                        .set('ai', (card) => {
+                            const player = get.player();
+                            let score = 0;
+                            if (trigger?.cards && trigger.cards?.length) {
+                                const enemyCard = trigger.cards[0];
+                                if (get.suit(card) === get.suit(enemyCard)) {
+                                    score += 80;
+                                }
+                            }
+                            return score;
+                        }).forResult();
+            },
+            async content(event, trigger, player) {
+                player.logSkill("xinxxuanren", null, null, null,[get.rand(1, 3)]);
+                trigger.cancel();
+                await player.draw();
+                const enemyCards = trigger.cards || [];
+                const myCards = event.cards || [];
+                let isSameColor = false;
+                let isSameSuit = false;
+                let matchedSuits = [];
+                for (const myC of myCards) {
+                    for (const enemyC of enemyCards) {
+                        if (get.color(myC) === get.color(enemyC)) {
+                            isSameColor = true;
+                        }
+                        if (get.suit(myC) === get.suit(enemyC)) {
+                            isSameSuit = true;
+                            matchedSuits.add(get.suit(myC));
+                        }
+                    }
+                }
+                if (isSameColor) {
+                    const allCards = enemyCards.concat(myCards);
+                    await player.gain(allCards, 'gain2');
+                }
+                if (isSameSuit && matchedSuits.length > 0) {
+                    player.addSkill('xinxxuanren_effect');
+                    player.markAuto('xinxxuanren_effect', matchedSuits);
+                    game.log(player, "记录了花色：", get.translation(matchedSuits));
+                }
+            },
+            mod: {
+                aiUseful(player, card, num) {
+                    if (card.name === "sha") {
+                        return 16;
+                    }
+                    if (get.name(card, player) === "shan") {
+                        if (
+                            player.countCards("hs", i => {
+                                if (card === i || (card.cards && card.cards.includes(i))) {
+                                    return false;
+                                }
+                                return get.name(i, player) === "shan";
+                            })
+                        ) {
+                            return -1;
+                        }
+                        return num / Math.pow(Math.max(1, player.hp), 2);
+                    }
+                },
+            },
+            subSkill: {
+                effect: {
+                    mark: true,
+                    onremove: true,
+                    marktext: "刃",
+                    intro: {
+                        markcount(storage, player) {
+                            let num = player.getStorage("xinxxuanren_effect").length;
+                            if (num == 0) return null;
+                            return num;
+                        },
+                        content: storage =>
+                            `失去<span class=thundertext>${storage.reduce((str, suit) => str + get.translation(suit), "")}</span>牌后摸一张牌`,
+                    },
+                    trigger: {
+                        player: "loseAfter",
+                        global: ["equipAfter", "addJudgeAfter", "gainAfter", "loseAsyncAfter", "addToExpansionAfter"],
+                    },
+                    forced: true,
+                    silent: true,
+                    charlotte: true,
+                    filter(event, player) {
+                        /* if (!event.cards || !event.cards.length) return false;
+                        const suits = player.getStorage('xinxxuanren_effect');
+                        if (!suits || !suits.length) return false;
+                        for (let i = 0; i < event.cards.length; i++) {
+                            if (suits.includes(get.suit(event.cards[i]))) {
+                                return true;
+                            }
+                        }
+                        return false; */
+                        const suits = player.getStorage('xinxxuanren_effect')
+                        if (!suits || !suits.length) return false;
+                        const evt = event.getl(player);
+                        if (!evt || !evt.cards2 || !evt.cards2.length) {
+                            return false;
+                        }
+                        return evt.cards2.some(card => {
+                            return suits.includes(get.suit(card, player));
+                        });
+                    },
+                    async content(event, trigger, player) {
+                        const suits = player.getStorage('xinxxuanren_effect')
+                        const num = trigger.getl(player).cards2.filter(card => {
+                            return suits.includes(get.suit(card, player));
+                        }).length;
+                        game.playAudio("../extension/永夜之境/audio/",'xinxxuanren'+[get.rand(4,8)]+'.mp3');
+                        await player.draw(num);
+                    }
+                }
+            }
+        },
+        xinxcuiren: {
+            audio: "ext:永夜之境/audio:6",
+            logAudio: index => (typeof index === "number" ? `ext:永夜之境/audio/xinxxuanren${index}.mp3` : 2),
+            enable: "phaseUse",
+            prompt: "将一张牌当【杀】对自己使用",
+            filterCard: true,
+            position: "he",
+            sunbenSkill: true,
+            popup: false,
+            selectCard: 1,
+            check(card) {
+                const player = _status.event.player;
+                const suit = get.suit(card);
+                const recorded = player.getStorage('xinxxuanren_effect') || [];
+                if (recorded.includes(suit)) return 0;
+                const hasSameSuitSha = player.hasCard(c => {
+                    return c != card && get.name(c) == 'sha' && get.suit(c) == suit;
+                }, 'h');
+                if (!hasSameSuitSha) return 0;
+                return get.name(card) === 'sha' ? 1 : 10;
+            },
+            filter(event, player) {
+                if (player.hasSkill('xinxcuiren_sunben')) return false;
+                return player.countCards("he");
+            },
+            async content(event, trigger, player) {
+                player.useCard({
+                    name: 'sha',
+                    cards: event.cards,
+                    isCard: true,
+                    filterTarget(card, player, target) {
+                        return target == player;
+                    }
+                }, event.cards, player);
+                player.logSkill("xinxcuiren", null, null, null, [get.rand(4,6)]);
+                player.addSkill('xinxcuiren_sunben');
+            },
+            subSkill: {
+                sunben: {
+                    charlotte: true,
+                    trigger: {
+                        source: "dieAfter",
+                    },
+                    forced: true,
+                    nopop: true,
+                    async content(event, trigger, player) {
+                        game.playAudio("../extension/永夜之境/audio/",'xinxcuiren'+[get.rand(1, 3)]+'.mp3');
+                        player.removeSkill('xinxcuiren_sunben');
+                        game.log(player, "恢复了技能", "#g【淬刃】");
+                    },
+                },
+            },
+            ai: {
+                order: 10,
+                result: {
+                    player(player) {
+                        const recorded = player.getStorage('xinxxuanren_effect') || [];
+                        const missingSuits = ['heart', 'diamond', 'spade', 'club'].filter(s => !recorded.includes(s));
+                        if (!missingSuits.length) return 0;
+                        for (const suit of missingSuits) {
+                            const cards = player.getCards('h', c => get.suit(c) == suit);
+                            if (cards.length >= 2 && cards.some(c => get.name(c) == 'sha')) {
+                                return 1; 
+                            }
+                        }
+                        return -1;
+                    }
+                },
+                threaten: 1.5,
+            },
 
         },
 

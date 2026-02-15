@@ -304,6 +304,40 @@ export let voices = {
     '#ext:永夜之境/audio/xinxnewyingshi2': '即使一切烧绝烬尽，我也不会放弃！',
     '#ext:永夜之境/audio/xinxnewyingshi3': '死若有时，生亦有时。',
     '#ext:永夜之境/audio/xinxnewyingshi4': '即使拥抱曾经的力量，会让我更快死去。',
+
+    //腾荒
+    '#ext:永夜之境/audio/xinxzhengrong1': '山鸣，龙啸！',
+    '#ext:永夜之境/audio/xinxzhengrong2': '掣地，擎天！',
+    '#ext:永夜之境/audio/xinxzhengrong3': '专注眼前，我来抵挡攻势。',
+    '#ext:永夜之境/audio/xinxzhengrong4': '三月，是时候展现你真正的技术了。',
+    '#ext:永夜之境/audio/xinxzhengrong5': '我会尽情驱使这股力量。',
+    '#ext:永夜之境/audio/xinxzhengrong6': '守护，始终是我的职责。',
+    '#ext:永夜之境/audio/xinxbahuang1': '好，乘势而上。',
+    '#ext:永夜之境/audio/xinxbahuang2': '新生的鳞片，愈渐坚硬。',
+    '#ext:永夜之境/audio/xinxbahuang3': '这股力量，已不同过往。',
+    '#ext:永夜之境/audio/xinxbahuang4': '金石之志。',
+    '#ext:永夜之境/audio/xinxbahuang5': '群龙，依此号令。',
+    '#ext:永夜之境/audio/xinxbahuang6': '烈腾八荒，荡除凶灾，不灭不朽！',
+
+    //骁
+    '#ext:永夜之境/audio/xinxxuanren1': '掛かった魚はいるか？',
+    '#ext:永夜之境/audio/xinxxuanren2': '雑魚がいくら威嚇しようと、恐るるに足りない。',
+    '#ext:永夜之境/audio/xinxxuanren3': '何を…するつもりだ？',
+    '#ext:永夜之境/audio/xinxxuanren4': '酔いしれるがいい。',
+    '#ext:永夜之境/audio/xinxxuanren5': '鋭い挽歌を捧げよう。',
+    '#ext:永夜之境/audio/xinxxuanren6': 'これとメーレを交換しないか？',
+    '#ext:永夜之境/audio/xinxxuanren7': 'まるでぬるま湯のようだったな。',
+    '#ext:永夜之境/audio/xinxxuanren8': 'いい余興になりそうだ。',
+    '#ext:永夜之境/audio/xinxcuiren1': '満たされぬ深海の宴に響く、皆の悲鳴を。',
+    '#ext:永夜之境/audio/xinxcuiren2': 'だが今になってみれば、キミの旅路もまた、先人となんら変わりなかったのではないか。',
+    '#ext:永夜之境/audio/xinxcuiren3': 'キミはワタシに海路を断ち、後方からの脅威を排除するよう命じた。',
+    '#ext:永夜之境/audio/xinxcuiren4': '記憶のさざ波…ワタシと共に、揺蕩ってみないか？',
+    '#ext:永夜之境/audio/xinxcuiren5': 'ワタシのことはセイレンスと呼んでほしい。無名の剣士。',
+    '#ext:永夜之境/audio/xinxcuiren6': '曲間の沈黙にしては、少々長すぎるな。',
+
+    
+
+   
    
     
 
@@ -361,6 +395,66 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhxiaoxian1': '击敌百里，一往无前!',
     '#ext:永夜之境/audio/fyrhxiaoxian2': '精锐之师，何人能挡？',
 
+    //廷杜预
+    '#ext:永夜之境/audio/fyrhzhenzhan1': '怀长剑，曳长缨，今苍龙待缚，当试匣中青锋。',
+    '#ext:永夜之境/audio/fyrhzhenzhan2': '今国朝府库充盈、王师秣兵，正乃全金瓯之时。',
+    '#ext:永夜之境/audio/fyrhzhenzhan3': '臣有一言在喉，不吐此生不快。',
+    '#ext:永夜之境/audio/fyrhzhenzhan4': '国有弊事，臣者岂能哑声而盲视。',
+    '#ext:永夜之境/audio/fyrhpozhu1': '昔魏武遗恨江矶，今大军复至，问何来东风？',
+    '#ext:永夜之境/audio/fyrhpozhu2': '吴垒如朽木腐草，王师军锋所至必土崩瓦解。',
+    '#ext:永夜之境/audio/fyrhpozhu3': '吴倚地利已存三世，今可亡宗庙矣。',
+    '#ext:永夜之境/audio/fyrhpozhu4': '王师踏天堑成通途，必逐孙氏于四野。',
+    '#ext:永夜之境/audio/fyrhpozhu5': '今奉天承运，三军听诏：齐整军备，即日伐吴！',
+    '#ext:永夜之境/audio/fyrhpozhu6': '得皇命之诏，伐不臣之贼！',
+    '#ext:永夜之境/audio/fyrhpozhu7': '灭国之战，当奋破竹之势，秉吾当继前！',
+
+    //廷曹操
+    '#ext:永夜之境/audio/fyrhyulie1': '齐桓之功，唯霸可彰王道。',
+    '#ext:永夜之境/audio/fyrhyulie2': '晋公亦霸，然亦躬奉周王。',
+    '#ext:永夜之境/audio/fyrhyulie3': '奉辞伐罪，旌麾南指，欲请将军会猎于吴。',
+    '#ext:永夜之境/audio/fyrhyulie4': '宝雕弓，金鈚箭，臣乞为陛下猎天下之不臣。',
+    '#ext:永夜之境/audio/fyrhyulie5': '饮马瀚海，封狼居胥，大丈夫当如此！',
+    '#ext:永夜之境/audio/fyrhyulie6': '以战平戎，以武止戈。',
+    '#ext:永夜之境/audio/fyrhyulie7': '治世匡以仁德，乱世当用重典。',
+    '#ext:永夜之境/audio/fyrhwenjue1': '天下烽烟起逐鹿，吾代弱主扫六合！',
+    '#ext:永夜之境/audio/fyrhwenjue2': '计定九州乱，雄吞天下兵！',
+    '#ext:永夜之境/audio/fyrhwenjue3': '亲征不可轻退，速诛眼前之贼！',
+    '#ext:永夜之境/audio/fyrhwenjue4': '挟天子以令不臣！',
+    '#ext:永夜之境/audio/fyrhwenjue5': '兵行错役之制，可绝负我之人！',
+    '#ext:永夜之境/audio/fyrhwenjue6': '犯吾禁令者，虽豪强权贵，亦当严惩！',
+    '#ext:永夜之境/audio/fyrhwenjue7': '为谋天下一统，何惜眼前小损！',
+    '#ext:永夜之境/audio/fyrhwenjue8': '恨其才不为我所用，宁杀之亦胜入他人之手！',
+
+    //廷姜维
+    '#ext:永夜之境/audio/fyrhzhiji_guanxing1': '丞相六出祁山，捐生于阵前，维所效者如是尔。',
+    '#ext:永夜之境/audio/fyrhzhiji_guanxing2': '秋风卷孤灯，七星并落，愿以我身饲五丈原之烛。',
+    '#ext:永夜之境/audio/fyrhzhiji_guanxing3': '愿以此身为烛，齐七星之数。',
+    '#ext:永夜之境/audio/fyrhzhiji_guanxing4': '维既抱逐日之远志，不在念当归之遐思。',
+    '#ext:永夜之境/audio/fyrhzhiji_guanxing5': '炎阳将坠，可为者，唯舍生擎天！',
+    '#ext:永夜之境/audio/fyrhzhiji_guanxing6': '昔吾师遇昭烈于隆中，今姜维逢士季于剑门。',
+    '#ext:永夜之境/audio/fyrhzhiji_aocai1': '哀兵多艰，犹被甲带戈，诚非束手之时。',
+    '#ext:永夜之境/audio/fyrhzhiji_aocai2': '古来圣贤卫道而死，道之存焉何惜身入九渊。',
+    '#ext:永夜之境/audio/fyrhzhiji_aocai3': '习丞相之兵法，岂为迷雾所障目？',
+    '#ext:永夜之境/audio/fyrhzhiji_aocai4': '老将军可知天水姜伯约？',
+    '#ext:永夜之境/audio/fyrhzhiji_aocai5': '我辈慕光而行，不为浮云障目。',
+    '#ext:永夜之境/audio/fyrhzhiji1': '天下齐喑，我辈秉身为烛，当照四海九州！',
+    '#ext:永夜之境/audio/fyrhzhiji2': '此身为薪，炬成灰亦照大汉长明。',
+    '#ext:永夜之境/audio/fyrhjizhi1': '红日未落，炎汉犹存，此诚志士用武之时！',
+    '#ext:永夜之境/audio/fyrhjizhi2': '逐阳而战，血染天幕之彤云！',
+    '#ext:永夜之境/audio/fyrhjizhi3': '炎阳在悬，岂因乌云障日而弃金光于野！',
+
+    
+
+
+  
+   
+  
+
+
+
+
+
+   
 
     
 
