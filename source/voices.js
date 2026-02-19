@@ -443,6 +443,24 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhjizhi2': '逐阳而战，血染天幕之彤云！',
     '#ext:永夜之境/audio/fyrhjizhi3': '炎阳在悬，岂因乌云障日而弃金光于野！',
 
+    //廷许攸
+    '#ext:永夜之境/audio/fyrhchenglue1': '除我身上三重雪，天下谁人配白衣！',
+    '#ext:永夜之境/audio/fyrhchenglue2': '他日我若为东帝，敢叫六月悬腊雪！',
+    '#ext:永夜之境/audio/fyrhchenglue3': '尔等无谋少智之辈，何德做我主公！',
+    '#ext:永夜之境/audio/fyrhchenglue4': '有我于斯，阿瞒留郭、荀之流何用？',
+    '#ext:永夜之境/audio/fyrhshicai1': '敌之配备，吾之所需，攸，安能不晓？',
+    '#ext:永夜之境/audio/fyrhshicai2': '今劫粮之举，势在必行！',
+    '#ext:永夜之境/audio/fyrhshicai3': '阿瞒，若无我，你可进的了这邺城！',
+    '#ext:永夜之境/audio/fyrhshicai4': '阿瞒所胜者不在兵将，而在我许子远。',
+
+    //廷陈群
+    '#ext:永夜之境/audio/fyrhyinzhi1': '天下十分君有其九，群生皆盼，此天人之应。',
+    '#ext:永夜之境/audio/fyrhyinzhi2': '夏不以谦辞，周不吝诛放，畏知天命，无所与让。',
+    '#ext:永夜之境/audio/fyrhyinzhi3': '谄员蔽信，心利锥刀，岂居台府之任！',
+    '#ext:永夜之境/audio/fyrhyinzhi4': '陛列庸夫，智昏麦菽，何当机衡之重？',
+    '#ext:永夜之境/audio/fyrhquanxin1': '敬五行，承三德，惩恶息杀，甘率时臣矣。',
+    '#ext:永夜之境/audio/fyrhquanxin2': '建九品，定八议，彰德行法，足万世表也。',
+
     
 
 

@@ -664,7 +664,7 @@ export let info = {
         xinxjinjie: '劲节',
         xinxjinjie_info: "锁定技。一名其他角色不因摸牌而获得牌时，你可将一张牌当本轮使用过的非装备牌对其使用。",
         xinxyunjue: '韫决',
-        xinxyunjue_info: `锁定技。①你无法响应其他角色使用的牌。②其他角色A对你使用牌时，你可以选择一名不为A的角色的一张牌并令A获得之，然后你摸一张牌。若此效果的发动次数大于3次，你修改本技能。`,
+        xinxyunjue_info: `锁定技。①你无法响应其他角色使用的牌。②其他角色A对你使用牌时，你可以选择一名不为A的角色的一张牌并令A获得之，然后你摸一张牌。若此效果的发动次数大于2，你修改本技能。`,
         xinxyunjue_re: '韫决·改',
         xinxyunjue_re_info: "锁定技。其他角色A对你使用牌时，你可以选择一名角色的一张牌，若此牌为装备牌，则你获得之，否则A获得之。然后你摸一张牌，并可以将一张牌当作一张本轮未使用过的基本牌或普通锦囊牌使用。",
         xinxjieshuo: '截槊',
@@ -986,22 +986,16 @@ export let info = {
             trigger: { player: ['useCardAfter', 'respondAfter'] },
             locked: true,
             unique: true,
-            init(player) {
-                player.storage.xing_sizhu_used_lengths = [];
-            },
             onremove(player) {
-                delete player.storage.xing_sizhu_used_lengths;
+                delete player.storage.xing_sizhu;
+                player.unmarkSkill("xing_sizhu");
             },
             filter(event, player) {
                 if (event.getParent(2).name === 'xing_sizhu_cost') return false;
-
                 const currentCardNameLength = get.cardNameLength(event.card);
-
-                // Check if this card name length has already been used this turn for xing_sizhu
-                if (player.storage.xing_sizhu_used_lengths.includes(currentCardNameLength)) {
-                    return false; // Already used this length this turn
+                if (player.getStorage("xing_sizhu").includes(currentCardNameLength)) {
+                    return false;
                 }
-
                 return get.inpileVCardList(info => {
                     const name = info[2];
                     if (get.cardNameLength(event.card) !== get.cardNameLength(name)) return false;
@@ -1009,13 +1003,8 @@ export let info = {
                 }).some(info => player.hasUseTarget(new lib.element.VCard({ name: info[2], nature: info[3] }), false));
             },
             async cost(event, trigger, player) {
-
-                const currentCardNameLength = get.cardNameLength(trigger.card);
-                if (!player.storage.xing_sizhu_used_lengths.includes(currentCardNameLength)) {
-                    player.storage.xing_sizhu_used_lengths.push(currentCardNameLength);
-                }
-
-
+                const cardname = get.cardNameLength(trigger.card);
+                player.markAuto('xing_sizhu', cardname);
                 const list = get.inpileVCardList(info => {
                     const name = info[2];
                     if (get.cardNameLength(trigger.card) !== get.cardNameLength(name)) return false;
@@ -1032,18 +1021,10 @@ export let info = {
                     const card = new lib.element.VCard({ name: choice.links[0][2], nature: choice.links[0][3] });
                     event.result = await player.chooseUseTarget(card, true, false, 'nodistance').set('prompt', '思助：请选择' + get.translation(card) + '的目标').set('logSkill', 'xing_sizhu').forResult();
                 }
-
-                // if (event.result.bool) {
-                //     const currentCardNameLength = get.cardNameLength(trigger.card);
-                //     if (!player.storage.xing_sizhu_used_lengths.includes(currentCardNameLength)) {
-                //         player.storage.xing_sizhu_used_lengths.push(currentCardNameLength);
-                //     }
-                // }
-
                 else event.result = { bool: false };
-
                 player.when({ global: "phaseEnd" }).step(async () => {
-                    player.storage.xing_sizhu_used_lengths = [];
+                    delete player.storage.xing_sizhu;
+                    player.unmarkSkill("xing_sizhu");
                 });
 
             },
@@ -1066,8 +1047,8 @@ export let info = {
             marktext: '思',
             intro: {
                 content(storage, player) {
-                    if (player.storage.xing_sizhu_used_lengths && player.storage.xing_sizhu_used_lengths.length) {
-                        return '本回合已通过思助记录的牌字数：' + player.storage.xing_sizhu_used_lengths.join('字、') + '字';
+                    if (storage) {
+                        return '本回合已通过思助记录的牌字数：' + storage.join('字、') + '字';
                     }
                     return '本回合尚未通过思助记录牌字数';
                 },
@@ -2052,7 +2033,7 @@ export let info = {
                     },
                     logTarget(trigger, player) {
                         return player.getStorage("dz_K_huanren_buff").filter(target =>
-                            target.isIn()&& target.countGainableCards(player, "he") 
+                            target.isIn() && target.countGainableCards(player, "he")
                         );
                     },
                     async content(event, trigger, player) {
@@ -3679,26 +3660,26 @@ export let info = {
                 }
                 game.cardsGotoOrdering(cards);
                 while (cards.some(card => player.hasUseTarget(card))) {
-                if (cards.length > 0) {
-                    const result = await player.chooseButton([
-                        `使用其中一张牌`,
-                        cards
-                    ]).set('filterButton', button => {
-                        return player.hasUseTarget(button.link);
-                    })
-                        .set("ai", button => {
-                            return get.event().player.getUseValue(button.link);
-                        }).forResult();
-                    if (result.bool) {
-                        const selectedCard = result.links[0];
-                        player.$gain2(selectedCard, false);
-                        await game.delayx();
-                        player.chooseUseTarget(selectedCard, true, false);
-                        cards.remove(selectedCard);
-                    } else {
-                        break;
+                    if (cards.length > 0) {
+                        const result = await player.chooseButton([
+                            `使用其中一张牌`,
+                            cards
+                        ]).set('filterButton', button => {
+                            return player.hasUseTarget(button.link);
+                        })
+                            .set("ai", button => {
+                                return get.event().player.getUseValue(button.link);
+                            }).forResult();
+                        if (result.bool) {
+                            const selectedCard = result.links[0];
+                            player.$gain2(selectedCard, false);
+                            await game.delayx();
+                            player.chooseUseTarget(selectedCard, true, false);
+                            cards.remove(selectedCard);
+                        } else {
+                            break;
+                        }
                     }
-                }
                 }
                 if (cards.length > 0) {
                     player.gain(cards, 'gain2');
@@ -13430,7 +13411,7 @@ export let info = {
                     popup: false,
                     sourceSkill: "xinxhuolu",
                     filter(event, player) {
-                       if (typeof player.storage.xinxhuolu != "number") return false;
+                        if (typeof player.storage.xinxhuolu != "number") return false;
                         return get.tag(event.card, "damage") >= 0.5 && event.player.countCards("xshej") != player.storage.xinxhuolu && event.player !== player && event.cards && event.cards.filterInD().length;
                         //return event.player.getHistory("gain").length + event.player.getHistory("lose", evt =>  evt.es?.length || evt.xs?.length).length;
                     },
