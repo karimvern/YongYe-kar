@@ -43,13 +43,30 @@ export default {
 			},
 	},
 	video_skippable: {
-                name: "允许点击跳过视频",
-                init: false, // 默认值
-                intro: "开启后，播放角色变身视频时点击屏幕可直接跳过。默认关闭。",
-                onclick: function(item) {
-                    // 立即保存设置
-                    game.saveConfig('extension_永夜之境_video_skippable', item);
-                }
-            },
+		name: "允许点击跳过视频",
+		init: false, // 默认值
+		intro: "开启后，播放角色变身视频时点击屏幕可直接跳过。默认关闭。",
+		onclick: function (item) {
+			// 立即保存设置
+			game.saveConfig('extension_永夜之境_video_skippable', item);
+		}
+	},
+	/* video_enable: {
+		name: "开启技能视频动画",
+		init: true, // 默认开启
+		intro: "开启后，播放角色变身视频时会播放全屏视频。默认开启。",
+		onclick: function (item) {
+			game.saveConfig('extension_永夜之境_video_enable', item);
+		}
+	}, */
+	yeshunguang_end_video: {
+        name: "开启叶瞬光退幻视频",
+        init: true,
+        intro: "开启后，播放叶瞬光退幻视频。默认开启。",
+        onclick: function(item) {
+            game.saveConfig('extension_永夜之境_yeshunguang_end_video', item);
+        }
+    },
 	
+
 }

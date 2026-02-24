@@ -60,7 +60,7 @@ lib.poptip.add({
 lib.poptip.add({
     name: '状态技',
     id: 'xinx_Charlotte',
-    info: '角色被施加的状态效果。如神黄忠的击伤，神张飞的标记，谋曹丕的放逐等等。',
+    info: '角色被施加的状态效果。如神黄忠的击伤，神张飞的标记，谋曹丕的放逐等。',
 });
 lib.poptip.add({
     name: '虚无',

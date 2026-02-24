@@ -213,7 +213,7 @@ export let voices = {
     '#ext:永夜之境/audio/xinxjiegou1': '啊…这？拿去玩吧～',
     '#ext:永夜之境/audio/xinxjiegou2': '别稀罕了，我有更好的。',
     '#ext:永夜之境/audio/xinxjiegou3': '怎么，没见过好看的？',
-    '#ext:永夜之境/audio/xinxjiegou4': '我觉得…也就那样吧。',    
+    '#ext:永夜之境/audio/xinxjiegou4': '我觉得…也就那样吧。',
     '#ext:永夜之境/audio/xinxjiegou5': '洞见未知的瞬间，为它沉迷吧。',
     '#ext:永夜之境/audio/xinxjiegou6': '筑就空域的壁垒，就此塌落吧。',
     '#ext:永夜之境/audio/xinxlinggan1': '就得打开思路～',
@@ -335,18 +335,36 @@ export let voices = {
     '#ext:永夜之境/audio/xinxcuiren5': 'ワタシのことはセイレンスと呼んでほしい。無名の剣士。',
     '#ext:永夜之境/audio/xinxcuiren6': '曲間の沈黙にしては、少々長すぎるな。',
 
-    
+    //爱弥斯
+    '#ext:永夜之境/audio/xinxsuyin1': '我会一直在你所走的路上，和你共同前行——直到你渴望的那个明天到来。',
+    '#ext:永夜之境/audio/xinxsuyin2': '我想和你一样，成为救世主。',
+    '#ext:永夜之境/audio/xinxsuyin3': '这么沉的责任，如果有一个人能与你共同承担，应该会轻松些吧？',
+    '#ext:永夜之境/audio/xinxsuyin4': '这次，交给我。',
+    '#ext:永夜之境/audio/xinxsuyin5': '一起去拯救世界吧。',
+    '#ext:永夜之境/audio/xinxsuyin6': '浮羽聚合。',
+    '#ext:永夜之境/audio/xinxsuyin7': '瞄准你了。',
+    '#ext:永夜之境/audio/xinxsuyin8': '随声而来。',
+    '#ext:永夜之境/audio/xinxsuyin9': '爱弥斯，变身！',
+    '#ext:永夜之境/audio/xinxsuyin10': '轻歌吧。',
+    '#ext:永夜之境/audio/xinxsuyin11': '闪耀吧。',
+    '#ext:永夜之境/audio/xinxxinshi1': '光翼模式展开。此夜星海澈明！',
+    '#ext:永夜之境/audio/xinxxinshi2': '集束射击锁定，救世之刻已至！',
+    '#ext:永夜之境/audio/xinxxinshi3': '剑光裁夜，荡平厄难！',
+    '#ext:永夜之境/audio/xinxxinshi4': '声魂谐奏，高唱救济！',
 
-   
-   
-    
 
 
 
 
 
-    
-   
+
+
+
+
+
+
+
+
 
 
 
@@ -380,6 +398,8 @@ export let voices = {
     '#ext:永夜之境/audio/xinxjilang4': '一鼓作气，平寇杀敌!',
     '#ext:永夜之境/audio/xinxyuwei1': '刃如霜，寒胜雪，轻吻神兵，此日战沙场！',
     '#ext:永夜之境/audio/xinxyuwei2': '月华洗锋刃，素手握长缨，红袖欲缚苍龙！',
+    '#ext:永夜之境/audio/xinxyuwei3': '红袖战沙场，霜刃破铁衣！',
+    '#ext:永夜之境/audio/xinxyuwei4': '身骑红鬃马，雪落青锋刃，不妨醉卧沙场。',
     '#ext:永夜之境/audio/xinxbailian1': '先人有夺人之心，此平贼之要。',
     '#ext:永夜之境/audio/xinxbailian2': '奇正变通，虚实惑敌。',
     '#ext:永夜之境/audio/xinxbailian3': '先为不可胜，以待敌之可胜。',
@@ -461,32 +481,63 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhquanxin1': '敬五行，承三德，惩恶息杀，甘率时臣矣。',
     '#ext:永夜之境/audio/fyrhquanxin2': '建九品，定八议，彰德行法，足万世表也。',
 
+    //边让
+    '#ext:永夜之境/audio/fyrhyanfeng1': '手擎玉尺，丈因果而明智。',
+    '#ext:永夜之境/audio/fyrhyanfeng2': '择贤而用，可以奇兵奇计、立奇功。',
+    '#ext:永夜之境/audio/fyrhzhanghua1': '四时耕植有序，春种其粟，秋必得其实。',
+    '#ext:永夜之境/audio/fyrhzhanghua2': '辕犁本刀枪所铸，粮熟亦十万雄兵！',
+    '#ext:永夜之境/audio/fyrhzhanghua3': '秋风起麦浪，万里良田涌金粟，沧海一瞬殊。',
+    '#ext:永夜之境/audio/fyrhzhanghua4': '梧桐知秋意，枝栖黄鹂，叶荫阡陌起涟漪。',
+
+    //祖逖
+    '#ext:永夜之境/audio/fyrhjiji1': '敌虽千万，吾亦独往！',
+    '#ext:永夜之境/audio/fyrhjiji2': '枪锋所指，挡者披靡！',
+    '#ext:永夜之境/audio/fyrhjiji3': '看吾提枪策马，一击必杀！',
+
+    //吕雉
+    '#ext:永夜之境/audio/fyrhjunce1': '此患不除，必为所害。',
+    '#ext:永夜之境/audio/fyrhjunce2': '不为我用者，杀！',
+
+    //李牧
+    '#ext:永夜之境/audio/xinxsijiao1': '今提三尺之剑，欲斩涛百丈、靖疆万里。',
+    '#ext:永夜之境/audio/xinxsijiao2': '九州激荡，吾辈当斩惊涛、以复天下清晏！',
+    '#ext:永夜之境/audio/xinxsijiao3': '霜锋夜鸣，潮起可试我剑利。',
+    '#ext:永夜之境/audio/xinxsijiao4': '天下异势汹汹，吾当潮平四海。',
+    '#ext:永夜之境/audio/xinxsijiao5': '敌顽凶恶，如狼环伺，不可不防。',
+    '#ext:永夜之境/audio/xinxsijiao6': '掌中之剑，首为君上所执，次为黎庶所倚。',
+
+    
+
+    
     
 
 
-  
-   
-  
 
 
 
 
 
-   
-
-    
 
 
 
 
 
-  
 
 
-    
 
 
-  
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -565,6 +616,10 @@ export let voices = {
     '#ext:永夜之境/audio/xinxjinbi2': '哼，毛贼而已。',
     '#ext:永夜之境/audio/xinxjinbi3': '汉水暴溢，是进攻之机！',
     '#ext:永夜之境/audio/xinxjinbi4': '樊城之乱，是某之良机。',
+    '#ext:永夜之境/audio/xinxwusheng1': '此战，某必胜！',
+    '#ext:永夜之境/audio/xinxwusheng2': '尔等不降，便纳命来！',
+    '#ext:永夜之境/audio/xinxwusheng3': '不日，将北定中原！',
+    '#ext:永夜之境/audio/xinxwusheng4': '北取中原，某势在必得！',
     '#ext:永夜之境/audio/xinxqizhen1': '兵之用者，其状不定见也。',
     '#ext:永夜之境/audio/xinxqizhen2': '因势而动，变生于阵之间。',
     '#ext:永夜之境/audio/xinxqizhen3': '天覆地载，龙变其中。',
@@ -713,6 +768,68 @@ export let voices = {
     '#ext:永夜之境/audio/xinxbingjun1': '呵呵哈哈哈哈哈……一统之世，当由我司马氏开创！',
     '#ext:永夜之境/audio/xinxbingjun2': '执掌朝野，尽吞大魏河山！',
     '#ext:永夜之境/audio/xinxbingjun3': '明日正为吉日，当举禅位之典。',
+    '#ext:永夜之境/audio/xinxfanjian1': '若生铸剑为犁之心，须有纵钺止戈之力。',
+    '#ext:永夜之境/audio/xinxfanjian2': '将者，贵在知敌虚实，而后避实而击虚。',
+    '#ext:永夜之境/audio/xinxfanjian3': '红莲生碧波，水火相融之际、吴钩刈将之时！',
+    '#ext:永夜之境/audio/xinxfanjian4': '千帆载丹鼎，万军为薪，一焚可引振翼之金乌！',
+    '#ext:永夜之境/audio/xinxqiyi1': '既遇知己之明主，当福祸共之，荣辱共之。',
+    '#ext:永夜之境/audio/xinxqiyi2': '年少立志三千里，会当击水，屈指问东风！',
+    '#ext:永夜之境/audio/xinxqiyi3': '君子行陌路，振翅破樊笼，何妨天涯万里！',
+    '#ext:永夜之境/audio/xinxcangnuo1': '待敌须有略，孤勇岂可为？',
+    '#ext:永夜之境/audio/xinxcangnuo2': '天崩可寻路，海角誓相随！',
+    '#ext:永夜之境/audio/xinxcangnuo3': '银枪所至，前夫不敌！',
+    '#ext:永夜之境/audio/xinxcangnuo4': '抽身而退，万军难挡！',
+    '#ext:永夜之境/audio/xinxlongxiang1': '龙鳞佑我，无伤分毫!',
+    '#ext:永夜之境/audio/xinxlongxiang2': '凭此八门金锁，何以阻我？',
+    '#ext:永夜之境/audio/xinxlongxiang3': '八方风雨，天涯何归。',
+    '#ext:永夜之境/audio/xinxlongxiang4': '滴水不漏，稳若泰山。',
+    '#ext:永夜之境/audio/xinxjuyan1': '虎踞青兖，欲补薄暮苍天。',
+    '#ext:永夜之境/audio/xinxjuyan2': '欲止戈，必先执戈！',
+    '#ext:永夜之境/audio/xinxhaopo1': '奈何力不齐，踌躇而雁行。',
+    '#ext:永夜之境/audio/xinxhaopo2': '生民百遗一，念之断人肠。',
+    '#ext:永夜之境/audio/xinxxishuo1': '挥剑断浮云，诸君共西向！',
+    '#ext:永夜之境/audio/xinxxishuo2': '西望故都，何忍君父辱于匹夫之手！',
+    '#ext:永夜之境/audio/xinxjinshu1': '赠君摇佩，佑君安好。',
+    '#ext:永夜之境/audio/xinxjinshu2': '共护边关，蜀汉可安。',
+    '#ext:永夜之境/audio/xinxduanzhi1': '春庭落花坠，遇卿心弦动。',
+    '#ext:永夜之境/audio/xinxduanzhi2': '桃夭芳菲浓，浅池双影照。',
+    '#ext:永夜之境/audio/xinxduanzhi3': '佩玖清响，见君羞颜。',
+    '#ext:永夜之境/audio/xinxduanzhi4': '玉佩琼琚挂桃李，兰溪粉蝶翻花枝。',
+    '#ext:永夜之境/audio/xinxzhiyi1': '书中学问万千，女子可为博士。',
+    '#ext:永夜之境/audio/xinxzhiyi2': '女子不可无德，亦不可无才。',
+    '#ext:永夜之境/audio/xinxshenai1': '秋菊容曜，春松华茂，四时之灵也。',
+    '#ext:永夜之境/audio/xinxshenai2': '皎若金乌之霞，灿若芙蕖之渌。',
+    '#ext:永夜之境/audio/xinxshenai3': '一帘诗意千寻瀑，今夕人间四月天。',
+    '#ext:永夜之境/audio/xinxshenai4': '野陌离人空自守，杏雨梧桐晚箫声。',
+    '#ext:永夜之境/audio/xinxchengshu1': '金杯共君饮，极目江山，天下士在我！',
+    '#ext:永夜之境/audio/xinxchengshu2': '受天命永昌，此时身立，此生不再屈！',
+    '#ext:永夜之境/audio/xinxchengshu3': '乾坤得正，手摘十万星辰，不妨高声语。',
+    '#ext:永夜之境/audio/xinxchengshu4': '掌中舞干将，再祭红刹三千，将相皆作古。',
+    '#ext:永夜之境/audio/xinxyuanyan1': '横眉养红莲，此花开时，诸侯尽膝行！',
+    '#ext:永夜之境/audio/xinxyuanyan2': '俯首效淮阴，圯下取履，吾不得拜天子？',
+    '#ext:永夜之境/audio/xinxyuanyan3': '袖中藏莫邪，志高位卑，犹思屠犬豕。',
+    '#ext:永夜之境/audio/xinxyuanyan4': '膝下生金，身不屈，以何掘？',
+    '#ext:永夜之境/audio/xinxyanhui1': '为将广智，观象知理，料敌于未动之时。',
+    '#ext:永夜之境/audio/xinxyanhui2': '将者见微知著，一法通而万法破。',
+    '#ext:永夜之境/audio/xinxyanhui3': '劲风折竹，春风起时竹复生。',
+    '#ext:永夜之境/audio/xinxyanhui4': '歧路多艰，何妨一往无前。',
+    '#ext:永夜之境/audio/xinxyingqi1': '无胆匹夫，汝欲着红装做女儿姿态乎？',
+    '#ext:永夜之境/audio/xinxyingqi2': '尔等免战龟缩，何不剃发去髯，谋常侍之职？',
+    '#ext:永夜之境/audio/xinxfengyao1': '尔等看好了，我便是凤瑶军统帅！',
+    '#ext:永夜之境/audio/xinxfengyao2': '青丝为刀剑，弑尽敌血点绛唇！',
+    '#ext:永夜之境/audio/xinxfengyao3': '不挨几鞭子，你还出不了力了？',
+    '#ext:永夜之境/audio/xinxfengyao4': '给我向前冲，把敌人杀光！',
+    '#ext:永夜之境/audio/xinxfengyao5': '凤瑶名震四方之日，便是尔等这膝裙下之时！',
+    '#ext:永夜之境/audio/xinxjiaojue1': '巾帼若动起心思，哪还有男人什么事？',
+    '#ext:永夜之境/audio/xinxjiaojue2': '没想到本将军还有这一招吧？',
+    '#ext:永夜之境/audio/xinxjiaojue3': '巾帼之师不鸣则已，鸣则一鸣惊人。',
+    '#ext:永夜之境/audio/xinxjiaojue4': '这纵横捭阖之道，岂能专属你等男儿？',
+    '#ext:永夜之境/audio/xinxwushuang1': '汝等纵有万军，也难挡我吕布一人。',
+    '#ext:永夜之境/audio/xinxwushuang2': '斩你何须费力，区区小卒弹指可灭。',
+    '#ext:永夜之境/audio/xinxshiji1': '蚍蜉撼树，不自量力。',
+    '#ext:永夜之境/audio/xinxshiji2': '让你见识一下，什么才是天下无双。',
+    '#ext:永夜之境/audio/xinxxuanxiao1': '天予不取，反受其咎。时至不行，反受其殃。',
+    '#ext:永夜之境/audio/xinxxuanxiao2': '人不为己，天诛地灭。',
     '#ext:永夜之境/audio/xinxchenlue1': '砺剑数载，今青锋始现，欲杀人于十步之内！',
     '#ext:永夜之境/audio/xinxchenlue2': '经年之谋将成，吾辈岂能踌躇。',
     '#ext:永夜之境/audio/xinxchenlue3': '目有创，僵卧于榻上，逢骁将袭营，踏碎夜阑。',

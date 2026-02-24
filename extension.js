@@ -9,6 +9,7 @@ import card from './source/packages/main/card.js'
 import basic from './source/basic.js'
 export let type = 'extension';
 lib.init.css(lib.assetURL + 'extension/永夜之境', 'extension');
+lib.init.css(lib.assetURL + 'extension/永夜之境', 'card');
 export default async function(){
     const extensionInfo = await lib.init.promises.json(`${basic.extensionDirectoryPath}info.json`);
     let extension = {
