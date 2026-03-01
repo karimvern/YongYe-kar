@@ -98,6 +98,11 @@ lib.poptip.add({
     info: '判定/摸牌/出牌/弃牌阶段',
 });
 lib.poptip.add({
+    name: '检索',
+    id: 'xinx_jiansuo',
+    info: '从牌堆或弃牌堆中随机获得',
+});
+lib.poptip.add({
     name: '专属牌堆',
     id: 'xinxzhuanshucardpile',
     info:

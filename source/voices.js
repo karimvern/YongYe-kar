@@ -352,6 +352,21 @@ export let voices = {
     '#ext:永夜之境/audio/xinxxinshi3': '剑光裁夜，荡平厄难！',
     '#ext:永夜之境/audio/xinxxinshi4': '声魂谐奏，高唱救济！',
 
+    //知更鸟
+    '#ext:永夜之境/audio/xinxliuguang1': '演出开始。',
+    '#ext:永夜之境/audio/xinxliuguang2': '该进入新乐章了。',
+    '#ext:永夜之境/audio/xinxliuguang3': '坠落的鸟抬头仰望，会发现再度飞翔的可能，仍然存在于这世界上。',
+    '#ext:永夜之境/audio/xinxliuguang4': '飞翔的鸟儿低头俯视，会发现坠落之后，生命也仍有希望持续。',
+    '#ext:永夜之境/audio/xinxliuguang5': '哥哥，生来拥有翅膀的鸟儿，飞上天际时不需要理由。',
+    '#ext:永夜之境/audio/xinxliuguang6': '哥哥，我们再像小时候一样，一起演奏吧。',
+    '#ext:永夜之境/audio/xinxliuguang7': '收起你的虚饰吧，歌唱需要的，只有「真挚」。',
+    '#ext:永夜之境/audio/xinxliuguang8': '到此为止吧…我们约定的乐园并非只有「秩序」一种选择！',
+    '#ext:永夜之境/audio/xinxliuguang9': '愿歌声为我们带来胜利。',
+    '#ext:永夜之境/audio/xinxliuguang10': '希望世间纷争不再。',
+
+
+
+
 
 
 
@@ -506,10 +521,78 @@ export let voices = {
     '#ext:永夜之境/audio/xinxsijiao5': '敌顽凶恶，如狼环伺，不可不防。',
     '#ext:永夜之境/audio/xinxsijiao6': '掌中之剑，首为君上所执，次为黎庶所倚。',
 
-    
+    //虞姬
+    '#ext:永夜之境/audio/fyrhquxing1': '无需言语，自然心领神会。',
+    '#ext:永夜之境/audio/fyrhquxing2': '眉目传情，何劳口舌之烦。',
+    '#ext:永夜之境/audio/fyrhquxing3': '承君恩爱，妾自当鸣琴以合。',
+    '#ext:永夜之境/audio/fyrhquxing4': '得君看顾，妾岂有不报之理？',
+    '#ext:永夜之境/audio/fyrhwulan1': '伤敌一千，自损八百，智者弗为，勇者无惧。',
+    '#ext:永夜之境/audio/fyrhwulan2': '惧死难生，向死求生，退者无还，进者得生。',
+    '#ext:永夜之境/audio/fyrhwulan3': '虽豺狼当道，虎豹啸林，妾亦生死相随！',
+    '#ext:永夜之境/audio/fyrhwulan4': '纵荆棘遍布，风雪漫天，妾心绝不动摇！',
 
-    
-    
+    //王莽
+    '#ext:永夜之境/audio/xinxqingding1': '赤心如丹，思虑王室之险。',
+    '#ext:永夜之境/audio/xinxqingding2': '气节如玉，心忧国家之难。',
+    '#ext:永夜之境/audio/xinxqingding3': '为臣者，应秉臣节，清正朝纲。',
+    '#ext:永夜之境/audio/xinxqingding4': '为官者，当辅弼君上，以安国家。',
+    '#ext:永夜之境/audio/xinxqingding5': '即得干将，莫邪何复不至？',
+    '#ext:永夜之境/audio/xinxqingding6': '不破眼前之局，何以谈长久之利。',
+    '#ext:永夜之境/audio/xinxqingding7': '若当下之围不解，何以图千秋之惠？',
+    '#ext:永夜之境/audio/xinxqingding8': '情势危急，故为此举以脱一时之困。',
+
+    //卫青霍去病
+    '#ext:永夜之境/audio/fyrhjuemo1': '怒气冲霄汉，霜刃犹未收！',
+    '#ext:永夜之境/audio/fyrhjuemo2': '剑戟齐攻垒，叠浪共撼城。',
+    '#ext:永夜之境/audio/fyrhjuemo3': '绛节青旗分赤羽，丹心霜刃酬明主。',
+
+    //卓文君
+    '#ext:永夜之境/audio/xinxxiangfu1': '智者难渡爱河，慧剑不斩情丝。',
+    '#ext:永夜之境/audio/xinxxiangfu2': '此生何处休？等不完王侯，数不尽春秋。',
+    '#ext:永夜之境/audio/xinxxiangfu3': '西风肃，多歧路，心思满腹难行十万步。',
+    '#ext:永夜之境/audio/xinxxiangfu4': '锦衣消，红粉散，佳人空余二百零六骨。',
+    '#ext:永夜之境/audio/xinxxiangfu5': '慧心织灵网，不捕六星，唯囚北斗。',
+    '#ext:永夜之境/audio/xinxyixin1': '浊世汹汹，既得白首之人，怎可超然物外。',
+    '#ext:永夜之境/audio/xinxyixin2': '人心翻动，犹如波澜，不惊者寥寥尔。',
+
+    //伍员
+    '#ext:永夜之境/audio/xinxyuanyuan1': '为将帅者，但知进，岂言退？',
+    '#ext:永夜之境/audio/xinxyuanyuan2': '敌纵有万人，吾视之若蝼蚁。',
+    '#ext:永夜之境/audio/xinxyuanyuan3': '谅此等之敌，不过乌合之众！',
+    '#ext:永夜之境/audio/xinxyuanyuan4': '敌军兵疲马乏，正是出击之时。',
+    '#ext:永夜之境/audio/xinxyuanyuan5': '螳臂当车之徒，还不速速领死？',
+
+    //彭越
+    '#ext:永夜之境/audio/fyrhliebing1': '剑有双刃，福祸相依，既享其功，又何惧其损。',
+    '#ext:永夜之境/audio/fyrhliebing2': '借来英雄颈，作我磨刀石。',
+    '#ext:永夜之境/audio/fyrhliebing3': '将在谋，亦在勇，纵不知彼，亦可勇往直前！',
+    '#ext:永夜之境/audio/fyrhliebing4': '敌势末于强弩，此时不击，更待何时？',
+    '#ext:永夜之境/audio/fyrhnaoji1': '亘古武烈，止戈平襄，身秉千秋义气。',
+    '#ext:永夜之境/audio/fyrhnaoji2': '锦衣乌程，戎行南北，收拾万里江山。',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -544,6 +627,51 @@ export let voices = {
 
 
     //杏雅三国
+    //钟会
+    '#ext:永夜之境/audio/xinxnewquanmou1': '诸路奋进，全胜克日可成！',
+    '#ext:永夜之境/audio/xinxnewquanmou2': '蜀贼知不能胜，困之徒怠军心。',
+    //'#ext:永夜之境/audio/xinxnewquanmou3': '今大势已然在魏，何故负隅顽抗？',
+    '#ext:永夜之境/audio/xinxnewquanmou3': '公若假吾十万之兵，则不世之功可成也！',
+    '#ext:永夜之境/audio/xinxnewquanmou4': '今吾龙行蜀川，复有何人可及？',
+    '#ext:永夜之境/audio/xinxnewquanmou5': '君擘以一统之划，我当成克定之功。',
+    '#ext:永夜之境/audio/xinxnewquanmou6': '风云又起，焉知吾非得鹿之人？',
+    '#ext:永夜之境/audio/xinxnewquanmou7': '匹夫竟先据成都，视我如何人哉！',
+    '#ext:永夜之境/audio/xinxnewquanmou8': '匹夫妄自尊荣，今复能逞凶否？',
+    '#ext:永夜之境/audio/xinxnewquanmou9': '区区庸人，焉敢染指天下？',
+
+    '#ext:永夜之境/audio/xinxnewquanmou10': '尽辉光之所烛，当万里与同晷！',
+    '#ext:永夜之境/audio/xinxnewquanmou11': '除此心腹大患，西蜀尽归我有！',
+    '#ext:永夜之境/audio/xinxnewquanmou12': '且妆汝家江山，来日一朝取之！',
+    '#ext:永夜之境/audio/xinxnewquanmou13': '吾得天命所归，何须他人任之？',
+    '#ext:永夜之境/audio/xinxnewquanmou14': '江山半由我定，何不可取其三分？',
+    '#ext:永夜之境/audio/xinxnewquanmou15': '阻我大业之人，必以睚眦相报！',
+    '#ext:永夜之境/audio/xinxnewquanmou16': '若晋公许我以天下，吾又岂徒生此心？',
+    '#ext:永夜之境/audio/xinxnewquanmou17': '今已坑杀宿将，再无后路回头！',
+    '#ext:永夜之境/audio/xinxnewquanmou18': '一川难展凌云志，三分星月落白衣！',
+    '#ext:永夜之境/audio/xinxnewquanmou19': '他日若遂凌云志，管教天下尽臣服！',
+    '#ext:永夜之境/audio/xinxnewquanmou20': '若破长安，我当建肇始之功。',
+    '#ext:永夜之境/audio/xinxnewquanmou21': '吾掌魏军，公领蜀卒，来者共分天下。',
+    '#ext:永夜之境/audio/xinxnewquanmou22': '吾以西蜀为地利，又得伯约为人和，万事何不可成哉？',
+
+    '#ext:永夜之境/audio/xinxnewwugui1': '幸伯约来之未迟，可与君共图霸业！',
+    '#ext:永夜之境/audio/xinxnewwugui2': '今得伯约，有如蛟龙遇水，猛虎添翼！',
+    '#ext:永夜之境/audio/xinxnewwugui3': '中原精锐尽在我手，若不速反恐天殛之。',
+    '#ext:永夜之境/audio/xinxnewwugui4': '复三分中原问鼎，数英雄唯我独尊！',
+    '#ext:永夜之境/audio/xinxnewwugui5': '灭国一统之功，非吾谁堪此任？',
+
+
+
+
+    "#ext:永夜之境/audio/xinxhjdcsbhengye1": "负剑觅烽火，狼烟既起战不休！",
+    "#ext:永夜之境/audio/xinxhjdcsbhengye2": "吴戈漫野，饮马处岂唯长江！",
+    "#ext:永夜之境/audio/xinxhjdcsbyingbo1": "上士之争，不在沙场而在方寸。",
+    "#ext:永夜之境/audio/xinxhjdcsbyingbo2": "士别三日，当刮目相待，大兄何见事之晚乎！",
+    "#ext:永夜之境/audio/xinxhjdcsbhengye_xinxhj_dc_sb_lvmeng_shadow1": "此身既许江东土，直向北地斩狼烟！",
+    "#ext:永夜之境/audio/xinxhjdcsbhengye_xinxhj_dc_sb_lvmeng_shadow2": "十万带甲，秣马控弦，江东子弟何惧天下！",
+    "#ext:永夜之境/audio/xinxhjdcsbyingbo_xinxhj_dc_sb_lvmeng_shadow1": "青衫束甲，樽前论战，醉里挑灯点秋兵！",
+    "#ext:永夜之境/audio/xinxhjdcsbyingbo_xinxhj_dc_sb_lvmeng_shadow2": "昔年执戟笑书生，不知文韬亦可安天下。",
+    "#ext:永夜之境/audio/die/xinxhj_dc_sb_lvmeng:die": "愎而不备，岂罪于我？",
+    "#ext:永夜之境/audio/die/xinxhj_dc_sb_lvmeng_shadow:die": "愎而不备，岂罪于我？",
     '#ext:永夜之境/audio/xinxchenlan1': '宦海沉浮，历尽风浪，方显英雄本色。',
     '#ext:永夜之境/audio/xinxchenlan2': '壁立千仞，泰然本英雄！',
     '#ext:永夜之境/audio/xinxchenlan3': '不动如山，气定神闲。',
