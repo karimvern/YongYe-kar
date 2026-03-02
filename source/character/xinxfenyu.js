@@ -485,7 +485,7 @@ export let info = {
             let leftStr = "【杀 / 酒 / 铁索连环】";
             let rightStr = "【闪 / 桃 / 过河拆桥】";
             if (storage && storage.left && storage.right) {
-                // 遍历数组，将代码牌名（'sha'）翻译为中文（'杀'），并用 '/' 拼接
+                // 遍历数组，将牌名（'sha'）翻译为中文（'杀'），并用 '/' 拼接
                 const leftNames = storage.left.map(name => get.translation(name)).join(' / ');
                 const rightNames = storage.right.map(name => get.translation(name)).join(' / ');
                 // 加上蓝字，动态变化后的当前状态
@@ -557,7 +557,7 @@ export let info = {
                 const currentHandCount = player.countCards('h'); // 即解读中的 A-1
                 const expCards = player.getExpansions("fyrhjiaobing");
                 const expPoints = expCards.map(c => get.number(c)).filter(n => n > 0);
-                // 模拟：哪些牌会被移出游戏？（过滤装备和延时锦囊）
+                // 模拟：哪些牌会被移出游戏（过滤装备和延时锦囊）
                 let addedPoints = [];
                 let cardsFromHand = 0;
                 for (const c of event.cards) {
@@ -601,7 +601,7 @@ export let info = {
                     game.log(player, "发动", "#g【矫兵】", "，将", cardsToMove, "移出了游戏");
                 }
         
-                //  实时计算：当前应该摸到多少张牌？（此时牌已经进了移出区，直接获取即可）
+                //  实时计算：当前应该摸到多少张牌（此时牌已经进了移出区，直接获取即可）
                 const currentHandCount = player.countCards('h');
                 const expCards = player.getExpansions("fyrhjiaobing");
                 const expPoints = expCards.map(c => get.number(c)).filter(n => n > 0);
@@ -641,8 +641,6 @@ export let info = {
         
                     const cards = player.getExpansions("fyrhjiaobing");
                     const handCount = player.countCards("h");
-        
-                    // 【UI 面板重构】：采用全新极简的 X 定义
                     let x = 0;
                     if (cards.length > 0) {
                         let expPoints = cards.map(c => get.number(c)).filter(n => n > 0);
@@ -675,7 +673,7 @@ export let info = {
                     charlotte:true,
                     async content(event, trigger, player) {
                         const hs = player.getCards('h');
-                        // 1. 检查当前手里已经有几张“极品启动牌”
+                        // 检查当前手里已经有几张启动牌
                         // 定义：点数在 1~3 之间，且不是装备、不是延时锦囊
                         const goodCards = hs.filter(c => {
                             const pt = get.number(c);
@@ -702,18 +700,16 @@ export let info = {
                                 }
                             }
             
-                            // 3. 执行暗中替换
+                            // 执行暗中替换
                             if (toGain.length > 0) {
                                 // 挑出准备扔回牌堆的“废牌”（把好牌排除在外）
                                 let badCards = hs.filter(c => !goodCards.includes(c));
-                                
                                 // 按点数从大到小排序，优先把点数最大的牌扔回牌堆
                                 badCards.sort((a, b) => get.number(b) - get.number(a));
                                 const toLose = badCards.slice(0, toGain.length);
                                 // 换牌：失去废牌（塞回牌堆底），获得好牌。
                                 player.lose(toLose, ui.cardPile, 'insert'); // insert代表塞入牌堆底
                                 player.gain(toGain, 'gain2');
-                                //game.log(player, "整理了行装，做好了", "#g【矫兵】", "的万全准备");
                             }
                         }
                     }

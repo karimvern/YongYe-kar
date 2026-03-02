@@ -11909,33 +11909,6 @@ export let info = {
                     }
                     results.add(card);
                 }
-                if (results.length < 2) {
-                    const others = game.filterPlayer(p => p !== player);
-                    let allValidCards = [];
-                    for (let p of others) {
-                        let pCards = p.getCards('hesx');
-                        for (let c of pCards) {
-                            if (get.cardNameLength(c, player) === wordCount && !results.includes(c)) {
-                                allValidCards.push(c);
-                            }
-                        }
-                    }
-                    allValidCards.sort((a, b) => {
-                        const isAPrio = (a.name === 'taoyuan' || a.name === 'wanjian') ? 1 : 0;
-                        const isBPrio = (b.name === 'taoyuan' || b.name === 'wanjian') ? 1 : 0;
-                        if (isAPrio !== isBPrio) {
-                            return isBPrio - isAPrio;
-                        } else {
-                            return Math.random() - 0.5;
-                        }
-                    });
-                    for (let c of allValidCards) {
-                        results.push(c);
-                        if (results.length === neededAmount) break;
-                    }
-                }
-
-
                 if (results.length > 0) {
                     const cardForPlayer = results[0];
                     const cardForTrigger = results.length > 1 ? results[1] : null;
