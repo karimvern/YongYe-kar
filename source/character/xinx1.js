@@ -672,7 +672,7 @@ export let info = {
         xinxnewquanmou: '权谋',
         xinxnewquanmou_info: `锁定技，当你使用指定自己为目标的牌或于回合外失去牌时，你移出当前回合角色等量张牌并摸一张牌。你的额定摸牌数+X（X为点数大于你手牌点数最小值牌数的移出牌数）。`,
         xinxnewwugui: '无归',
-        xinxnewwugui_info: `觉醒技，当你进入濒死状态或移出牌数达到13时，你可以将半数移出牌交给一名其他角色，然后你加1点体力上限、回复1点体力并修改${get.poptip('xinxnewquanmou')}。`,
+        xinxnewwugui_info: `觉醒技，当你进入濒死状态或移出牌数达到13时，你加1点体力上限、回复1点体力并修改${get.poptip('xinxnewquanmou')}，然后你可以将半数移出牌交给一名其他角色。`,
         xinxnewquanmoux: '权谋',
         xinxnewquanmoux_info: `锁定技，当你使用指定自己为目标的牌或于回合外失去牌时，你移出当前回合角色等量张牌并视为使用等量张移出牌。你的额定摸牌数+X（X为点数大于你手牌点数最小值牌数的移出牌数）。`,
 
@@ -830,6 +830,8 @@ export let info = {
 
     },
     //技能，包括卡牌技能啊，武将技能啊，都在这里写了
+
+    //钟会
     skill: {
         xinxnewquanmou: {
             audio: "ext:永夜之境/audio:22",

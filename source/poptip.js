@@ -103,6 +103,16 @@ lib.poptip.add({
     info: '从牌堆或弃牌堆中随机获得',
 });
 lib.poptip.add({
+    id: "xinx_recastuse",
+    name: "重铸方式使用",
+    info: "使用此牌时，重铸之。若是装备牌或延时锦囊，则回到应有的位置。",
+});
+lib.poptip.add({
+    id: "xinx_yichushiyong",
+    name: "移出方式使用",
+    info: "将此牌置于你武将牌上，结算这张牌。若是装备牌或延时锦囊，则回到应有的位置。",
+});
+lib.poptip.add({
     name: '专属牌堆',
     id: 'xinxzhuanshucardpile',
     info:

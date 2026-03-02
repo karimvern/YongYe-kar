@@ -11,7 +11,7 @@ export let info = {
         xinxfenyu: {
             // 分包: ["武将ID","武将ID"],
             'xuandiesheji': ['xinx_hanzhuo', 'xinx_zhuowenjun', 'xinx_limu', 'xinx_xunguan', 'xinx_wuqi', 'xinx_wangmang', 'xinx_wuyuan',
-                'fyrh_zuti', 'fyrh_lvzhi', 'fyrh_yuji', 'fyrh_weiqinghuoqubing', 'fyrh_pengyue', 'fyrh_pengyue'],
+                'fyrh_zuti', 'fyrh_lvzhi', 'fyrh_yuji', 'fyrh_weiqinghuoqubing', 'fyrh_pengyue', 'fyrh_pengyue','fyrh_chentang'],
             'xinx_xiaoyezisheji': ['xinx_lingfeng', 'xinx_zhugejing', 'xinx_lizhaoyi', 'fyrh_yuanchen', 'fyrh_bianrang'],
             'xinx_xiulisheji': ['fyrh_leisai', 'fyrh_dianci', 'fyrh_zaochuanqiu', 'fyrh_jiye', 'fyrh_anbian'],
             'xinx_tingyusheji': ['fyrh_duyu', 'fyrh_caocao', 'fyrh_jiangwei', 'fyrh_zhaoyun', 'fyrh_xuyou', 'fyrh_chenqun'],
@@ -74,6 +74,7 @@ export let info = {
         fyrh_yuji: ["female", "qun", 3, ['fyrhquxing', 'fyrhwulan'], ['legend']],
         fyrh_weiqinghuoqubing: ["male", "qun", 4, ['fyrhjuemo'], ['epic']],
         fyrh_pengyue: ["male", "qun", 5, ['fyrhliebing', 'fyrhnaoji'], ['legend']],
+        fyrh_chentang: ["male", "qun", 4, ['fyrhjiaobing'], ['legend']],
 
 
 
@@ -145,6 +146,9 @@ export let info = {
         fyrh_weiqinghuoqubing_prefix: '玄蝶',
         fyrh_pengyue: '玄蝶彭越',
         fyrh_pengyue_prefix: '玄蝶',
+        fyrh_chentang:'玄蝶陈汤',
+        fyrh_chentang_prefix: '玄蝶',
+     
 
 
 
@@ -324,6 +328,12 @@ export let info = {
         fyrhnaoji: '挠击',
         fyrhnaoji_info: `锁定技，你使用牌后攻击范围、出杀上限、技能限制次数+0.1，你造成伤害后翻倍你一个技能的数值。`,
         fyrhnaoji_append: `<span style="font-family: yuanli">辘轳夜转槽床响，分明蟹筐才脱。</span>`,
+        fyrhjiaobing: '矫兵',
+        fyrhjiaobing_info: `锁定技，若如下做后X未增加，你以${get.poptip('xinx_yichushiyong')}牌并摸牌至X张。（X为点数大于手牌数的移出牌数）。`,
+        fyrhjiaobing_append: `<span style="font-family: yuanli">明犯强汉者，虽远必诛。
+        <br><br><span style="font-family: yuanli">注：分发起始手牌后，会将起始牌换成点数小的牌，防止开局白板。</span>`,
+
+
 
 
 
@@ -533,6 +543,184 @@ export let info = {
     },
     //技能
     skill: {
+        //陈汤
+        fyrhjiaobing: {
+            trigger: {
+                player: "useCard",
+            },
+            forced: true,
+            locked: false,
+            popup: false,
+            filter(event, player) {
+                if (!event.cards || event.cards.length === 0) return false;
+                // 【状态:使用时（出牌后，摸牌前）】
+                const currentHandCount = player.countCards('h'); // 即解读中的 A-1
+                const expCards = player.getExpansions("fyrhjiaobing");
+                const expPoints = expCards.map(c => get.number(c)).filter(n => n > 0);
+                // 模拟：哪些牌会被移出游戏？（过滤装备和延时锦囊）
+                let addedPoints = [];
+                let cardsFromHand = 0;
+                for (const c of event.cards) {
+                    const type = get.type(c);
+                    const info = get.info(c) || {};
+                    // 如果不是装备，也不是延时锦囊，则会移出游戏
+                    if (type !== 'equip' && info.type !== 'delay') {
+                        let pt = get.number(c);
+                        if (pt > 0) addedPoints.push(pt);
+                    }
+                    // 精准溯源：这张牌是不是从手里打出去的？
+                    if (c.original === 'h') {
+                        cardsFromHand++;
+                    }
+                }
+                const newExpPoints = expPoints.concat(addedPoints); // 模拟打出后的新移出区
+                // 【状态 1：使用前】还原出牌前的手牌数 A
+                const H_before = currentHandCount + cardsFromHand;
+                // 计算 X_before (使用前的 X)
+                const X_before = expPoints.filter(n => n > H_before).length;
+                // 【沙盘推演步骤 1】：计算 Y（移出后，点数大于当前手牌数 A-1 的牌数）
+                const Y = newExpPoints.filter(n => n > currentHandCount).length;
+                // 【沙盘推演步骤 2】：计算 Z（摸牌至 Y 后，点数大于新手牌数的牌数）
+                // 如果摸牌至 Y，新回合的手牌数将是 max(A-1, Y)
+                const H_after = Math.max(currentHandCount, Y);
+                const Z = newExpPoints.filter(n => n > H_after).length;
+                // 【沙盘推演步骤 3】：对比！如果 X未增加 (即 X_before >= Z)，则允许发动！
+                return X_before >= Z;
+            },
+            async content(event, trigger, player) {
+                const cardsToMove = [];
+                for (const c of trigger.cards) {
+                    const type = get.type(c);
+                    const info = get.info(c) || {};
+                    if (type !== 'equip' && info.type !== 'delay') {
+                        cardsToMove.push(c);
+                    }
+                }
+                if (cardsToMove.length > 0) {
+                    await player.addToExpansion(cardsToMove, player, "gain2").set("gaintag", ["fyrhjiaobing"]);
+                    game.log(player, "发动", "#g【矫兵】", "，将", cardsToMove, "移出了游戏");
+                }
+        
+                //  实时计算：当前应该摸到多少张牌？（此时牌已经进了移出区，直接获取即可）
+                const currentHandCount = player.countCards('h');
+                const expCards = player.getExpansions("fyrhjiaobing");
+                const expPoints = expCards.map(c => get.number(c)).filter(n => n > 0);
+                
+                // 计算当前的 X（即推演中的 Y）
+                const targetHandCount = expPoints.filter(n => n > currentHandCount).length;
+           
+                if (targetHandCount > 0) {
+                    await player.drawTo(targetHandCount);
+                    game.log(player, "将手牌摸至", "#y" + targetHandCount, "张");
+                }
+            },
+            mod: {
+                aiOrder(player, card, num) {
+                    const type = get.type(card);
+                    const info = get.info(card) || {};
+                    if (type !== 'equip' && info.type !== 'delay') {
+                        let pt = get.number(card);
+                        if (pt > 0) {
+                            // 点数越小，出牌优先级越高
+                            // 点数为 1 (A) 的牌，优先级会加 13 分
+                            // 点数为 13 (K) 的牌，优先级只加 1 分
+                            return num + (14 - pt);
+                        }
+                    }
+                    return num;
+                },
+            },
+            marktext: "兵",
+            intro: {
+                markcount: "expansion",
+                mark(dialog, storage, player) {
+                    dialog.css({ width: "50%" });
+                    if (get.is.phoneLayout()) {
+                        dialog.classList.add("fullheight");
+                    }
+        
+                    const cards = player.getExpansions("fyrhjiaobing");
+                    const handCount = player.countCards("h");
+        
+                    // 【UI 面板重构】：采用全新极简的 X 定义
+                    let x = 0;
+                    if (cards.length > 0) {
+                        let expPoints = cards.map(c => get.number(c)).filter(n => n > 0);
+                        x = expPoints.filter(n => n > handCount).length;
+                    }
+        
+                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; border-bottom:1px solid rgba(128,128,128,0.3)">📔状态统计</div>');
+        
+                    const infoHtml =
+                        '<div class="text center" style="margin: 15px 0; font-size: 20px; line-height: 2.2; font-weight: bold;">' +
+                        `<div>当前手牌数：<span style="color:#FFFF00">${handCount}</span></div>` +
+                        `<div>移出牌中点数大于 <span style="color:#FFFF00">${handCount}</span> 的牌数：<span style="color:#00BFFF">${x}</span></div>` +
+                        '</div>';
+                    dialog.addText(infoHtml);
+        
+                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🎴移出的牌</div>');
+                    if (cards.length && player.isUnderControl(true)) {
+                        dialog.addAuto(cards);
+                    } else {
+                        dialog.addText(`<div class="text center" style="opacity:0.6">共有${get.cnNumber(cards.length)}张牌</div>`);
+                    }
+                },
+            },
+            group: ["fyrhjiaobing_start"],
+            subSkill: {
+                start: {
+                    trigger: { global: "gameDrawAfter" },
+                    forced: true,
+                    silent: true, 
+                    charlotte:true,
+                    async content(event, trigger, player) {
+                        const hs = player.getCards('h');
+                        // 1. 检查当前手里已经有几张“极品启动牌”
+                        // 定义：点数在 1~3 之间，且不是装备、不是延时锦囊
+                        const goodCards = hs.filter(c => {
+                            const pt = get.number(c);
+                            const type = get.type(c);
+                            const info = get.info(c) || {};
+                            return pt > 0 && pt <= 3 && type !== 'equip' && info.type !== 'delay';
+                        });
+            
+                        const need = 4 - goodCards.length;
+                        // 如果不足 4 张，开始从牌堆里换牌
+                        if (need > 0) {
+                            const toGain = [];
+                            const pile = ui.cardPile.childNodes;
+                            
+                            //翻遍牌堆，找 1~3 点的牌
+                            for (let i = 0; i < pile.length; i++) {
+                                const c = pile[i];
+                                const pt = get.number(c);
+                                const type = get.type(c);
+                                const info = get.info(c) || {};
+                                if (pt > 0 && pt <= 3 && type !== 'equip' && info.type !== 'delay') {
+                                    toGain.push(c);
+                                    if (toGain.length === need) break;
+                                }
+                            }
+            
+                            // 3. 执行暗中替换
+                            if (toGain.length > 0) {
+                                // 挑出准备扔回牌堆的“废牌”（把好牌排除在外）
+                                let badCards = hs.filter(c => !goodCards.includes(c));
+                                
+                                // 按点数从大到小排序，优先把点数最大的牌扔回牌堆
+                                badCards.sort((a, b) => get.number(b) - get.number(a));
+                                const toLose = badCards.slice(0, toGain.length);
+                                // 换牌：失去废牌（塞回牌堆底），获得好牌。
+                                player.lose(toLose, ui.cardPile, 'insert'); // insert代表塞入牌堆底
+                                player.gain(toGain, 'gain2');
+                                //game.log(player, "整理了行装，做好了", "#g【矫兵】", "的万全准备");
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
         //寒浞
         xinxfenjiao: {
             audio: "ext:永夜之境/audio:4",
@@ -2635,7 +2823,8 @@ export let info = {
                 return true;
             },
             check(card) {
-                return 6 - get.value(card);
+                let val = get.value(card);
+                return Math.max(0.1, 10 - val);
             },
             async content(event, trigger, player) {
                 const { cards } = event;
@@ -3433,12 +3622,7 @@ export let info = {
                         });
                     },
                     check(event, player) {
-                        if (event.triggername === "phaseJudge" && player.countCards("j") > 0) {
-                            return true;
-                        } else if (event.triggername === "phaseDiscard" && player.countCards("h") - player.hp > 2) {
-                            return true;
-                        }
-                        return false;
+                        return player.countCards("j") || player.countCards("h") - player.hp > 2;
                     },
                     async cost(event, trigger, player) {
                         event.result = await player.chooseCard(get.prompt('fyrhzhenzhan'),

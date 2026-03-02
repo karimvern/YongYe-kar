@@ -79,7 +79,7 @@ export async function precontent(config, pack) {
             nature: 'thundermm',
             showName: '改',
         });
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋'];
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`
@@ -114,71 +114,71 @@ export async function precontent(config, pack) {
 
 
     if (lib.config.extension_永夜之境_changelog !== lib.extensionPack.永夜之境.version) {
-    lib.game.showChangeLog = function () {
-        //更新内容
-        
-        let str = [
-            '<span style="color:#4682B4; font-weight:bold;">永夜之始:</span> 爱弥斯、知更鸟。',
-            '<span style="color:#4682B4; font-weight:bold;">风雨如晦:</span> 廷赵云、廷许攸、廷陈群、边让、蝶祖逖、蝶吕雉、岸边、蝶虞姬、蝶卫青霍去病、蝶彭越。',
-            '<span style="color:#4682B4; font-weight:bold;">杏雅三国:</span> 杏钟会（重做）。',
-            '<span style="color:#4682B4; font-weight:bold;">怀旧武将:</span> 新增武将修改。',
-            '<span style="color:#32CD32; font-weight:bold;">武将调整:</span> 流萤、叶瞬光、穹、黄泉、符玄、逐曹操、蝶王莽、蝶伍员、旧杏钟会。',
-            '<span style="color:#DAA520; font-weight:bold;">系统修复:</span> 修复已知bug。',
-            '<span style="color:#9370DB; font-weight:bold;">视听优化:</span> 部分武将增加牌面css特效及bgm、为钟会、郭嘉添加出牌语音、武将语音补充。'
-        ];
-        let ul = document.createElement('ul'),
-            players = ['xinx_aimisi', 'xinx_zhigengniao', 'xinxnew_zhonghui',
-                'fyrh_zhaoyun', 'fyrh_xuyou', 'fyrh_chenqun', 'fyrh_zuti', 'fyrh_lvzhi',
-                'fyrh_yuji', 'fyrh_bianrang', 'fyrh_weiqinghuoqubing', 'fyrh_anbian', 'fyrh_pengyue'],
-            cards = [];
-        ul.style.textAlign = 'left';
-        for (let i = 0; i < str.length; i++) {
-            let li = document.createElement('li');
-            li.innerHTML = str[i];
-            ul.appendChild(li);
-        }
-        game.saveExtensionConfig('永夜之境', 'changelog', lib.extensionPack.永夜之境.version);
-        let dialog = ui.create.dialog('永夜之境 ' + lib.extensionPack.永夜之境.version + ' 更新内容：', 'hidden');
-       
-        dialog.style.width = '800px';       // 设置更宽的尺寸以容纳10个武将
-        dialog.style.maxWidth = '95%';      // 手机端
-        dialog.style.left = '0px';          // 强制清除原有的左侧偏移
-        dialog.style.right = '0px';         // 强制清除原有的右侧偏移
-        dialog.style.margin = '0 auto';
+        lib.game.showChangeLog = function () {
+            //更新内容
 
-        let lic = ui.create.div(dialog.content);
-        lic.style.display = 'block';
-        ul.style.display = 'inline-block';
-        ul.style.marginLeft = '-40px';
-        lic.appendChild(ul);
-        if (players.length) {
-            dialog.addSmall([players, 'character']);
-            dialog.classList.add('forcebutton');
-            dialog.classList.add('withbg');
-        }
-        if (cards.length) {
-            for (let i = 0; i < cards.length; i++) {
-                cards[i] = [get.translation(get.type(cards[i])), '', cards[i]];
+            let str = [
+                '<span style="color:#4682B4; font-weight:bold;">永夜之始:</span> 爱弥斯、知更鸟。',
+                '<span style="color:#4682B4; font-weight:bold;">风雨如晦:</span> 廷赵云、廷许攸、廷陈群、边让、蝶祖逖、蝶吕雉、岸边、蝶虞姬、蝶卫青霍去病、蝶彭越。',
+                '<span style="color:#4682B4; font-weight:bold;">杏雅三国:</span> 杏钟会（重做）。',
+                '<span style="color:#4682B4; font-weight:bold;">怀旧武将:</span> 新增武将修改。',
+                '<span style="color:#32CD32; font-weight:bold;">武将调整:</span> 流萤、叶瞬光、穹、黄泉、符玄、逐曹操、蝶王莽、蝶伍员、旧杏钟会。',
+                '<span style="color:#DAA520; font-weight:bold;">系统修复:</span> 修复已知bug。',
+                '<span style="color:#9370DB; font-weight:bold;">视听优化:</span> 部分武将增加牌面css特效及bgm、为钟会、郭嘉添加出牌语音、武将语音补充。'
+            ];
+            let ul = document.createElement('ul'),
+                players = ['xinx_aimisi', 'xinx_zhigengniao', 'xinxnew_zhonghui',
+                    'fyrh_zhaoyun', 'fyrh_xuyou', 'fyrh_chenqun', 'fyrh_zuti', 'fyrh_lvzhi',
+                    'fyrh_yuji', 'fyrh_bianrang', 'fyrh_weiqinghuoqubing', 'fyrh_anbian', 'fyrh_pengyue'],
+                cards = [];
+            ul.style.textAlign = 'left';
+            for (let i = 0; i < str.length; i++) {
+                let li = document.createElement('li');
+                li.innerHTML = str[i];
+                ul.appendChild(li);
             }
-            dialog.addSmall([cards, 'vcard']);
-            dialog.classList.add('forcebutton');
-            dialog.classList.add('withbg');
-        }
-        dialog.open();
-        let hidden = false;
-        if (!ui.auto.classList.contains('hidden')) {
-            ui.auto.hide();
-            hidden = true;
-        }
-        game.pause();
-        let control = ui.create.control('确定', () => {
-            dialog.close();
-            control.close();
-            if (hidden) ui.auto.show();
-            game.resume();
-        });
-        lib.init.onfree();
-    };
+            game.saveExtensionConfig('永夜之境', 'changelog', lib.extensionPack.永夜之境.version);
+            let dialog = ui.create.dialog('永夜之境 ' + lib.extensionPack.永夜之境.version + ' 更新内容：', 'hidden');
+
+            dialog.style.width = '800px';       // 设置更宽的尺寸以容纳10个武将
+            dialog.style.maxWidth = '95%';      // 手机端
+            dialog.style.left = '0px';          // 强制清除原有的左侧偏移
+            dialog.style.right = '0px';         // 强制清除原有的右侧偏移
+            dialog.style.margin = '0 auto';
+
+            let lic = ui.create.div(dialog.content);
+            lic.style.display = 'block';
+            ul.style.display = 'inline-block';
+            ul.style.marginLeft = '-40px';
+            lic.appendChild(ul);
+            if (players.length) {
+                dialog.addSmall([players, 'character']);
+                dialog.classList.add('forcebutton');
+                dialog.classList.add('withbg');
+            }
+            if (cards.length) {
+                for (let i = 0; i < cards.length; i++) {
+                    cards[i] = [get.translation(get.type(cards[i])), '', cards[i]];
+                }
+                dialog.addSmall([cards, 'vcard']);
+                dialog.classList.add('forcebutton');
+                dialog.classList.add('withbg');
+            }
+            dialog.open();
+            let hidden = false;
+            if (!ui.auto.classList.contains('hidden')) {
+                ui.auto.hide();
+                hidden = true;
+            }
+            game.pause();
+            let control = ui.create.control('确定', () => {
+                dialog.close();
+                control.close();
+                if (hidden) ui.auto.show();
+                game.resume();
+            });
+            lib.init.onfree();
+        };
     }
 
 

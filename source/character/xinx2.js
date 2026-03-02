@@ -389,7 +389,7 @@ export let info = {
         xinxbuli: "不离",
         xinxbuli_info: `锁定技，你的摸牌阶段改为摸3张牌并进行3次判定，若其中一张牌的判定过程中有角色体力值变化，你令${get.poptip('xinxbuli')}的判定次数+1并于结束阶段获得此判定牌。`,
         xinxyilian: "漪涟",
-        xinxyilian_info: `每回合限一次。当你需要使用一张未以此法使用过的${get.poptip('xinx_jishipai')}时，你可以将你的一个阶段交给一名其他角色，调整其阶段顺序。然后你复制你的一个剩余阶段，调整你的阶段顺序并视为使用之。`,
+        xinxyilian_info: `每回合限一次，当你需要使用一张未以此法使用过的${get.poptip('xinx_jishipai')}时，你可以将你的一个阶段交给一名其他角色，调整其阶段顺序。然后你复制你的一个剩余阶段，调整你的阶段顺序并视为使用之。`,
         xinxyilian_phase: "漪涟",
         xinxguiren: "归刃",
         xinxguiren_info: `限定技。你可以将任意张牌当无距离次数限制的刺【杀】使用，此【杀】所需弃置牌数/伤害值改为实体牌牌数/描述中的带“伤害”字样的牌数。`,
@@ -8678,6 +8678,7 @@ export let info = {
             popup: false,
             enable: "chooseToUse",
             filter(event, player) {
+                //if(player.hasSkill('xinxyilian_round')){return false};
                 return get
                     .inpileVCardList(info => {
                         const name = info[2];
@@ -8717,7 +8718,7 @@ export let info = {
                         log: false,
                         viewAs: { name: links[0][2], nature: links[0][3], isCard: true },
                         async precontent(event, trigger, player) {
-
+                            //player.addTempSkill('xinxyilian_round',"roundStart");
                             player.addSkill("xinxyilian_used");
                             player.markAuto("xinxyilian_used", [event.result.card.name]);
                             // 获取当前玩家的阶段列表
@@ -8878,7 +8879,7 @@ export let info = {
                                     .set('processAI', function () {
                                         let pool = copyPool.map(i => i[2]);
                                         let current = myPhases.slice();
-                                        // 1. AI 决定复制哪一个
+                                        //  AI 决定复制哪一个
                                         let drawCount = current.filter(p => p == 'phaseDraw').length;
                                         let useCount = current.filter(p => p == 'phaseUse').length;
                                         let toCopy = 'phaseDraw'; // 默认复制摸牌
@@ -8888,7 +8889,7 @@ export let info = {
                                             toCopy = pool[0];
                                         }
                                         current.push(toCopy);
-                                        // 2. AI 决定重排顺序 (双摸一出)
+                                        //  AI 决定重排顺序 (双摸一出)
                                         let draws = current.filter(p => p == "phaseDraw");
                                         let uses = current.filter(p => p == "phaseUse");
                                         let others = current.filter(p => p != "phaseDraw" && p != "phaseUse");
@@ -8918,14 +8919,14 @@ export let info = {
 
 
                                 let turnEvent = _status.event.getParent('phase');
-                                // 2. 如果找到了当前玩家的回合事件（说明技能是在自己回合内发动的）
+                                //  如果找到了当前玩家的回合事件（说明技能是在自己回合内发动的）
                                 if (turnEvent && turnEvent.player == player) {
                                     // 强行覆盖当前回合剩下的阶段列表
                                     turnEvent.phaseList = player.storage.xinxyilian_phaseList.slice();
                                     game.log(player, '已即时更新本回合阶段顺序');
                                 }
 
-                                // 3. 如果是给别人调整了阶段，且是别人的回合
+                                //  如果是给别人调整了阶段，且是别人的回合
                                 if (target && target.storage.xinxyilian_phaseList) {
                                     let targetTurn = _status.event.getParent('phase');
                                     if (targetTurn && targetTurn.player == target) {
@@ -9007,6 +9008,10 @@ export let info = {
                     sourceSkill: "xinxyilian",
                     "_priority": 0,
                 },
+                round: {
+                    charlotte: true,
+                    onremove: true,
+                }
             },
             "skill_id": "xinxyilian",
             "_priority": 0,

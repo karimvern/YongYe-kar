@@ -62,7 +62,7 @@ export default {
 	yeshunguang_end_video: {
         name: "开启叶瞬光退幻视频",
         init: true,
-        intro: "开启后，播放叶瞬光退幻视频。默认开启。",
+        intro: "开启后，播放叶瞬光退幻视频。",
         onclick: function(item) {
             game.saveConfig('extension_永夜之境_yeshunguang_end_video', item);
         }
@@ -70,7 +70,7 @@ export default {
 	custom_voice_switch: {
 		name: "开启特定角色出牌语音",
 		init: true, 
-		intro: "开启后，同名角色将播放专属出牌语音。默认开启。<br>目前支持：钟会、郭嘉。",
+		intro: "开启后，同名角色将播放专属出牌语音。<br>目前支持角色：钟会、郭嘉。",
 		onclick: function(item) {
 			game.saveConfig('extension_永夜之境_custom_voice_switch', item);
 		}

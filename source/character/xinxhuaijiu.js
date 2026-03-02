@@ -10,7 +10,7 @@ export let info = {
 			'shizhounian': ['xinxhj_dc_sb_luxun', 'xinxhj_zhanghuai'],
 			'shousha': ['xinxhj_yuji', 'xinxhj_sb_lvbu', 'xinxhj_sb_caopi'],
 			'xinxxiugai': ['xinxhj_new_simayi', 'xinxhj_v_zhangliao', 'xinxhj_dc_simashi', 'xinxhj_dc_sb_lvmeng', 'xinxhj_mb_huangzu', 'xinxhj_dc_sb_jushou'
-				, 'xinxhj_yj_sb_guojia'
+			, 'xinxhj_yj_sb_guojia','xinxhj_dc_xiahouxuan'
 			],
 
 
@@ -128,9 +128,20 @@ export let info = {
 			sex: "male",
 			group: "wei",
 			hp: 3,
+			img: "image/character/yj_sb_guojia.jpg",
 			trashBin: ["character:yj_sb_guojia", 'legend'],
 			skills: ["xinxhjxianmou", "xinxhjlunshi"],
 			dieAudios: ["yj_sb_guojia"],
+		},
+		xinxhj_dc_xiahouxuan: {
+			sex: "male",
+			group: "wei",
+			hp: 3,
+			img: "image/character/dc_xiahouxuan.jpg",
+			trashBin: ['legend'],
+			skills: ["xinxhjboxuan", "xinxhjyizheng", "xinxhjguilin"],
+			names: "夏侯|玄",
+			dieAudios: ["dc_xiahouxuan"],
 		},
 
 
@@ -164,10 +175,20 @@ export let info = {
 
 
 		//技能翻译
+		xinxhj_dc_xiahouxuan: "改新杀夏侯玄",
+		xinxhj_dc_xiahouxuan_prefix: "改|新杀",
+		xinxhjboxuan: "博玄",
+		xinxhjboxuan_info: "你使用手牌指定目标结算完毕后，你可展示牌堆底的三张牌，若其中有牌与你使用的牌：1.牌名字数相同，你摸一张牌；2.花色相同，你可弃置一名其他角色一张牌；3.类型相同，你可使用一张展示牌（无距离次数限制）。",
+		xinxhjboxuan_rewrite: "博玄·改",
+		xinxhjboxuan_rewrite_info: "你使用手牌指定目标结算完毕后，你可展示牌堆底的三张牌，若其中有牌与你使用的牌：1.牌名字数相同，你摸一张牌；2.花色相同，你可弃置一名其他角色一张牌；3.类型相同，你可使用一张展示牌（无距离次数限制）。然后你可将使用的手牌置于牌堆底。",
+		xinxhjyizheng: "议政",
+		xinxhjyizheng_info: "你的回合开始时，你可与至多体力上限名其他角色各展示一张手牌，若展示的牌类型均相同，你可将这些牌交给一名角色，否则，你弃置这些牌。",
+		xinxhjguilin: "归林",
+		xinxhjguilin_info: "限定技，出牌阶段或你进入濒死状态时，你可以回复所有体力并摸回复量张牌，然后失去〖议政〗并修改〖博玄〗。",
 		xinxhj_yj_sb_guojia: "改新杀谋郭嘉",
 		xinxhj_yj_sb_guojia_prefix: "改新杀谋",
 		xinxhjxianmou: "先谋",
-		xinxhjxianmou_info: "转换技。①游戏开始时，你可以转换此技能状态；②你失去过牌的回合结束时，你可以：阳，观看牌堆顶五张牌并获得至多X张牌；阴，观看一名角色手牌并获得其至多X张牌，若获得X张牌则当前回合角色进行一次【闪电】判定。（X为本回合失去牌数）",
+		xinxhjxianmou_info: "转换技。①游戏开始时，你可以转换此技能状态；②你失去过牌的回合结束时，你可以：阳，观看牌堆顶五张牌并获得至多X张牌；阴，观看一名角色手牌并获得其至多X张牌，若获得X张牌则当前回合角色进行一次【闪电】判定。（X为你本回合失去牌数）",
 		xinxhjlunshi: "论势",
 		xinxhjlunshi_info: "一名角色对其以外的角色使用普通锦囊牌的结算中，若你手牌中两种颜色的牌数量相同，你可将一张牌当作不可被响应的【无懈可击】使用。",
 		xinxhj_dc_sb_jushou: "改新杀谋沮授",
@@ -263,8 +284,14 @@ export let info = {
 				yang = `<span class='firetext'>${yang}</span>`;
 			}
 			let start = "转换技，①游戏开始时，你可以转换此技能状态；②你失去过牌的回合结束时，你可以：",
-				end = "（X为本回合失去牌数）。";
+				end = "（X为你本回合失去牌数）。";
 			return `${start}阳：${yang}；阴：${yin}${end}`;
+		},
+		xinxhjboxuan(player) {
+			if (player.storage.xinxhjboxuan) {
+				return lib.translate["xinxhjboxuan_rewrite_info"];
+			}
+			return lib.translate["xinxhjboxuan_info"];
 		},
 	},
 	//武将介绍
@@ -325,6 +352,209 @@ export let info = {
 	},
 	//技能
 	skill: {
+		//新杀夏侯玄
+		xinxhjboxuan: {
+			audio: 'dcboxuan',
+			trigger: { player: "useCardAfter" },
+			filter(event, player) {
+				if (!event.targets?.length || !event.cards?.length) {
+					return false;
+				}
+				/* if (!event.targets?.some(target => target != player) && !player.storage.xinxhjboxuan) {
+					return false;
+				} */
+				return player.hasHistory("lose", evt => {
+					const evtx = evt.relatedEvent || evt.getParent();
+					if (evtx != event) {
+						return false;
+					}
+					return evt.getl(player)?.hs?.length;
+				});
+			},
+			frequent: true,
+			check: () => true,
+			async content(event, trigger, player) {
+				const cards = get.bottomCards(3, true);
+				await player
+					.showCards(cards, `${get.translation(player)}发动了【博玄】`)
+					.set("log", (cards, player) => [player, "展示了牌堆底的", cards]);
+				const list = ["cardNameLength", "suit", "type2"].map(attri => cards.some(card => get[attri](trigger.card) == get[attri](card)));
+				if (list[0]) {
+					await player.draw();
+				}
+				if (
+					list[1] &&
+					game.hasPlayer(target => {
+						return target.countDiscardableCards(player, "he") && target != player;
+					})
+				) {
+					const result = await player
+						.chooseTarget(`博玄：你可弃置一名其他角色一张牌`, (card, player, target) => {
+							return target.countDiscardableCards(player, "he") && target != player;
+						})
+						.set("ai", target => get.effect(target, { name: "guohe_copy2" }, get.player(), get.player()))
+						.forResult();
+					if (result?.targets) {
+						player.line(result.targets);
+						await player.discardPlayerCard(result.targets[0], "he", true);
+					}
+				}
+				if (list[2] && cards.some(card => player.hasUseTarget(card, true, true))) {
+					const result = await player
+						.chooseCardButton(`博玄：你可以使用一张展示牌`, cards)
+						.set("filterButton", button => get.player().hasUseTarget(button.link, true, true))
+						.set("ai", button => get.player().getUseValue(button.link))
+						.forResult();
+					if (result?.links) {
+						const card = result.links[0];
+						if (player.hasUseTarget(card, false,false)) {
+							await player.chooseUseTarget(card, false, 'nodistance');
+						}
+					}
+				}
+				if (player.storage.xinxhjboxuan) {
+					const put = trigger.cards.filterInD("od");
+					if (!put.length) return;
+					const result = await player
+						.chooseBool()
+						.set("createDialog", [`博玄：是否将这些牌置于牌堆底`, put])
+						.set("ai", () => Math.random() > 0.5)
+						.forResult();
+					if (result?.bool) {
+						game.log(player, "将", put, "置于牌堆底");
+						await game.cardsGotoPile(put);
+					}
+				}
+			},
+		},
+		xinxhjboxuan_rewrite: {
+			//空技能，博玄修改后
+		},
+		xinxhjyizheng: {
+			audio: 'dcyizheng',
+			trigger: { player: ["phaseBegin"] }, //, "phaseEnd"
+			filter(event, player) {
+				return (
+					player.countCards("h") &&
+					game.hasPlayer(target => {
+						return target != player && target.countCards("h");
+					})
+				);
+			},
+			async cost(event, trigger, player) {
+				event.result = await player
+					.chooseTarget(get.prompt2(event.skill), [1, player.maxHp], (card, player, target) => {
+						return target != player && target.countCards("h");
+					})
+					.set("ai", target => {
+						if (player.hp == 1) {
+							return 0;
+						}
+						return -get.attitude(get.player(), target);
+					})
+					.forResult();
+			},
+			async content(event, trigger, player) {
+				const targets = [player].concat(event.targets).sortBySeat();
+				//先选牌
+				let showEvent = player
+					.chooseCardOL(targets, "议政：请选择要展示的牌", true)
+					.set("ai", function (card) {
+						return -get.value(card);
+					})
+					.set("source", player);
+				showEvent.aiCard = function (target) {
+					const hs = target.getCards("h");
+					return { bool: true, cards: [hs.randomGet()] };
+				};
+				showEvent._args.remove("glow_result");
+				const result = await showEvent.forResult();
+				const cards = [];
+				for (var i = 0; i < targets.length; i++) {
+					cards.push(result[i].cards[0]);
+				}
+				await player
+					.showCards(cards, `${get.translation(player)} 发动了【${get.translation(event.name)}】`, false)
+					.set("multipleShow", true)
+					.set("customButton", button => {
+						const target = get.owner(button.link);
+						if (target) {
+							button.node.gaintag.innerHTML = target.getName();
+						}
+					})
+					.set("delay_time", targets.length * 1.5);
+				if (cards.map(card => get.type2(card)).unique().length == 1) {
+					player.popup("洗具");
+					const result = await player
+						.chooseTarget(true)
+						.set("createDialog", [`议政：令一名角色获得这些牌`, cards])
+						.set("ai", target => get.attitude(get.player(), target))
+						.forResult();
+					if (result?.targets) {
+						const target = result.targets[0];
+						player.line(target);
+						let gainEvent = target.gain(cards);
+						gainEvent.set(
+							"givers",
+							targets.filter(i => i != target)
+						);
+						gainEvent.set("animate", function (event) {
+							const player = event.player,
+								cards = event.cards,
+								givers = event.givers;
+							for (let i = 0; i < givers.length; i++) {
+								givers[i].$give(cards[i], player);
+							}
+							return 500;
+						});
+						await gainEvent;
+					}
+				} else {
+					player.popup("杯具");
+					await game
+						.loseAsync({
+							lose_list: targets.map((target, index) => {
+								return [target, [cards[index]]];
+							}),
+							discarder: player,
+						})
+						.setContent("discardMultiple");
+				}
+			},
+		},
+		xinxhjguilin: {
+			audio: 'dcguilin',
+			derivation: ["xinxhjboxuan_rewrite"],
+			limited: true,
+			unique: true,
+			skillAnimation: true,
+			animationColor: "thunder",
+			enable: "phaseUse",
+			trigger: { player: "dying" },
+			filter(event, player) {
+				if (event.name == "dying") {
+					return player.isDying();
+				}
+				return true;
+			},
+			async content(event, trigger, player) {
+				player.awakenSkill(event.name);
+				const num = player.getDamagedHp();
+				await player.recover(num);
+				await player.draw(num);
+				await player.removeSkills("xinxhjyizheng");
+				if (player.hasSkill("xinxhjboxuan", null, null, false)) {
+					player.storage.xinxhjboxuan = true;
+				}
+				game.log(player, `修改了〖博玄〗`);
+			},
+			ai: {
+				order: 10,
+				result: {
+					player: player => get.recoverEffect(player, player, player),
+				},
+			},
+		},
 		//新谋郭嘉
 		xinxhjxianmou: {
 			mark: true,
@@ -336,9 +566,9 @@ export let info = {
 			intro: {
 				content(storage) {
 					if (!storage) {
-						return "你失去过牌的回合结束时，你可以观看牌堆顶五张牌并获得至多X张牌（X为本回合失去牌数）";
+						return "你失去过牌的回合结束时，你可以观看牌堆顶五张牌并获得至多X张牌（X为你本回合失去牌数）";
 					}
-					return "你失去过牌的回合结束时，你可以观看一名角色手牌并获得其至多X张牌，若获得X张牌则当前回合角色进行一次【闪电】判定（X为本回合失去牌数）";
+					return "你失去过牌的回合结束时，你可以观看一名角色手牌并获得其至多X张牌，若获得X张牌则当前回合角色进行一次【闪电】判定（X为你本回合失去牌数）";
 				},
 			},
 			audio: 'xianmou',
@@ -351,19 +581,19 @@ export let info = {
 			},
 			getNum(player) {
 				let num = 0;
-				/* player.getHistory("lose", evt => {
+				player.getHistory("lose", evt => {
 					if (evt.cards2) {
 						num += evt.cards2.length;
 					}
-				}); */
-				game.countPlayer(current => {
+				});
+				/* game.countPlayer(current => {
 					if (current.hasHistory("lose", evt => {
 						if (evt.cards2) {
 							num += evt.cards2.length;
 						}
 					}
 					));
-				});
+				}); */
 				return num;
 			},
 			async cost(event, trigger, player) {
@@ -1023,9 +1253,8 @@ export let info = {
 			},
 			forced: true,
 			async content(event, trigger, player) {
-				if (
-					game.getRoundHistory(
-						"useCard",
+				/* if (
+					game.getRoundHistory("useCard",
 						evt => {
 							return evt.card.name == trigger.card.name && evt != trigger;
 						},
@@ -1033,7 +1262,21 @@ export let info = {
 						null,
 						trigger
 					).length
-				) {
+				){ */
+				const hasUsed =
+					//game.players.concat(game.dead).some(p => {
+					game.findPlayer2(p => {
+						return p.getRoundHistory(
+							"useCard",
+							evt => {
+								return evt.card.name == trigger.card.name && evt != trigger;
+							},
+							0,
+							null,
+							trigger
+						).length > 0;
+					});
+				if (hasUsed) {
 					player.markAuto("xinxhjdcsbyingbo_fire", trigger.card);
 					player.addTempSkill("xinxhjdcsbyingbo_fire");
 				} else {
