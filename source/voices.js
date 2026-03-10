@@ -364,6 +364,33 @@ export let voices = {
     '#ext:永夜之境/audio/xinxliuguang9': '愿歌声为我们带来胜利。',
     '#ext:永夜之境/audio/xinxliuguang10': '希望世间纷争不再。',
 
+    //花火
+    '#ext:永夜之境/audio/xinxhuaqianyi1': '好～戏～开～场～',
+    '#ext:永夜之境/audio/xinxhuaqianyi2': '今天陪我多玩一会儿，好么？',
+    '#ext:永夜之境/audio/xinxhuaqianyi3': '再做些大胆的尝试吧？',
+    '#ext:永夜之境/audio/xinxhuaqianyi4': '规则，就是用来打破的哟～',
+    '#ext:永夜之境/audio/xinxhuaqianyi5': '我来演坏人吧～',
+    '#ext:永夜之境/audio/xinxhuaqianyi6': '放心，我下手很轻的。',
+    '#ext:永夜之境/audio/xinxhuaqianyi7': '听我的，投降算啦～',
+    '#ext:永夜之境/audio/xinxhuaqianyi8': '好歹再坚持一下～',
+    '#ext:永夜之境/audio/xinxhuaqianyi9': '再加把劲呢？',
+    '#ext:永夜之境/audio/xinxhuaqianyi10': '哎，再多给点嘛。',
+    '#ext:永夜之境/audio/xinxhuaqianyi11': '怎么才……？行吧。',
+    '#ext:永夜之境/audio/xinxhuaqianyi12': '哪里还会需要我呢？',
+
+    //仪玄
+    '#ext:永夜之境/audio/xinxxuanmo1': '凝神。',
+    '#ext:永夜之境/audio/xinxxuanmo2': '化形。',
+    '#ext:永夜之境/audio/xinxxuanmo3': '敕令。',
+    '#ext:永夜之境/audio/xinxxuanmo4': '形神俱灭！',
+    '#ext:永夜之境/audio/xinxxuanmo5': '阴阳相生！',
+    '#ext:永夜之境/audio/xinxxuanmo6': '动静相宜！',
+    '#ext:永夜之境/audio/xinxmiesui1': '动静相宜，清浊相生。',
+    '#ext:永夜之境/audio/xinxmiesui2': '命数，该绝。',
+    '#ext:永夜之境/audio/xinxmiesui3': '邪祟，诛灭！',
+    
+
+
 
 
 
@@ -539,7 +566,8 @@ export let voices = {
     '#ext:永夜之境/audio/xinxqingding5': '即得干将，莫邪何复不至？',
     '#ext:永夜之境/audio/xinxqingding6': '不破眼前之局，何以谈长久之利。',
     '#ext:永夜之境/audio/xinxqingding7': '若当下之围不解，何以图千秋之惠？',
-    '#ext:永夜之境/audio/xinxqingding8': '情势危急，故为此举以脱一时之困。',
+    '#ext:永夜之境/audio/fyrhjianji1': '情势危急，故为此举以脱一时之困。',
+    '#ext:永夜之境/audio/fyrhjianji2': '非图眼前之利，事急从权耳。',
 
     //卫青霍去病
     '#ext:永夜之境/audio/fyrhjuemo1': '怒气冲霄汉，霜刃犹未收！',
@@ -569,6 +597,15 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhliebing4': '敌势末于强弩，此时不击，更待何时？',
     '#ext:永夜之境/audio/fyrhnaoji1': '亘古武烈，止戈平襄，身秉千秋义气。',
     '#ext:永夜之境/audio/fyrhnaoji2': '锦衣乌程，戎行南北，收拾万里江山。',
+
+    //陈汤
+    '#ext:永夜之境/audio/fyrhjiaobing1': '犯强汉者，虽远必诛！',
+    '#ext:永夜之境/audio/fyrhjiaobing2': '环首佩雕弓，一汉当五胡！',
+    '#ext:永夜之境/audio/fyrhjiaobing3': '弯弓寻丘草，捕虏龙城外，汉家铁骑惊鹧鸪！',
+    '#ext:永夜之境/audio/fyrhjiaobing4': '胡马南窥，铁骑北驰，不破异族誓不还！',
+    '#ext:永夜之境/audio/fyrhjiaobing5': '铁骑如龙，破阵前行，誓诸胡马于塞外！',
+
+
 
 
 
@@ -658,6 +695,27 @@ export let voices = {
     '#ext:永夜之境/audio/xinxnewwugui3': '中原精锐尽在我手，若不速反恐天殛之。',
     '#ext:永夜之境/audio/xinxnewwugui4': '复三分中原问鼎，数英雄唯我独尊！',
     '#ext:永夜之境/audio/xinxnewwugui5': '灭国一统之功，非吾谁堪此任？',
+
+
+    "#ext:永夜之境/audio/xinxhjfuhui1": "笔落惊鸿，墨染云山。",
+    "#ext:永夜之境/audio/xinxhjfuhui2": "丹青不须拘纸砚，星斗作毫云为宣。",
+    "#ext:永夜之境/audio/xinxhjfuhui3": "我入画中访青笺，一笔流年，繁花犹香艳。",
+    "#ext:永夜之境/audio/xinxhjfuhui4": "画入我眸寻兰黛，千度回首，唯有香如故。",
+    "#ext:永夜之境/audio/xinxhjfuhui5": "使江山留白，胜画龙点睛。",
+    "#ext:永夜之境/audio/xinxhjfuhui6": "挽指调墨色，一卷阅人间。",
+    "#ext:永夜之境/audio/xinxhjmohua1": "展卷摹孤雁，墨中含泪，怨伊迟迟归。",
+    "#ext:永夜之境/audio/xinxhjmohua2": "昨日莲茎画不直，原是心中生了情根。 ",
+    "#ext:永夜之境/audio/xinxhjmohua3": "半尺生绢藏天地，丹青不让万夫雄。",
+    "#ext:永夜之境/audio/xinxhjmohua4": "尝以夜光绘星河，烛灭犹有银河转。",
+    "#ext:永夜之境/audio/xinxhjmohua5": "画中月照百世人，画外人识百花香。",
+    "#ext:永夜之境/audio/xinxhjmohua6": "三分墨染七分意，层峦似有清泉来。",
+
+    "#ext:永夜之境/audio/xinxhjsbfuxi1":"曹公拥兵而来，绣或与公战，或为公战。",
+    "#ext:永夜之境/audio/xinxhjsbfuxi2":"文和究宇宙之理，亦知干戈玉帛之道。",
+    "#ext:永夜之境/audio/xinxhjsbhaoyi1":"既为袍泽兄弟，当同鼎而食、同衣而战。",
+    "#ext:永夜之境/audio/xinxhjsbhaoyi2":"岂日无衣，与子同袍!岂日无衣，与子同裳！",
+
+    
 
 
 

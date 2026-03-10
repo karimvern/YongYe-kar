@@ -59,14 +59,14 @@ export default {
 			game.saveConfig('extension_永夜之境_video_enable', item);
 		}
 	}, */
-	yeshunguang_end_video: {
+	/* yeshunguang_end_video: {
         name: "开启叶瞬光退幻视频",
         init: true,
         intro: "开启后，播放叶瞬光退幻视频。",
         onclick: function(item) {
             game.saveConfig('extension_永夜之境_yeshunguang_end_video', item);
         }
-    },
+    }, */
 	custom_voice_switch: {
 		name: "开启特定角色出牌语音",
 		init: true, 

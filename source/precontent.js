@@ -2,6 +2,8 @@ import { lib, game, ui, get, ai, _status } from '../../../noname.js';
 import { voices } from './voices.js';
 import { poptip } from './poptip.js';
 import { characterIntro } from './characterIntro.js';
+import { } from "./js/correct.js";
+import { } from "./js/globalskill.js";
 import {
     cardPileObsever,
     discardPileObsever,
@@ -17,12 +19,22 @@ export let charPack = {
         translate: '<span style=\'color:#03f7fe\'>永夜之始</span>',
     },
     xinxhuaijiu: {
-        translate: '<span style=\'color:#03f7fe\'>怀旧武将</span>',
+        translate: '<span style=\'color:#03f7fe\'>武将修改</span>',
     },
     xinxfenyu: {
         translate: '<span style=\'color:#03f7fe\'>风雨如晦</span>',
     },
 };
+
+
+const suffixIntroDict = {};
+for (let key in characterIntro) {
+    // 统一提取出纯后缀作为私有键名
+    let suffix = key.includes('_') ? key.substring(key.indexOf('_') + 1) : key;
+    suffixIntroDict[suffix] = characterIntro[key];
+}
+
+
 export async function precontent(config, pack) {
 
     for (let packName in charPack) {
@@ -35,9 +47,23 @@ export async function precontent(config, pack) {
             char[4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/' + name + '.png');
             //char[4].push('die:ext:永夜之境/audio/die/'+name+'.mp3');
             //char[4].push('die:ext:永夜之境/audio/die:true');
+
+
+            //武将介绍
+            const prefixes = ['xinx', 'fyrh'];
+            if (prefixes.some(prefix => name.startsWith(prefix)) && name.includes('_')) {
+                let suffix = name.substring(name.indexOf('_') + 1);
+                if (suffixIntroDict[suffix] && !lib.characterIntro[name]) {
+                    // ib.characterIntro['xinxmeng_liuying'] = "..."
+                    lib.characterIntro[name] = suffixIntroDict[suffix];
+                }
+            }
+
+
         }
 
         game.import('character', () => info);
+
 
         lib.namePrefix.set('杏', {
             color: '#03f7fe',  //#6affe2 #29b7cb #98F5FF     
@@ -79,7 +105,7 @@ export async function precontent(config, pack) {
             nature: 'thundermm',
             showName: '改',
         });
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀'];
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星','骥'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`
@@ -88,6 +114,7 @@ export async function precontent(config, pack) {
                 getSpan: (prefix, name) => `${get.prefixSpan('改')}${get.prefixSpan(n)}`
             })
         };
+
 
         // 首次导入开启将包
         if (!lib.config[packName + '_character_pack_open']) {
@@ -99,37 +126,38 @@ export async function precontent(config, pack) {
         if (!lib.config.characters.includes(packName)) lib.config.characters.remove(packName);
         lib.translate[packName + '_character_config'] = charPack[packName].translate || '永夜之境';
     };
+
+
     // 导入台词
     Object.assign(lib.translate, voices);
     // 导入武将介绍
-    // Object.assign(lib.characterIntro, characterIntro);
-    game.import('character', function () {
+    //Object.assign(lib.characterIntro, characterIntro);
+    /* game.import('character', function () {
         return {
             name: "永夜之境_intro",
             characterIntro: characterIntro
         };
-    });
+    }); */
     // 导入 poptip
     Object.assign(lib.poptip, poptip);
-
 
     if (lib.config.extension_永夜之境_changelog !== lib.extensionPack.永夜之境.version) {
         lib.game.showChangeLog = function () {
             //更新内容
 
             let str = [
-                '<span style="color:#4682B4; font-weight:bold;">永夜之始:</span> 爱弥斯、知更鸟。',
-                '<span style="color:#4682B4; font-weight:bold;">风雨如晦:</span> 廷赵云、廷许攸、廷陈群、边让、蝶祖逖、蝶吕雉、岸边、蝶虞姬、蝶卫青霍去病、蝶彭越。',
+                '<span style="color:#4682B4; font-weight:bold;">永夜之始:</span> 爱弥斯、知更鸟、花火、仪玄。',
+                '<span style="color:#4682B4; font-weight:bold;">风雨如晦:</span> 廷赵云、廷许攸、廷陈群、边让、蝶祖逖、蝶吕雉、岸边、蝶虞姬、蝶卫青霍去病、蝶彭越、蝶陈汤。',
                 '<span style="color:#4682B4; font-weight:bold;">杏雅三国:</span> 杏钟会（重做）。',
-                '<span style="color:#4682B4; font-weight:bold;">怀旧武将:</span> 新增武将修改。',
-                '<span style="color:#32CD32; font-weight:bold;">武将调整:</span> 流萤、叶瞬光、穹、黄泉、符玄、逐曹操、蝶王莽、蝶伍员、旧杏钟会。',
-                '<span style="color:#DAA520; font-weight:bold;">系统修复:</span> 修复已知bug。',
+                '<span style="color:#4682B4; font-weight:bold;">怀旧武将:</span> 改为武将修改。',
+                '<span style="color:#32CD32; font-weight:bold;">武将调整:</span> 流萤、叶瞬光、穹、黄泉、符玄、逐曹操、蝶王莽、蝶伍员、旧杏钟会等。',
+                '<span style="color:#DAA520; font-weight:bold;">问题修复:</span> 修复已知bug。',
                 '<span style="color:#9370DB; font-weight:bold;">视听优化:</span> 部分武将增加牌面css特效及bgm、为钟会、郭嘉添加出牌语音、武将语音补充。'
             ];
             let ul = document.createElement('ul'),
-                players = ['xinx_aimisi', 'xinx_zhigengniao', 'xinxnew_zhonghui',
+                players = ['xinx_aimisi', 'xinx_zhigengniao', 'xinx_huahuo','xinx_yixuan', 'xinxnew_zhonghui',
                     'fyrh_zhaoyun', 'fyrh_xuyou', 'fyrh_chenqun', 'fyrh_zuti', 'fyrh_lvzhi',
-                    'fyrh_yuji', 'fyrh_bianrang', 'fyrh_weiqinghuoqubing', 'fyrh_anbian', 'fyrh_pengyue'],
+                    'fyrh_yuji', 'fyrh_bianrang', 'fyrh_weiqinghuoqubing', 'fyrh_anbian', 'fyrh_pengyue', 'fyrh_chentang'],
                 cards = [];
             ul.style.textAlign = 'left';
             for (let i = 0; i < str.length; i++) {
@@ -201,229 +229,8 @@ export async function precontent(config, pack) {
         },
     };
 
-    //虚无卡牌
-    lib.skill["_xinx_ethereal"] = {
-        ruleSkill: true,
-        charlotte: true,
-        silent: true,
-        lastDo: true,
-        trigger: { player: "phaseJieshuBegin" },
-        forced: true,
-        filter(event, player) {
-            const targetCards = ['xinxguiji', 'xinxmingxinzhiyue'];
-            return player.hasCard(card => targetCards.includes(card.name), 'h');
-            //return player.hasCard(card => card.name === 'xinxguiji', 'h');
-        },
-        async content(event, trigger, player) {
-            const targetCards = ['xinxguiji', 'xinxmingxinzhiyue'];
-            const cards = player.getCards('h', card => targetCards.includes(card.name));
-            // card.name === 'xinxguiji');
-            if (cards.length) {
-                //移入场外(special)并视觉提示
-                player.lose(cards, ui.special);
-                game.log(player, '的手牌', cards, '因【虚无】效果被销毁');
-                // 销毁
-                game.delay(0, function () {
-                    for (let i = 0; i < cards.length; i++) {
-                        cards[i].delete();
-                    }
-                });
-            }
-        }
-    };
-    //记忆卡牌
-    lib.skill["_xinx_jiyi"] = {
-        ruleSkill: true,
-        charlotte: true,
-        silent: true,
-        firstDo: true,
-        trigger: {
-            player: "loseAfter",
-            global: "loseAsyncAfter",
-            //global: ["loseAsyncAfter","equipAfter","addJudgeAfter","gainAfter","addToExpansionAfter"],
-        },
-        forced: true,
-        filter(event, player) {
-            if (event.getParent().name == "useCard") {
-                return false;
-            }
-            const targetNames = ['xinxruwosuoshu', 'xinxwangshizhiyue'];
-            //return event.getl(player)?.cards?.some(card => !get.owner(card)&& targetNames.includes(get.name(card)));
-            if (event.type != "discard") {
-                return false;
-            }
-            const data = event.getl && event.getl(player);
-            if (!data || !data.cards || !data.cards.length) return false;
-            return data.cards.some(card => {
-                return targetNames.includes(get.name(card));
-            });
-        },
-        async content(event, trigger, player) {
-            const targetCards = ['xinxruwosuoshu', 'xinxwangshizhiyue'];
-            /* const cards = trigger.getl(player).cards.filter(card => 
-                !get.owner(card)&&targetCards.includes(get.name(card))); */
-            const cards = trigger.getl(player).cards.filter(card => {
-                return targetCards.includes(get.name(card));
-            });
-            if (cards.length) {
-                game.log(player, '的', cards, '触发了【记忆】效果');
-                player.storage.xinx_jiyi_unlock = true;
-                for (let card of cards) {
-                    await player.chooseUseTarget(card, true, false);
-                }
-                delete player.storage.xinx_jiyi_unlock;
-            }
-        },
-        mod: {
-            cardEnabled(card, player) {
-                const targetCards = ['xinxruwosuoshu', 'xinxwangshizhiyue'];
-                if (targetCards.includes(get.name(card))) {
-                    if (!player.storage.xinx_jiyi_unlock) {
-                        return false;
-                    }
-                }
-            }
-        },
-    };
-    //毁灭卡牌
-    lib.skill["_xinx_huimie"] = {
-        ruleSkill: true,
-        charlotte: true,
-        silent: true,
-        firstDo: true,
-        trigger: {
-            player: "useCard",
-        },
-        forced: true,
-        filter(event, player) {
-            const targetNames = ['xinxqinchen', 'xinxyishenweiju'];
-            return targetNames.includes(get.name(event.card));
-        },
-        async content(event, trigger, player) {
-            await player.damage(1, 'fire', 'nosource');
-        }
-    };
-    //【勘破】卡牌
-    lib.skill["_xinxkanpo_effect"] = {
-        trigger: {
-            target: "useCardToTarget",
-        },
-        charlotte: true,
-        forced: true,
-        silent: true,
-        ruleSkill: true,
-        filter(event, player) {
-            return get.tag(event.card, 'damage') &&
-                player.hasCard(card => card.name === 'xinxkanpo', 'h');
-        },
-        async content(event, trigger, player) {
-            const result = await player.chooseToUse({
-                filterCard: { name: 'xinxkanpo' },
-                prompt: `是否使用【勘破】取消 ${get.translation(trigger.card)}的所有目标？`,
-                prompt2: "取消目标后，你可以对来源使用一张伤害牌",
-                ai1(card) {
-                    const hasCounter = player.hasCard(c => get.tag(c, 'damage') > 0, 'h');
-                    // 如果有伤害牌优先使用 (返回较大数值)
-                    if (hasCounter) return 15;
-                    // 2. 如果没有伤害牌，进入防御判断
-                    // 规则：如果是杀，且有闪，则保留勘破 
-                    if (trigger.card.name.includes('sha') && player.hasCard('shan')) {
-                        return 0;
-                    }
-                    // 3. 其他情况（如南蛮入侵、决斗，或者没有闪面对杀）
-                    // 使用默认防御价值计算，如果对自己有负面效果则使用
-                    if (get.effect(player, trigger.card, trigger.player, player) < 0) {
-                        return 10;
-                    }
-                    return 0;
-                }
-            })
-                .forResult();
 
-            if (result.bool) {
-                game.playAudio("../extension/永夜之境/audio/card/xinxkanpo.mp3");
-                trigger.targets.length = 0;
-                trigger.all_excluded = true;
-                game.log(player, '使用了', result.cards[0], '取消了', trigger.card, '的所有目标');
-                const target = trigger.player;
-                let cards = player.getCards('hs', card => get.tag(card, 'damage'));
-                let damages = cards.filter(card => player.canUse(card, target, false));
-                if (target && target.isIn() && damages.length) {
-                    await player.chooseToUse(function (card, player) {
-                        return get.tag(card, 'damage');
-                    }, target)
-                        .set('prompt', '【勘破】生效：是否对 ' + get.translation(target) + ' 使用一张伤害牌')
-                        .set('addCount', false)
-                        .set('noplay', true)
-                        .set('nodistance', true)
-                }
-            }
-        }
-    };
-    //【玄蚀】卡牌
-    lib.skill["_xinxxuanshi_effect"] = {
-        trigger: {
-            player: "gainAfter",
-            global: "loseAsyncAfter",
-        },
-        charlotte: true,
-        forced: true,
-        silent: true,
-        ruleSkill: true,
-        filter(event, player) {
-            return event.getg && event.getg(player)?.some(c => c.name === 'xinxxuanshi') &&
-                game.hasPlayer(current => current !== player && current.countCards('h') > 0);
-        },
-        async content(event, trigger, player) {
-            const targetResult = await player.chooseTarget(
-                '###【玄蚀】###<div class="text center">请与一名角色拼点</div>',
-                (card, player, target) => player.canCompare(target),
-                true
-            )
-                .set("ai", target => {
-                    return -get.attitude(get.player(), target);
-                })
-                .forResult();
-            if (targetResult.bool) {
-                game.playAudio("../extension/永夜之境/audio/", 'xinxshuohua' + [get.rand(4, 5)] + '.mp3');
-                const target = targetResult.targets[0];
-                const cardInHand = player.getCards('h').find(c => c.name === 'xinxxuanshi');
-                let pindianEvent = player.chooseToCompare(target);
-                // 使用 fixedResult 强制指定你的拼点牌
-                if (cardInHand) {
-                    // 写法：{ [玩家ID]: 卡牌对象 }
-                    // 这样系统到“请选择拼点牌”步骤时，发现你有fixedResult，就会直接用这张牌跳过选择
-                    pindianEvent.set("fixedResult", {
-                        [player.playerid]: cardInHand
-                    });
-                }
-                const result = await pindianEvent.forResult();
-                if (cardInHand) {
-                    await player.lose(cardInHand, "visible", ui.ordering);
-                    cardInHand.isXinxCard = false;
-                    cardInHand.destroyed = true;
-                    if (_status.xinxDiscard) _status.xinxDiscard.remove(cardInHand);
-                    if (_status.xinxPile) _status.xinxPile.remove(cardInHand);
-                    game.log(player, '将', cardInHand, '销毁');
-                    cardInHand.remove();
-                    cardInHand.delete();
-                }
-                if (result.bool) {
-                    if (result.winner !== target) {
-                        game.log(target, '拼点失败');
-                        player.addSkill('xinxxuanshi_effect_buff');
-                        //player.addSkill('xinxxuanshi_effect_source_timer');
-                        if (!Array.isArray(player.storage.xinxxuanshi_effect_buff)) {
-                            player.storage.xinxxuanshi_effect_buff = [];
-                        }
-                        player.storage.xinxxuanshi_effect_buff.add(target);
-                        target.addSkill('xinxxuanshi_effect_timer');
-                        target.storage.xinxxuanshi_timer = player;
-                    }
-                }
-            }
-        },
-    };
+
     //装备区无副类别，by《名将杀》暴暴龙
     const xorigin_player_canEquip = lib.element.player.canEquip;
     lib.element.player.canEquip = function (name, replace) {
@@ -1263,10 +1070,6 @@ export async function precontent(config, pack) {
 
 
 
-
-
-
-
     //来自《奇思妙想》，检测处理区
     cardPileObsever();
     discardPileObsever();
@@ -1337,9 +1140,6 @@ export async function precontent(config, pack) {
             }
         }
     };
-
-
-
 
 
 
