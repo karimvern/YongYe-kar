@@ -126,6 +126,7 @@ export default {
             fullskin: true,
             type: "trick",
             enable: true,
+            derivation: "xinx_yinyuejun",
             selectTarget: -1,
             toself: true,
             filterTarget(card, player, target) {
@@ -197,8 +198,6 @@ export default {
                 const target = event.target;
                 player.line(target, "green");
                 const allHandCards = target.getCards('h');
-                // 使用 visible_xinxguiji 标记，确保是明置状态
-                // 目标添加所有手牌的明置标记
                 if (allHandCards.length) {
                     await target.addShownCards(allHandCards, "visible_xinxguiji");
                 }
@@ -213,7 +212,6 @@ export default {
                 let gainedCards = [];
                 if (nonDamageCards.length) {
                     await player.gain(nonDamageCards, target, "give");
-                    // 记录下具体获得了哪些牌对象
                     gainedCards = nonDamageCards;
                 } else {
                     game.log(target, "没有任何非伤害基本牌");
@@ -221,12 +219,11 @@ export default {
                 }
 
                 let num = gainedCards.length;
-                // 辅助函数：检查玩家手里是否还有“本次获得且未分配”的牌
                 const hasDistributableCards = () => {
                     return gainedCards.some(c =>
-                        get.owner(c) == player && // 牌还在玩家手里
-                        get.position(c) == 'h' && // 必须在手牌区(gain进来通常在h)
-                        !c.hasGaintag("xinxguiji_given") // 还没被列入分配计划
+                        get.owner(c) == player && 
+                        get.position(c) == 'h' && 
+                        !c.hasGaintag("xinxguiji_given") 
                     );
                 };
 
@@ -237,14 +234,10 @@ export default {
                     }
 
                     let given_map = [];
-
-                    // 循环条件修改：检查剩余分配次数 && 检查是否还有特定的那些牌
                     while (num > 0 && hasDistributableCards()) {
 
                         const result = await player.chooseCardTarget({
                             filterCard(card, player) {
-                                // 1. 必须是本次获得的牌 (gainedCards.includes)
-                                // 2. 必须未被选过 (!hasGaintag)
                                 return gainedCards.includes(card) && !card.hasGaintag("xinxguiji_given");
                             },
                             selectCard: [1, num],
@@ -704,7 +697,7 @@ export default {
                     });
                     _status.xinxjinshouzhiSkills = validSkills;
                 } */
-                // 目标数量：如果偷到了是3个，没偷到是2个 (逻辑保持原样)
+                // 目标数量：如果偷到了是3个，没偷到是2个
                 /* const targetCount = victimSkill ? 3 : 2;
                 const needed = targetCount - list.length;
                 if (needed > 0 && _status.xinxjinshouzhiSkills.length > 0) {

@@ -19,7 +19,6 @@ export let voices = {
     '#ext:永夜之境/audio/xinxxinzhui5': '切换预案。',
     '#ext:永夜之境/audio/xinxxinzhui6': '受到攻击。',
     "#ext:永夜之境/audio/die/xinx_liuying:die": "任务…终止……",
-    "#ext:永夜之境/audio/die/xinx_liuying_shadow:die": "任务…终止……",
 
     //镜流
     '#ext:永夜之境/audio/xinxxiaguang1': '现在退下，我便饶你一命。',
@@ -457,6 +456,14 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhxiaoxian1': '击敌百里，一往无前!',
     '#ext:永夜之境/audio/fyrhxiaoxian2': '精锐之师，何人能挡？',
 
+    //刘敏
+    '#ext:永夜之境/audio/fyrhyizuo1': '君子撷翠屏，盈锦绣大道，颂万世太平。',
+    '#ext:永夜之境/audio/fyrhyizuo2': '野陌有丹桂，沐金秋银露，梦白鹿青崖。',
+    '#ext:永夜之境/audio/fyrhlianzhi1': '君子有德，不图砖瓦之得失，唯效春秋之大义。',
+    '#ext:永夜之境/audio/fyrhlianzhi2': '至清之水无鱼，既为英才伟士，当彰仁义于众。',
+    '#ext:永夜之境/audio/fyrhlianzhi3': '四时钟灵，金秋独贵，品丹桂而闻雨露秋风。',
+    '#ext:永夜之境/audio/fyrhlianzhi4': '晚木潇潇，雁归衡阳，一叶落而天下知秋。',
+
     //廷杜预
     '#ext:永夜之境/audio/fyrhzhenzhan1': '怀长剑，曳长缨，今苍龙待缚，当试匣中青锋。',
     '#ext:永夜之境/audio/fyrhzhenzhan2': '今国朝府库充盈、王师秣兵，正乃全金瓯之时。',
@@ -605,55 +612,14 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhjiaobing4': '胡马南窥，铁骑北驰，不破异族誓不还！',
     '#ext:永夜之境/audio/fyrhjiaobing5': '铁骑如龙，破阵前行，誓诸胡马于塞外！',
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //关羽
+    '#ext:永夜之境/audio/fyrhwusheng1': '以义传魂，以武入圣！',
+    '#ext:永夜之境/audio/fyrhwusheng2': '刀锋所向，战无不克。',
+    '#ext:永夜之境/audio/fyrhwusheng3': '义击逆流，武安黎庶。',
+    '#ext:永夜之境/audio/fyrhwusheng4': '逆贼，哪里走！',
+    '#ext:永夜之境/audio/fyrhyijue1': '恩已断，义当绝。',
+    '#ext:永夜之境/audio/fyrhyijue2': '关某向来恩怨分明。',
+  
 
 
 
@@ -664,6 +630,13 @@ export let voices = {
 
 
     //杏雅三国
+    //孙尚香
+    '#ext:永夜之境/audio/xinxsaran1': '红袖战沙场，霜刃破铁衣！',
+    '#ext:永夜之境/audio/xinxsaran2': '身骑红鬃马，雪落青锋刃，不妨醉卧沙场。',
+    '#ext:永夜之境/audio/xinxnigong1': '娥眉贯弓，大江作炉熔，千帆成冢，滴铁如红！',
+    '#ext:永夜之境/audio/xinxnigong2': '赤焰烧云我裁舟，敢教江水逆弓流！',
+    '#ext:永夜之境/audio/xinxnigong3': '阵前女儿怒，一步一杀一雷霆！',
+    '#ext:永夜之境/audio/xinxnigong4': '愈创愈狂愈烈，越伤越战越凶！',
     //钟会
     '#ext:永夜之境/audio/xinxnewquanmou1': '诸路奋进，全胜克日可成！',
     '#ext:永夜之境/audio/xinxnewquanmou2': '蜀贼知不能胜，困之徒怠军心。',
@@ -715,10 +688,20 @@ export let voices = {
     "#ext:永夜之境/audio/xinxhjsbhaoyi1":"既为袍泽兄弟，当同鼎而食、同衣而战。",
     "#ext:永夜之境/audio/xinxhjsbhaoyi2":"岂日无衣，与子同袍!岂日无衣，与子同裳！",
 
+    "#ext:永夜之境/audio/xinxhjbaozu1": "动我钟家的人，哼，你长了几个脑袋？",
+	"#ext:永夜之境/audio/xinxhjbaozu2": "有我在一日，谁也动不得吾族分毫。",
+	"#ext:永夜之境/audio/xinxhjbaozu3": "钟门欲屹万年，当先居万人之上。",
+	"#ext:永夜之境/audio/xinxhjbaozu4": "诸位同门，随我钟会赌一遭如何？",
+	"#ext:永夜之境/audio/xinxhjbaozu5": "不为刀下脍，且做俎上刀。",
+	"#ext:永夜之境/audio/xinxhjbaozu6": "吾族恒大，谁敢欺之？",
+
+    "#ext:永夜之境/audio/xinxhjxiuwen1": "春秋浩气三千卷，汉土万里，义血浸寸缕！",
+    "#ext:永夜之境/audio/xinxhjxiuwen2": "天行健，君子以自强不息，何以做潜龙！",
+    "#ext:永夜之境/audio/xinxhjlongsong1": "臣宁碎玉笏于阶前，亦不守绒默于宦佞！",
+    "#ext:永夜之境/audio/xinxhjlongsong2": "颈血润墨，铸雷霆律令，续千秋之未竟！",
+
+
     
-
-
-
 
     "#ext:永夜之境/audio/xinxhjdcsbhengye1": "负剑觅烽火，狼烟既起战不休！",
     "#ext:永夜之境/audio/xinxhjdcsbhengye2": "吴戈漫野，饮马处岂唯长江！",
