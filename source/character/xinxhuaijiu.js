@@ -10,7 +10,7 @@ export let info = {
 			'huaijiu': ['xinxhj_dc_sb_luxun', 'xinxhj_zhanghuai', 'xinxhj_yuji', 'xinxhj_sb_lvbu', 'xinxhj_sb_caopi', 'xinxhj_sb_wuyi'],
 			'shizhounian': ['xinxhj_v_zhangliao', 'xinxhj_dc_simashi', 'xinxhj_dc_sb_lvmeng', 'xinxhj_dc_sb_jushou'
 				, 'xinxhj_yj_sb_guojia', 'xinxhj_dc_xiahouxuan', 'xinxhj_star_fazheng', 'xinxhj_xuwen', 'xinxhj_dc_zhushuo', 'xinxhj_liujinliupei',
-				'xinxhj_sunhuan', 'xinxhj_sb_zhangxiu', 'xinxhj_dc_wuzhi', 'xinxhj_dc_zhaoxiang', 'xinxhj_guānning', 'xinxhj_wupu'],
+				'xinxhj_sunhuan', 'xinxhj_sb_zhangxiu', 'xinxhj_dc_wuzhi', 'xinxhj_dc_zhaoxiang', 'xinxhj_guānning', 'xinxhj_wupu', 'xinxhj_dc_sb_zhouyu'],
 			'shousha': ['xinxhj_new_simayi', 'xinxhj_mb_huangzu', 'xinxhj_simashi', 'xinxhj_hefei_zhangliao', 'xinxhj_sp_zhonghui', 'xinxhj_sb_zhangliao',
 				'xinxhj_hefei_lidian', 'xinxhj_hefei_yuejin'],
 			'xinxol': ['xinxhj_ol_jsrg_caocao', 'xinxhj_jsrg_zhangliao', 'xinxhj_clan_zhonghui']
@@ -232,7 +232,7 @@ export let info = {
 			groupBorder: "xing",
 			trashBin: ['legend'],
 			img: "image/character/hefei_zhangliao.jpg",
-			skills: ["xinxhjchonglei", "xinxhjdangshi", "xinxhjheyuzhangliao"],
+			skills: ["xinxhjchonglei", "xinxhjdangshi"],
 			dieAudios: ["hefei_zhangliao"],
 		},
 		xinxhj_sp_zhonghui: {
@@ -340,6 +340,15 @@ export let info = {
 			skills: ["xinxhjxianjian", "xinxhjzherui"],
 			dieAudios: ["hefei_yuejin"],
 		},
+		xinxhj_dc_sb_zhouyu: {
+			sex: "male",
+			group: "wu",
+			hp: 4,
+			skills: ["xinxhjsbronghuo", "xinxhjsbyingmou"],
+			img: "image/character/dc_sb_zhouyu.jpg",
+			trashBin: ["character:dc_sb_zhouyu", 'epic'],
+			dieAudios: ["dc_sb_zhouyu"],
+		},
 
 
 
@@ -374,6 +383,12 @@ export let info = {
 
 
 		//技能翻译
+		xinxhj_dc_sb_zhouyu: "改新杀谋周瑜",
+		xinxhj_dc_sb_zhouyu_prefix: "改新杀谋",
+		xinxhjsbronghuo: "融火",
+		xinxhjsbronghuo_info: "锁定技，有角色受到火焰伤害后，你下一次使用火【杀】或【火攻】额外指定1个目标（不可叠加），你使用火【杀】或【火攻】造成的伤害+X (X为全场势力数)。",
+		xinxhjsbyingmou: "英谋",
+		xinxhjsbyingmou_info: "转换技。①游戏开始时，你可以转换此技能状态；②每回合限一次，当你使用牌指定其他角色为目标后，你可以选择其中一名目标角色：阳，你将手牌数摸至全场最多，然后视为对其使用一张【火攻】；阴，令一名手牌数为全场最大的角色对其使用手牌中所有的【杀】和伤害类锦囊牌（两者可重合，若其没有可使用的牌则将手牌数弃至与你相同）。若其未因此受到伤害，你对其造成1点火焰伤害。",
 		xinxhj_hefei_yuejin: "改骥乐进",
 		xinxhj_hefei_yuejin_prefix: "改骥",
 		xinxhjxianjian: "陷坚",
@@ -464,7 +479,7 @@ export let info = {
 		xinxhjchonglei: "冲垒",
 		xinxhjchonglei_info: "锁定技，①你响应其他角色使用的牌后，或你使用的牌被其他角色响应后，获得其一张牌。②你的出牌阶段内：其他角色不处于濒死状态时，所有非【杀】手牌只能当作【闪】使用或打出。",
 		xinxhjdangshi: "荡势",
-		xinxhjdangshi_info: "你使用伤害牌结算结束后，可选择一名此牌目标，令其选择一项执行：1.对你使用一张同名牌；2.弃置X张牌（X为其选择此项的次数+1）；3.受到1点伤害。若为本阶段首次执行此项，你摸两张牌且本阶段出杀次数+1。",
+		xinxhjdangshi_info: "你使用伤害牌结算结束后，可选择一名此牌目标，令其选择一项执行：1.对你使用一张同名牌；2.弃置X张牌（X为其选择此项的次数+1）；3.受到1点伤害。若为本阶段首次执行此项，你摸一张牌且本阶段出杀次数+1。",
 		xinxhjheyuzhangliao: "合御",
 		xinxhjheyuzhangliao_info: `锁定技，①若${get.poptip({
 			id: "characterx_hefei_lidian",
@@ -486,7 +501,7 @@ export let info = {
 		xinxhj_sunhuan: "改孙桓",
 		xinxhj_sunhuan_prefix: "改",
 		xinxhjniji: "逆击",
-		xinxhjniji_info: "①当你成为牌的目标后，你可以摸X张牌（X为本回合此技能发动次数，至多为2），称为“逆击”。②一名角色的结束阶段，你可以使用一张“逆击”牌（无距离限制）。",
+		xinxhjniji_info: "①当你成为牌的目标后，你可以摸一张牌，称为“逆击”。②一名角色的结束阶段，你可以使用一张“逆击”牌（无距离限制）。",
 		xinxhj_simashi: "改司马师",
 		xinxhj_simashi_prefix: "改",
 		xinxhjbaiyi: "败移",
@@ -654,6 +669,19 @@ export let info = {
 			}
 			return lib.translate[`${skill}_info`];
 		},
+		xinxhjsbyingmou(player) {
+			const bool = player.storage.xinxhjsbyingmou;
+			let yang = "你将手牌数摸至全场最多，然后视为对其使用一张【火攻】",
+				yin = "令一名手牌数为全场最大的角色对其使用手牌中所有的【杀】和伤害类锦囊牌（若其没有可使用的牌则将手牌数弃至与你相同）";
+			if (bool) {
+				yin = `<span class='bluetext'>${yin}</span>`;
+			} else {
+				yang = `<span class='firetext'>${yang}</span>`;
+			}
+			let start = "转换技。①游戏开始时，你可以转换此技能状态；②每回合限一次，你对其他角色使用牌后，你可以选择其中一名目标角色：",
+				end = "。若其未因此受到伤害，你对其造成1点火焰伤害。";
+			return `${start}阳：${yang}；阴：${yin}${end}`;
+		},
 	},
 	//武将介绍
 	characterIntro: {
@@ -683,7 +711,7 @@ export let info = {
 		xinxhj_dc_sb_lvmeng: [
 			['xinxhj_dc_sb_lvmeng_shadow', ['ext:永夜之境/image/xinxhj_dc_sb_lvmeng_shadow.png',
 				'tempname:xinxhj_dc_sb_lvmeng_shadow',
-				'die:xinxhj_dc_sb_lvmeng_shadow',
+				'die:dc_sb_lvmeng',
 			]],
 		],
 		xinxhj_yj_sb_guojia: [
@@ -698,6 +726,13 @@ export let info = {
 				'永夜之境/image/huaijiu/xinxhj_v_zhangliao_shadow.png',
 				'tempname:v_zhangliao',
 				'die:v_zhangliao'
+			]],
+		],
+		xinxhj_dc_sb_zhouyu: [
+			['xinxhj_dc_sb_zhouyu_shadow', [((lib.device || lib.node) ? 'ext:' : 'db:extension-') +
+				'永夜之境/image/huaijiu/xinxhj_dc_sb_zhouyu_shadow.jpg',
+				'tempname:dc_sb_zhouyu_shadow',
+				'die:dc_sb_zhouyu_shadow'
 			]],
 		],
 	},
@@ -720,6 +755,243 @@ export let info = {
 	},
 	//技能
 	skill: {
+		//周瑜
+		xinxhjsbronghuo: {
+			audio: 'dcsbronghuo',
+			audioname: ["dc_sb_zhouyu_shadow"],
+			trigger: { player: "useCard" },
+			filter(event, player) {
+				return (event.card.name == "sha" && game.hasNature(event.card, "fire")) || event.card.name == "huogong";
+			},
+			forced: true,
+			async content(event, trigger, player) {
+				trigger.baseDamage += game.countGroup();
+			},
+			ai: { threaten: 3.5 },
+			group: ["xinxhjsbronghuo_target"],
+			subSkill: {
+				target: {
+					audio: "xinxhjsbronghuo",
+					forced: true,
+					trigger: {
+						global: "damageEnd",
+					},
+					filter(event, player) {
+						return event.hasNature("fire");
+					},
+					async content(event, trigger, player) {
+						player.addTempSkill("xinxhjsbronghuo_effect", { player: "dieAfter" });
+					},
+				},
+				effect: {
+					charlotte: true,
+					mark: true,
+					intro: {
+						content: "下一次使用火【杀】或【火攻】额外指定1个目标",
+					},
+					forced: true,
+					popup: false,
+					trigger: {
+						player: "useCard2",
+					},
+					filter(event, player) {
+						return get.info("xinxhjsbronghuo").filter(event, player);
+					},
+					async content(event, trigger, player) {
+						player.removeSkill(event.name);
+						const { targets, card } = trigger;
+						const targetsx = game.filterPlayer(
+							target =>
+								!targets.includes(target) &&
+								lib.filter.targetEnabled2(card, player, target) &&
+								lib.filter.targetInRange(card, player, target)
+						);
+						if (targets?.length) {
+							const result = await player
+								.chooseTarget(`融火：你可以为${get.translation(card)}增加1名目标`, (card, player, target) =>
+									get.event().targets.includes(target)
+								)
+								.set("targets", targetsx)
+								.set("card", card)
+								.set("ai", target => get.effect(target, get.event().card, get.player(), get.player()))
+								.forResult();
+							if (result?.bool) {
+								const { targets } = result;
+								player.logSkill("xinxhjsbronghuo", targets);
+								game.log(targets, "成为了", card, "的额外目标");
+								trigger.targets.addArray(targets);
+							}
+						}
+					},
+				},
+			},
+		},
+		xinxhjsbyingmou: {
+			mark: true,
+			marktext: "☯",
+			zhuanhuanji(player, skill) {
+				player.storage[skill] = !player.storage[skill];
+				player.changeSkin({ characterName: "xinxhj_dc_sb_zhouyu" }, "dc_sb_zhouyu" + (player.storage[skill] ? "_shadow" : ""));
+			},
+			intro: {
+				content(storage) {
+					return (
+						"每回合限一次，当你使用牌指定其他角色为目标后，你可以选择其中一名目标角色，" +
+						(storage
+							? "令一名手牌数为全场最大的角色对其使用手牌中所有的【杀】和伤害类锦囊牌（若其没有可使用的牌则将手牌数弃至与你相同）。"
+							: "你将手牌数摸至全场最多，然后视为对其使用一张【火攻】。")
+					);
+				},
+			},
+			audio: 'dcsbyingmou',
+			audioname: ["dc_sb_zhouyu_shadow"],
+			trigger: {
+				//player: "useCardAfter",
+				player: "useCardToPlayer",
+			},
+			filter(event, player) {
+				return event.targets?.some(target => target != player && target.isIn());
+			},
+			usable: 1,
+			async cost(event, trigger, player) {
+				const { targets } = trigger;
+				const skillName = event.name.slice(0, -5);
+				const storage = player.storage[skillName];
+				let next;
+				if (storage) {
+					next = player
+						.chooseCardTarget({
+							prompt: get.prompt(skillName),
+							prompt2:
+								"选择一名目标角色，令一名手牌数为全场最大的角色对其使用手牌中所有的【杀】和伤害类锦囊牌（若其没有可使用的牌则将手牌数弃至与你相同）",
+							filterTarget(card, player, target) {
+								if (!ui.selected.targets.length) {
+									return _status.event.targets.includes(target);
+								}
+								return target.isMaxHandcard();
+							},
+							selectTarget: [1, 2],
+							complexSelect: true,
+							complexTarget: true,
+							multitarget: true,
+							targetprompt: ["目标角色", "使用角色"],
+							filterCard: () => false,
+							selectCard: -1,
+							ai2(target) {
+								const player = get.player();
+								const getNum = (player, target, source) => {
+									return player
+										.getCards("h", card => {
+											if (get.name(card) != "sha" && (get.type(card) != "trick" || !get.tag(card, "damage"))) {
+												return false;
+											}
+											return player.canUse(card, target, false);
+										})
+										.reduce((sum, card) => sum + get.effect(target, card, player, source), 0);
+								};
+								if (!ui.selected.targets.length) {
+									const targets = game.filterPlayer(target => target.isMaxHandcard());
+									targets.sort((a, b) => getNum(b, target, player) - getNum(a, target, player));
+									return getNum(targets[0], target, player) + 1;
+								}
+								return getNum(target, ui.selected.targets[0], player) + 1;
+							},
+						})
+						.set("targets", targets);
+				} else {
+					next = player
+						.chooseTarget(
+							get.prompt(skillName),
+							"选择一名目标角色，将手牌数摸至全场最多，然后视为对其使用一张【火攻】",
+							(card, player, target) => _status.event.targets.includes(target)
+						)
+						.set("ai", target => {
+							const player = get.player();
+							return (
+								//Math.max(0, Math.min(5, target.countCards("h") - player.countCards("h"))) * 2 +
+								get.effect(target, { name: "huogong" }, player, player)
+							);
+						})
+						.set("targets", targets);
+				}
+				event.result = await next.forResult();
+			},
+			async content(event, trigger, player) {
+				const { targets, name: skillName } = event;
+				player.changeZhuanhuanji(skillName);
+				const target = targets[0];
+				let bool = false;
+				if (!player.storage[skillName]) {
+					player.line2(targets);
+					let source = targets[1] ? targets[1] : targets[0],
+						discard = true;
+					while (true) {
+						const cards = source.getCards("h", card => {
+							if (get.name(card) != "sha" && (get.type(card) != "trick" || !get.tag(card, "damage"))) {
+								return false;
+							}
+							return source.canUse(card, target, false);
+						});
+						if (cards.length) {
+							if (discard) {
+								discard = false;
+							}
+							const next = source.useCard(cards.randomGet(), target, false);
+							await next;
+							if (target.hasHistory("damage", evt => evt.card == next.card)) {
+								bool = true;
+							}
+						} else {
+							break;
+						}
+					}
+					if (discard && player.countCards("h") < source.countCards("h")) {
+						await source.chooseToDiscard(source.countCards("h") - player.countCards("h"), "h", true, "allowChooseAll");
+					}
+				} else {
+					/* if (player.countCards("h") < target.countCards("h")) {
+						await player.draw(Math.min(5, target.countCards("h") - player.countCards("h")));
+					} */
+					const starget = game.findPlayer(current => current.isMaxHandcard());
+					if (starget?.isIn()) {
+						await player.drawTo(starget.countCards("h"));
+					}
+
+					if (player.canUse({ name: "huogong" }, target, false)) {
+						const next = player.useCard({ name: "huogong" }, target, false);
+						await next;
+						if (target.hasHistory("damage", evt => evt.card == next.card)) {
+							bool = true;
+						}
+					}
+				}
+				if (!bool) {
+					player.line(target, "fire");
+					await target.damage("fire");
+				}
+			},
+			group: "xinxhjsbyingmou_change",
+			subSkill: {
+				change: {
+					audio: "dcsbyingmou",
+					audioname: ["dc_sb_zhouyu_shadow"],
+					trigger: {
+						global: "phaseBefore",
+						player: "enterGame",
+					},
+					filter(event, player) {
+						return event.name != "phase" || game.phaseNumber == 0;
+					},
+					prompt2(event, player) {
+						return "切换【英谋】为状态" + (player.storage.xinxhjsbyingmou ? "阳" : "阴");
+					},
+					check: () => Math.random() > 0.5,
+					content() {
+						player.changeZhuanhuanji("xinxhjsbyingmou");
+					},
+				},
+			},
+		},
 		//乐进
 		xinxhjxianjian: {
 			audio: 'hefeixianjian',
@@ -922,14 +1194,13 @@ export let info = {
 									if (get.itemtype(source) === 'player') {
 										if (source.isUnderControl(true)) {
 											if (vcards.length) {
-												uiintro.add('<div class="text center">—— 对应实体牌 ——</div>');
-												uiintro.addSmall(vcards);
+												if (!uiintro.innerHTML.includes('—— 对应实体牌 ——')) {
+													uiintro.add('<div class="text center">—— 对应实体牌 ——</div>');
+													uiintro.addSmall(vcards);
+												}
 											} else {
 												uiintro.add('<div class="text center">—— 此为虚拟牌 ——</div>');
 											}
-										}
-										else {
-											uiintro.add('<div class="text center" style="opacity:0.6;">（未知的实体牌）</div>');
 										}
 									}
 								}
@@ -1197,7 +1468,17 @@ export let info = {
 					})
 					.set("targetx", targets)
 					.set("ai", target => {
-						return Math.max(0.1, get.attitude(get.player(), target));
+						const player = get.player();
+						const att = -get.attitude(player, target);
+						let score = Math.max(0.1, att);
+						const ths = target.countCards('h');
+						const phs = player.countCards('h');
+						if (ths >= phs) {
+							score += 10;
+						} else {
+							score += ths;
+						}
+						return score;
 					})
 					.forResult();
 			},
@@ -1205,7 +1486,7 @@ export let info = {
 				const target = event.targets[0];
 				const result = await player.choosePlayerCard(target, [1, 3], true, "h", "展示至多三张手牌并与牌堆底的牌交换")
 					.set("ai", button => {
-						return 6 - get.value(button.link);
+						return 10;
 					})
 					.forResult();
 				if (!result?.bool || !result.links?.length) {
@@ -2983,8 +3264,8 @@ export let info = {
 			filterCard: lib.filter.cardRecastable,
 			check(card) {
 				var player = _status.event.player,
-					val = 5 + ["shan", "tao"].includes(get.name(card)) * 1.5;
-				if (player.needsToDiscard() > 2 && get.name(card) == "sha" && player.countCards("hs", "sha") > 1) {
+					val = 5 + ['sha', 'tao'].includes(get.name(card)) * 1.5;
+				if (player.needsToDiscard() > 2 && get.name(card) == "sha" && player.countCards("hs", "shan") > 1) {
 					val += 0.5;
 				}
 				return val - get.value(card);
@@ -3715,7 +3996,7 @@ export let info = {
 						return evt.event != event;
 					})
 				) {
-					await player.draw(2);
+					await player.draw();
 					player.addTempSkill('xinxhjdangshi_effect', 'phaseChange');
 					player.addMark('xinxhjdangshi_effect', 1, false);
 				}
@@ -3754,7 +4035,7 @@ export let info = {
 						return;
 					}
 					default: {
-						await target.damage("nosource");
+						await target.damage();
 						return;
 					}
 				}
@@ -3998,7 +4279,8 @@ export let info = {
 			async content(event, trigger, player) {
 				let num = Math.min(2, player.getHistory("useSkill", evt => evt.skill == "xinxhjniji").length);
 				if (num > 0) {
-					await player.draw(num).set("gaintag", ["xinxhjniji"]);
+					//await player.draw(num).set("gaintag", ["xinxhjniji"]);
+					await player.draw().set("gaintag", ["xinxhjniji"]);
 				}
 			},
 			group: "xinxhjniji_effect",
@@ -4444,26 +4726,7 @@ export let info = {
 			discard: false,
 			delay: false, */
 			usable: 1,
-			filterCard: (card, player = get.owner(card), source, strict) => {
-				if (!player) {
-					if (player === null) {
-						console.trace(`cardRecastable的player参数不应传入null,可以用void 0或undefined占位`);
-					}
-					player = get.owner(card);
-				}
-				const mod = game.checkMod(card, player, source, "unchanged", "cardRecastable", player);
-				if (!mod) {
-					return false;
-				}
-				if (strict && mod == "unchanged") {
-					if (get.position(card) != "h") {
-						return false;
-					}
-					const info = get.info(card), recastable = info.recastable || info.chongzhu;
-					return Boolean(typeof recastable == "function" ? recastable(_status.event, player) : recastable);
-				}
-				return true;
-			},
+			filterCard: lib.filter.cardRecastable,
 			filter(event, player) {
 				return player.countCards("he");
 			},
@@ -4471,9 +4734,9 @@ export let info = {
 				const player = get.player(),
 					value = get.value(card);
 				if (ui.selected.cards?.some(cardx => get.suit(cardx, player) == get.suit(card, player))) {
-					return 3 - value;
+					return 2 - value;
 				}
-				return 7 - value;
+				return 3 - value;
 			},
 			async content(event, trigger, player) {
 				await player.recast(event.cards);

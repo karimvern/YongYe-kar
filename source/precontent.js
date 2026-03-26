@@ -163,26 +163,6 @@ export async function precontent(config, pack) {
     Object.assign(lib.poptip, poptip);
 
 
-    //阵亡语音播放    
-    /* lib.skill._xinx_die = {
-        charlotte: true,
-        ruleSkill: true,
-        trigger: { player: 'dieBegin' },
-        filter(event, player) {
-            return lib.config.background_speak && event.player.name;
-        },
-        firstDo: true,
-        direct: true,
-        priority: -Infinity,
-        lasrDo: true,
-        content() {
-            game.broadcastAll(function (name) {
-                game.playAudio('..', 'extension', '永夜之境/audio/die', name);
-            }, trigger.player.name);
-        },
-    }; */
-
-
 
     //装备区无副类别，by《名将杀》暴暴龙
     const xorigin_player_canEquip = lib.element.player.canEquip;

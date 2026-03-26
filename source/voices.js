@@ -619,6 +619,17 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhwusheng4': '逆贼，哪里走！',
     '#ext:永夜之境/audio/fyrhyijue1': '恩已断，义当绝。',
     '#ext:永夜之境/audio/fyrhyijue2': '关某向来恩怨分明。',
+    //张飞
+    '#ext:永夜之境/audio/fyrhyafeng1': '欺我无谋？定要尔等血偿！',
+    '#ext:永夜之境/audio/fyrhyafeng2': '替身诱敌，真身擒杀。',
+    '#ext:永夜之境/audio/fyrhbaohe1': '今必斩汝马下！',
+    '#ext:永夜之境/audio/fyrhbaohe2': '喝啊！',
+    '#ext:永夜之境/audio/fyrhbaohe3': '哇呀呀呀呀呀呀！',
+    //周瑜
+    '#ext:永夜之境/audio/fyrhyingzi1': '烈酒入胸腹，对月啸三分，且炙仇雠八百里。',
+    '#ext:永夜之境/audio/fyrhyingzi2': '千帆载丹鼎，万军为薪，一焚可引振翼之金乌。',
+    '#ext:永夜之境/audio/fyrhyingzi3': '良策生胸腹，一瓢锦绣可倾三千弱水。',
+    '#ext:永夜之境/audio/fyrhyingzi4': '雄略规经纬，乘帆梦日、天下自可纵横。',
   
 
 
@@ -630,6 +641,16 @@ export let voices = {
 
 
     //杏雅三国
+    //阎柔
+    '#ext:永夜之境/audio/xinxshibei1': '今日斩敌试剑，故人恩义未绝！',
+    '#ext:永夜之境/audio/xinxshibei2': '云翳边郡已久，吾当一剑破之！',
+    '#ext:永夜之境/audio/xinxshibei3': '既受信于诸君，誓与此城共存亡！',
+    '#ext:永夜之境/audio/xinxshibei4': '百战不问鸿雁迹，犹愿效冯唐！',
+    '#ext:永夜之境/audio/xinxshibei5': '昔始皇筑城以御北，今我身为城。',
+    '#ext:永夜之境/audio/xinxshibei6': '北风袭玉门，拂我剑而化春风。',
+    '#ext:永夜之境/audio/xinxshibei7': '公孙瓒，还我明公刘伯安命来！',
+    '#ext:永夜之境/audio/xinxshibei8': '幽辽暗无天日，且以我剑涤破障云。',
+
     //孙尚香
     '#ext:永夜之境/audio/xinxsaran1': '红袖战沙场，霜刃破铁衣！',
     '#ext:永夜之境/audio/xinxsaran2': '身骑红鬃马，雪落青锋刃，不妨醉卧沙场。',

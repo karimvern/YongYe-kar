@@ -402,24 +402,22 @@ export default {
                 const timerSkill = 'xinxmingxinzhiyue_timer';
                 const effectSkill = 'xinxmingxinzhiyue_effect';
                 player.addTempSkill(timerSkill, { player: 'phaseBegin' });
-                // 3. 记录需要清理的角色列表
+                //记录需要清理的角色列表
                 // 放入数组前先判断是否存在，防止重复添加
                 if (!player.storage[timerSkill]) player.storage[timerSkill] = [];
                 if (!player.storage[timerSkill].includes(player)) player.storage[timerSkill].push(player);
                 if (!player.storage[timerSkill].includes(target)) player.storage[timerSkill].push(target);
 
-                // 4. 为使用者配置共享技能 (指向目标)
+                //为使用者配置共享技能 (指向目标)
                 player.storage[effectSkill] = target;
                 player.addSkill(effectSkill);
-                // 建议手动调用一次 init 以便立即生成虚拟牌显示
                 if (lib.skill[effectSkill].init) lib.skill[effectSkill].init(player, effectSkill);
 
-                // 5. 为目标配置共享技能 (指向使用者)
+                // 为目标配置共享技能 (指向使用者)
                 target.storage[effectSkill] = player;
                 target.addSkill(effectSkill);
                 if (lib.skill[effectSkill].init) lib.skill[effectSkill].init(target, effectSkill);
 
-                // 6. 视觉效果与日志
                 game.log(player, '与', target, '立下了约定');
                 await game.delayx();
                 player.popup('约定', 'wood');
@@ -436,7 +434,6 @@ export default {
                 order: 1,
                 value: 6,
                 result: {
-                    // AI逻辑：通常对队友使用，因为可以共享手牌
                     target(player, target) {
                         return (get.attitude(player, target) > 0 && target.countCards('h') > 2) ? 1 : 0;
                     }
