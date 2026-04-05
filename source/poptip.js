@@ -103,6 +103,11 @@ lib.poptip.add({
     info: '从牌堆或弃牌堆中随机获得',
 });
 lib.poptip.add({
+    name: '检索',
+    id: '3d_jiansuo',
+    info: '你亮出牌堆顶的牌，直到亮出满足对应条件的牌或区域内牌全被亮出为止，然后你获得这些牌。牌堆中被亮出的牌于检索完毕后同时置入弃牌堆——来自《大宝规则集》。',
+});
+lib.poptip.add({
     id: "xinx_recastuse",
     name: "重铸方式使用",
     info: "使用此牌时，重铸之。若是装备牌或延时锦囊，则回到应有的位置。",
@@ -116,6 +121,11 @@ lib.poptip.add({
     id: "xinx_dipai",
     name: "底牌",
     info: "用于转化的实体牌",
+});
+lib.poptip.add({
+    id: "xinx_baoliuhuihe",
+    name: "保留回合数",
+    info: "一张牌保留在你手牌中的回合数",
 });
 lib.poptip.add({
     name: '专属牌堆',

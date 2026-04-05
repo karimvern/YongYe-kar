@@ -12,7 +12,7 @@ export let info = {
 				, 'xinxhj_yj_sb_guojia', 'xinxhj_dc_xiahouxuan', 'xinxhj_star_fazheng', 'xinxhj_xuwen', 'xinxhj_dc_zhushuo', 'xinxhj_liujinliupei',
 				'xinxhj_sunhuan', 'xinxhj_sb_zhangxiu', 'xinxhj_dc_wuzhi', 'xinxhj_dc_zhaoxiang', 'xinxhj_guānning', 'xinxhj_wupu', 'xinxhj_dc_sb_zhouyu'],
 			'shousha': ['xinxhj_new_simayi', 'xinxhj_mb_huangzu', 'xinxhj_simashi', 'xinxhj_hefei_zhangliao', 'xinxhj_sp_zhonghui', 'xinxhj_sb_zhangliao',
-				'xinxhj_hefei_lidian', 'xinxhj_hefei_yuejin'],
+				'xinxhj_hefei_lidian', 'xinxhj_hefei_yuejin', 'xinxhj_luotong','xinxhj_wangyuanji'],
 			'xinxol': ['xinxhj_ol_jsrg_caocao', 'xinxhj_jsrg_zhangliao', 'xinxhj_clan_zhonghui']
 
 		}
@@ -349,6 +349,25 @@ export let info = {
 			trashBin: ["character:dc_sb_zhouyu", 'epic'],
 			dieAudios: ["dc_sb_zhouyu"],
 		},
+		xinxhj_luotong: {
+			sex: "male",
+			group: "wu",
+			hp: 4,
+			img: "extension/永夜之境/image/xinxhj_luotong.png",
+			trashBin: ['epic'],
+			skills: ["xinxhjqinzheng"],
+			dieAudios: ["luotong"],
+		},
+		xinxhj_wangyuanji: {
+			sex: "female",
+			group: "wei",
+			hp: 3,
+			img: "extension/永夜之境/image/xinxhj_wangyuanji.png",
+			skills: ["xinxhjqianchong", "xinxhjshangjian"],
+			groupBorder: "jin",
+			trashBin: ['epic'],
+			dieAudios: ["wangyuanji"],
+		}
 
 
 
@@ -383,6 +402,16 @@ export let info = {
 
 
 		//技能翻译
+		xinxhj_wangyuanji: "改手杀王元姬",
+		xinxhj_wangyuanji_prefix: "改",
+		xinxhjqianchong: "谦冲",
+		xinxhjqianchong_info: `锁定技，若你的装备区内有牌且：均为红色，则你视为拥有技能${get.poptip("mingzhe")}。均为黑色，则你视为拥有技能${get.poptip("weimu")}。若均不满足，则出牌阶段开始时，你可以选择一种类别的牌，然后你本回合内使用该类别的牌时没有次数和距离限制。`,
+		xinxhjshangjian: "尚俭",
+		xinxhjshangjian_info: "锁定技。一名角色的结束阶段开始时，若你于此回合内不因使用装备牌而失去了牌，则你摸等量的牌。",
+		xinxhj_luotong: "改手杀骆统",
+		xinxhj_luotong_prefix: "改",
+		xinxhjqinzheng: "勤政",
+		xinxhjqinzheng_info: "锁定技，当你使用或打出牌时，若你本局游戏内使用或打出过的牌数和达到以下数值，你从牌堆或弃牌堆中获得如下牌：为2的倍数，获得一张【杀】/【闪】/普通锦囊牌；为5的倍数，获得一张【桃】/【酒】/装备牌；为8的倍数，获得一张【决斗】/【无中生有】（可获得对应的衍生替换牌）。",
 		xinxhj_dc_sb_zhouyu: "改新杀谋周瑜",
 		xinxhj_dc_sb_zhouyu_prefix: "改新杀谋",
 		xinxhjsbronghuo: "融火",
@@ -755,6 +784,207 @@ export let info = {
 	},
 	//技能
 	skill: {
+		xinxhjqianchong: {
+			audio: 'xinfu_qianchong',
+			init(player, skill) {
+				const es = player.getCards("e");
+				if (es.length) {
+					if (es.every(card => get.color(card) == "red")) {
+						player.addAdditionalSkill(skill, "mingzhe");
+					} else if (es.every(card => get.color(card) == "black")) {
+						player.addAdditionalSkill(skill, "weimu");
+					} else {
+						player.removeAdditionalSkill(skill);
+					}
+				} else {
+					player.removeAdditionalSkill(skill);
+				}
+			},
+			onremove(player, skill) {
+				player.removeAdditionalSkill(skill);
+			},
+			trigger: { player: "phaseUseBegin" },
+			filter(event, player) {
+				if (["basic", "trick", "equip"].every(type => player.getStorage("xinxhjqianchong_effect").includes(type))) {
+					return false;
+				}
+				const es = player.getCards("e");
+				if (!es.length) {
+					return true;
+				}
+				const col = get.color(es[0]);
+				for (let i = 0; i < es.length; i++) {
+					if (get.color(es[i]) != col) {
+						return true;
+					}
+				}
+				return false;
+			},
+			locked: true,
+			async cost(event, trigger, player) {
+				const list = ["basic", "trick", "equip", "cancel2"];
+				list.removeArray(player.getStorage("xinxhjqianchong_effect"));
+				const result = await player
+					.chooseControl(list)
+					.set("ai", () => {
+						const player = get.player();
+						const choices = get.event().controls.slice().remove("cancel2");
+						return choices.includes("basic") ? "basic" : choices.includes("trick") ? "trick" : choices.randomGet();
+					})
+					.set("prompt", get.prompt(event.skill))
+					.set("prompt2", "你可以选择一种类别的牌，然后你本回合内使用该类别的牌时没有次数和距离限制。")
+					.forResult();
+				event.result = {
+					bool: result?.control != "cancel2",
+					cost_data: result?.control,
+				};
+			},
+			async content(event, trigger, player) {
+				const { cost_data: type } = event;
+				player.addTempSkill(event.name + "_effect");
+				player.markAuto(event.name + "_effect", [type]);
+				const str = get.translation(type) + "牌";
+				game.log(player, "声明了", "#y" + str);
+				player.popup(str, "thunder");
+			},
+			derivation: ["weimu", "mingzhe"],
+			group: "xinxhjqianchong_change",
+			subSkill: {
+				effect: {
+					charlotte: true,
+					onremove: true,
+					intro: { content: "本回合内使用$牌没有次数和距离限制" },
+					mod: {
+						cardUsable(card, player) {
+							const type = get.type2(card);
+							if (player.getStorage("xinxhjqianchong_effect").includes(type)) {
+								return Infinity;
+							}
+						},
+						targetInRange(card, player) {
+							const type = get.type2(card);
+							if (player.getStorage("xinxhjqianchong_effect").includes(type)) {
+								return true;
+							}
+						},
+					},
+				},
+				change: {
+					trigger: {
+						player: "loseAfter",
+						global: ["equipAfter", "addJudgeAfter", "gainAfter", "loseAsyncAfter", "addToExpansionAfter"],
+					},
+					filter(event, player) {
+						if (event.name == "equip" && event.player == player) {
+							return true;
+						}
+						return event.getl?.(player)?.es?.length;
+					},
+					forced: true,
+					popup: false,
+					async content(event, trigger, player) {
+						const skill = "xinxhjqianchong";
+						get.info(skill).init(player, skill);
+					},
+				},
+			},
+		},
+		qc_weimu: { audio: true },
+		qc_mingzhe: { audio: true },
+		xinxhjshangjian: {
+			audio: 'xinfu_shangjian',
+			getNum(player) {
+				let num = 0;
+				player.getHistory("lose", evt => {
+					const evt2 = evt.relatedEvent || evt.getParent();
+					if (evt2.name == "useCard" && evt2.player == player && get.type(evt2.card, null, false) == "equip") {
+						return;
+					}
+					if (evt.cards2?.length) {
+						num += evt.cards2.length;
+					}
+				});
+				return num;
+			},
+			trigger: { global: "phaseJieshuBegin" },
+			filter(event, player) {
+				const num = get.info("xinxhjshangjian").getNum(player);
+				return num > 0;
+			},
+			forced: true,
+			async content(event, trigger, player) {
+				const num = get.info(event.name).getNum(player);
+				if (num > 0) {
+					await player.draw(num);
+				}
+			},
+		},
+		xinxhjqinzheng: {
+			audio: 'qinzheng',
+			trigger: { player: ["useCard", "respond"] },
+			forced: true,
+			filter(event, player) {
+				var num = player.getAllHistory("useCard").length + player.getAllHistory("respond").length;
+				return num % 2 == 0 || num % 5 == 0 || num % 8 == 0;
+			},
+			async content(event, trigger, player) {
+				var num = player.getAllHistory("useCard").length + player.getAllHistory("respond").length;
+				var cards = [];
+				if (num % 2 == 0) {
+					let card = get.cardPile(function (card) {
+						return ["sha", "shan"].includes(card.name) || get.type(card) == "trick";
+					});
+					if (card) {
+						cards.push(card);
+					}
+				}
+				if (num % 5 == 0) {
+					let card = get.cardPile(function (card) {
+						return ["tao", "jiu", "zong", "xionghuangjiu"].includes(card.name) || get.type(card) == "equip";
+					});
+					if (card) {
+						cards.push(card);
+					}
+				}
+				if (num % 8 == 0) {
+					let card = get.cardPile(function (card) {
+						return ["juedou", "wuzhong", "zengbin", "sadouchengbing", "dongzhuxianji", "tongzhougongji"].includes(card.name);
+					});
+					if (card) {
+						cards.push(card);
+					}
+				}
+				if (cards.length) {
+					await player.gain(cards, "gain2");
+				}
+			},
+			group: "xinxhjqinzheng_count",
+			intro: {
+				content(num) {
+					var str = "<li>总次数：";
+					str += num;
+					str += "<br><li>杀/闪/锦囊：";
+					str += num % 2;
+					str += "/2<br><li>桃/酒/装备：";
+					str += num % 5;
+					str += "/5<br><li>决斗/无中生有：";
+					str += num % 8;
+					str += "/8";
+					return str;
+				},
+			},
+		},
+		xinxhjqinzheng_count: {
+			trigger: { player: ["useCard1", "respond"] },
+			silent: true,
+			firstDo: true,
+			noHidden: true,
+			sourceSkill: "xinxhjqinzheng",
+			async content(event, trigger, player) {
+				player.storage.xinxhjqinzheng = player.getAllHistory("useCard").length + player.getAllHistory("respond").length;
+				player.markSkill("xinxhjqinzheng");
+			},
+		},
 		//周瑜
 		xinxhjsbronghuo: {
 			audio: 'dcsbronghuo',
@@ -4722,9 +4952,6 @@ export let info = {
 			},
 			complexCard: true,
 			complexSelect: true,
-			/* lose: false,
-			discard: false,
-			delay: false, */
 			usable: 1,
 			filterCard: lib.filter.cardRecastable,
 			filter(event, player) {
@@ -6554,7 +6781,6 @@ export let info = {
 							return evt.card.name == trigger.card.name && evt != trigger;
 						},
 						0,
-						null,
 						trigger
 					).length
 				){ */

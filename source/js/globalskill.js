@@ -1,5 +1,28 @@
 import { lib, game, ui, get, ai, _status } from "noname";
 
+
+lib.skill["_yyzjbaoliu"] = {
+    ruleSkill: true,
+    trigger: { global: ["phaseEnd", "roundStart"] },
+    silent: true,
+    firstDo: true,
+    charlotte: true,
+    async content(event, trigger, player) {
+        let dict = player.getStorage("yyzjbaoliu") || {};
+        let newDict = {};
+        let isRound = event.triggername === "roundStart";
+        let hs = player.getCards("h");
+        for (let card of hs) {
+            let baseKey = player.playerid + "_" + get.position(card) + "_" + card.cardid;
+            let roundKey = baseKey + "_round";
+            let oldTurnAge = dict[baseKey] || 0;
+            let oldRoundAge = dict[roundKey] || 0;
+            newDict[baseKey] = isRound ? oldTurnAge : oldTurnAge + 1;
+            newDict[roundKey] = isRound ? oldRoundAge + 1 : oldRoundAge;
+        }
+        player.setStorage("yyzjbaoliu", newDict);
+    }
+};
 //虚无卡牌
 lib.skill["_xinx_ethereal"] = {
     ruleSkill: true,
@@ -129,29 +152,22 @@ lib.skill["_xinxkanpo_effect"] = {
         target: "useCardToTarget",
     },
     charlotte: true,
-    forced: true,
-    silent: true,
     ruleSkill: true,
     filter(event, player) {
-        return get.tag(event.card, 'damage') &&
+        return get.is.damageCard(event.card) &&
             player.hasCard(card => card.name === 'xinxkanpo', 'h');
     },
-    async content(event, trigger, player) {
+    async cost(event, trigger, player) {
         const result = await player.chooseToUse({
             filterCard: { name: 'xinxkanpo' },
             prompt: `是否使用【勘破】取消 ${get.translation(trigger.card)}的所有目标？`,
             prompt2: "取消目标后，你可以对来源使用一张伤害牌",
             ai1(card) {
-                const hasCounter = player.hasCard(c => get.tag(c, 'damage') > 0, 'h');
-                // 如果有伤害牌优先使用 (返回较大数值)
+                const hasCounter = player.hasCard(c => get.is.damageCard(c), 'h');
                 if (hasCounter) return 15;
-                // 2. 如果没有伤害牌，进入防御判断
-                // 规则：如果是杀，且有闪，则保留勘破 
                 if (trigger.card.name.includes('sha') && player.hasCard('shan')) {
                     return 0;
                 }
-                // 3. 其他情况（如南蛮入侵、决斗，或者没有闪面对杀）
-                // 使用默认防御价值计算，如果对自己有负面效果则使用
                 if (get.effect(player, trigger.card, trigger.player, player) < 0) {
                     return 10;
                 }
@@ -159,25 +175,28 @@ lib.skill["_xinxkanpo_effect"] = {
             }
         })
             .forResult();
-
-        if (result.bool) {
-            game.playAudio("../extension/永夜之境/audio/card/xinxkanpo.mp3");
-            trigger.targets.length = 0;
-            trigger.all_excluded = true;
-            game.log(player, '使用了', result.cards[0], '取消了', trigger.card, '的所有目标');
-            const target = trigger.player;
-            let cards = player.getCards('hs', card => get.tag(card, 'damage'));
-            let damages = cards.filter(card => player.canUse(card, target, false));
-            if (target && target.isIn() && damages.length) {
-                await player.chooseToUse(function (card, player) {
-                    return get.tag(card, 'damage');
-                }, target)
-                    .set('prompt', '【勘破】生效：是否对 ' + get.translation(target) + ' 使用一张伤害牌')
-                    .set('addCount', false)
-                    .set('noplay', true)
-                    .set('nodistance', true)
-            }
+        event.result = {
+            bool: result?.bool,
+            cards: result?.cards,
+        };
+    },
+    async content(event, trigger, player) {
+        game.playAudio("../extension/永夜之境/audio/card/xinxkanpo.mp3");
+        trigger.targets.length = 0;
+        trigger.all_excluded = true;
+        game.log(player, '使用了', event.cards[0], '取消了', trigger.card, '的所有目标');
+        const target = trigger.player;
+        let cards = player.getCards('hs', card => get.tag(card, 'damage'));
+        let damages = cards.filter(card => player.canUse(card, target, false));
+        if (target && target.isIn() && damages.length) {
+            await player.chooseToUse(function (card, player) {
+                return get.tag(card, 'damage');
+            }, target)
+                .set('prompt', '【勘破】生效：是否对 ' + get.translation(target) + ' 使用一张伤害牌')
+                .set('addCount', false)
+                .set('nodistance', true)
         }
+
     }
 };
 // 【消耗】

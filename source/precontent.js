@@ -55,14 +55,28 @@ export async function precontent(config, pack) {
 
 
             //武将介绍
-            const prefixes = ['xinx', 'fyrh'];
+            /* const prefixes = ['xinx', 'fyrh'];
             if (prefixes.some(prefix => name.startsWith(prefix)) && name.includes('_')) {
                 let suffix = name.substring(name.indexOf('_') + 1);
                 if (suffixIntroDict[suffix] && !lib.characterIntro[name]) {
                     // ib.characterIntro['xinxmeng_liuying'] = "..."
                     lib.characterIntro[name] = suffixIntroDict[suffix];
                 }
+            } */
+            if (!lib.characterIntro[name]) {
+                // 全名匹配
+                if (characterIntro[name]) {
+                    lib.characterIntro[name] = characterIntro[name];
+                } 
+                // 后缀匹配
+                else if (name.includes('_')) {
+                    let suffix = name.substring(name.indexOf('_') + 1);
+                    if (suffixIntroDict[suffix]) {
+                        lib.characterIntro[name] = suffixIntroDict[suffix];
+                    }
+                }
             }
+
         }
 
 
@@ -126,6 +140,13 @@ export async function precontent(config, pack) {
             nature: 'thundermm',
             showName: '改',
         });
+        lib.namePrefix.set('白', {
+            color: '#D2DADA',
+            nature: 'watermm',
+            showName: '白',
+        });
+
+
         const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星','骥','闪','族'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
