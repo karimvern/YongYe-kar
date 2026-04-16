@@ -265,7 +265,6 @@ export default {
                             } else {
                                 given_map.push([target, cards]);
                             }
-                            // 临时打标，防止在下一次循环中重复选择同一张牌
                             player.addGaintag(cards, "xinxguiji_given");
                         } else {
                             break;
@@ -280,7 +279,6 @@ export default {
                     }
                     player.removeGaintag("xinxguiji_given");
 
-                    // 执行分配
                     if (given_map.length) {
                         await game.loseAsync({
                             gain_list: given_map,
@@ -652,9 +650,9 @@ export default {
                 let victim = null;
                 let victimSkill = null;
                 // // 筛选场上有技能的其他角色
-                //const others = game.players.filter(current => current !== target && current.getSkills().length > 0);
-                const allChars = game.players.concat(game.dead);
-                const others = allChars.filter(current => current !== target && current.getSkills().length > 0);
+                const others = game.filterPlayer2(current => current !== target && current.getSkills().length > 0);
+                // const allChars = game.players.concat(game.dead);
+                // const others = allChars.filter(current => current !== target && current.getSkills().length > 0);
                 if (others.length > 0) {
                     let tryFind = 5;
                     while (tryFind > 0 && !victimSkill) {
@@ -723,7 +721,7 @@ export default {
                     target.popup(chosenSkill);
                     game.log(target, '获得了技能', `【${get.translation(chosenSkill)}】`);
 
-                    // --- 3. 判断是否为场上角色的技能并处理失效 ---
+                    // 判断是否为场上角色的技能并处理失效 ---
                     if (victim && victim.isIn() && victimSkill && chosenSkill === victimSkill) {
                         const doDisable = await target.chooseBool(
                             `是否令${get.translation(victim)}失去技能【${get.translation(chosenSkill)}】直到你的下回合开始。`,

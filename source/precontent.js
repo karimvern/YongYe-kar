@@ -147,7 +147,7 @@ export async function precontent(config, pack) {
         });
 
 
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星','骥','闪','族'];
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星','骥','闪','族','乐','OL谋'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`
@@ -183,6 +183,7 @@ export async function precontent(config, pack) {
     // 导入 poptip
     Object.assign(lib.poptip, poptip);
 
+    lib.config.all.cards.push("永夜之境");
 
 
     //装备区无副类别，by《名将杀》暴暴龙
@@ -853,7 +854,7 @@ export async function precontent(config, pack) {
             // 注意：传入 selection 是为了让客户端也能更新自己的历史记录，保证下次自动切歌时顺序正确
             game.broadcastAll(function (url, selection, isSingle, settings, originalArgs) {
                 // --- A. 更新客户端本地历史记录 ---
-                // 这步至关重要：联机时，客户端需要知道当前播的是啥，才能算出下一首是啥
+                //联机时，客户端需要知道当前播的是啥，才能算出下一首是啥
                 if (!_status.xinxMusicHistory) _status.xinxMusicHistory = {};
                 if (!_status.xinxMusicHistory[settings.tag]) {
                     _status.xinxMusicHistory[settings.tag] = { last: null, played: [] };
@@ -911,7 +912,7 @@ export async function precontent(config, pack) {
     // 角色出牌语音注入模块
     // ==========================================
     const myExtension = "永夜之境";
-    const charSuffixes = ["zhonghui", "guojia"];
+    const charSuffixes = ["zhonghui", "guojia",'duyu'];
     // 改用对象来分类存放不同角色的语音
     // { "zhonghui": ["sha", "nanman"], "xxxx": ["sha", "wuzhong"] }
     let customVoices = {};
@@ -962,7 +963,18 @@ export async function precontent(config, pack) {
                 "nanman", "sha", "shan", "shandian", "sha_fire", "sha_thunder",
                 "shuiyanqijun", "shunshou", "tao", "taoyuan", "tiesuo", "wanjian",
                 "wugu", "wuxie", "wuzhong", "yuanjiao", "zhibi",
-            ]
+            ],
+            "duyu": [
+                "bingliang", "chiling", "diaohulishan", "guohe",
+                "gz_guguoanbang", "gz_haolingtianxia", "gz_kefuzhongyuan",
+                "huogong", "huoshaolianying", "jiedao", "jiu",
+                "juedou", "lebu", "lianjunshengyan", "lulitongxin",
+                "nanman", "sha", "shan", "shandian", "sha_fire",
+                "sha_thunder", "shuiyanqijun", "shunshou", "tao",
+                "taoyuan", "tiesuo", "wanjian", "wenhe", "wugu",
+                "wuxie", "wuzhong", "yiyi", "yuanjiao", "zhibi"
+            ],
+
         };
         console.log(`[${myExtension}] 已启用兜底语音字典。`);
     }
