@@ -221,9 +221,9 @@ export default {
                 let num = gainedCards.length;
                 const hasDistributableCards = () => {
                     return gainedCards.some(c =>
-                        get.owner(c) == player && 
-                        get.position(c) == 'h' && 
-                        !c.hasGaintag("xinxguiji_given") 
+                        get.owner(c) == player &&
+                        get.position(c) == 'h' &&
+                        !c.hasGaintag("xinxguiji_given")
                     );
                 };
 
@@ -397,25 +397,13 @@ export default {
             async content(event, trigger, player) {
                 game.playAudio("../extension/永夜之境/audio/card/", 'xinxmingxinzhiyue' + [get.rand(1, 2)] + '.mp3');
                 const target = event.target;
-                const timerSkill = 'xinxmingxinzhiyue_timer';
-                const effectSkill = 'xinxmingxinzhiyue_effect';
-                player.addTempSkill(timerSkill, { player: 'phaseBegin' });
-                //记录需要清理的角色列表
-                // 放入数组前先判断是否存在，防止重复添加
-                if (!player.storage[timerSkill]) player.storage[timerSkill] = [];
-                if (!player.storage[timerSkill].includes(player)) player.storage[timerSkill].push(player);
-                if (!player.storage[timerSkill].includes(target)) player.storage[timerSkill].push(target);
-
-                //为使用者配置共享技能 (指向目标)
-                player.storage[effectSkill] = target;
-                player.addSkill(effectSkill);
-                if (lib.skill[effectSkill].init) lib.skill[effectSkill].init(player, effectSkill);
-
-                // 为目标配置共享技能 (指向使用者)
-                target.storage[effectSkill] = player;
-                target.addSkill(effectSkill);
-                if (lib.skill[effectSkill].init) lib.skill[effectSkill].init(target, effectSkill);
-
+                player.storage.xinxmingxinzhiyue_target = target;
+                target.storage.xinxmingxinzhiyue_target = player;
+                player.markAuto("xinxmingxinzhiyue_effect", [target]);
+                target.markAuto("xinxmingxinzhiyue_effect", [player]);
+                player.addAdditionalSkill(`xinxmingxinzhiyue_effect_${target.playerid}`, "xinxmingxinzhiyue_effect");
+                target.addAdditionalSkill(`xxinxmingxinzhiyue_effect_${player.playerid}`, "xinxmingxinzhiyue_effect");
+                player.addTempSkill("xinxmingxinzhiyue_timer", { player: "phaseBegin" });
                 game.log(player, '与', target, '立下了约定');
                 await game.delayx();
                 player.popup('约定', 'wood');
@@ -814,7 +802,6 @@ export default {
                             } else {
                                 next.set("prompt2", "（在此之后仍需弃置" + get.cnNumber(discardNum) + "张牌）");
                             }
-
                             next.set("shanRequired", shanRequired);
                             next.set("respondTo", [player, event.card]);
 
@@ -879,9 +866,9 @@ export default {
                                         bool = false;
                                     }
                                     if (bool) {
-                                        return 5 - get.useful(card);
+                                        return 12 - get.useful(card);
                                     }
-                                    return 5 - get.useful(card);
+                                    return 12 - get.useful(card);
                                 });
                             let resultDiscard = await nextDiscard.forResult();
                             if (!resultDiscard.bool) {
@@ -1323,10 +1310,10 @@ export default {
                 if (target.hasSkill('xinxyuejianbiyou_effect')) {
                     await target.removeSkill('xinxyuejianbiyou_effect');
                     await target.addSkill('xinxyuejianbiyou_effect');
-                    await target.addMark('xinxyuejianbiyou_effect',4,false);
+                    await target.addMark('xinxyuejianbiyou_effect', 4, false);
                 } else {
                     target.addSkill('xinxyuejianbiyou_effect');
-                    await target.addMark('xinxyuejianbiyou_effect',4,false);
+                    await target.addMark('xinxyuejianbiyou_effect', 4, false);
                 }
             },
             basic: {
@@ -1346,7 +1333,7 @@ export default {
 
     },
     translate: {
-        xinxyuejianbiyou:'月茧庇佑',
+        xinxyuejianbiyou: '月茧庇佑',
         xinxyuejianbiyou_info: `${get.poptip('xinx_consume')}。出牌阶段，对自己使用。你使用的下三张非${get.poptip('xinx_jiyi')}标签的${get.poptip('xinx_jishipai')}结算后，为此实体牌附加可主动使用的记忆效果。`,
         jinhuanren: '金焕刃',
         jinhuanren_info: "①每轮开始时，你视为使用一张无距离限制的【杀】。②当此牌离开你的装备区时，销毁之。",

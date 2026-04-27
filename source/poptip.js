@@ -128,6 +128,26 @@ lib.poptip.add({
     info: "一张牌保留在你手牌中的回合数",
 });
 lib.poptip.add({
+    id: "xinx_biaoqian",
+    name: "标签",
+    info: `卡牌的专属标签，使用时触发对应效果。分别为：
+    <br><br>此牌随机额外结算1至3次；
+    <br><br>此牌伤害随机增加1至3点；
+    <br><br>随机摸1至3张牌；
+    <br><br>随机回复1至3点体力，若未受伤改为增加体力上限;
+    <br><br>随机视为使用1至3张非装备牌。`,
+});
+lib.poptip.add({
+    id: "xinx_hecheng",
+    name: "合成",
+    info: `将所选牌移出游戏，从游戏外随机获得一张类型为所选牌类型其中之一的牌。`,
+});
+lib.poptip.add({
+    id: "xinx_zyjinengshiji",
+    name: "主要时机",
+    info: `仅以你为主体触发的时机。受到伤害、准备阶段、结束阶段、出牌阶段开始时、回合开始、回合结束、弃牌阶段、摸牌阶段、判定阶段、失去体力、体力变化、翻面、濒死、死亡。`,
+})
+lib.poptip.add({
     name: '专属牌堆',
     id: 'xinxzhuanshucardpile',
     info:

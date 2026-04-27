@@ -104,7 +104,9 @@ lib.skill["_xinx_jiyi"] = {
             game.log(player, '的', cards, '触发了【记忆】效果');
             player.storage.xinx_jiyi_unlock = true;
             for (let card of cards) {
-                await player.chooseUseTarget(card, true, false, 'nodistance');
+                if (player.hasUseTarget(card)) {
+                    await player.chooseUseTarget(card, true, false);
+                }
             }
             delete player.storage.xinx_jiyi_unlock;
         }

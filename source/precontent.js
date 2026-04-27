@@ -145,9 +145,15 @@ export async function precontent(config, pack) {
             nature: 'watermm',
             showName: '白',
         });
+        lib.namePrefix.set('叶', {
+            color: '#FFD700',//FFDE38 4ED09E FFD700
+            nature: 'watermm',
+            showName: '叶',
+        });
 
 
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星','骥','闪','族','乐','OL谋'];
+
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星','骥','闪','族','乐','OL谋','OL'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`

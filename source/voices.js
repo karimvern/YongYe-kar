@@ -455,6 +455,55 @@ export let voices = {
     '#ext:永夜之境/audio/xinxbuxiu4': '这一拳——送你回家！',
     '#ext:永夜之境/audio/xinxbuxiu5': '哈，不过是条杂鱼！',
     '#ext:永夜之境/audio/xinxbuxiu6': '…有点意思！',
+
+    //海瑟音
+    '#ext:永夜之境/audio/xinxanliu1': '张牙舞爪的虾蟹，还不足为惧。',
+    '#ext:永夜之境/audio/xinxanliu2': '献上一曲锋利的挽歌。',
+    '#ext:永夜之境/audio/xinxanliu3': '盛宴在即，想来共演一曲么？',
+    '#ext:永夜之境/audio/xinxanliu4': '愿凯旋的乐音传遍大地。',
+    '#ext:永夜之境/audio/xinxjiange1': '每一座孤岛，都会被潮汐拥抱。',
+    '#ext:永夜之境/audio/xinxjiange2': '水迹稍纵即逝，却能汇成浪花。',
+    '#ext:永夜之境/audio/xinxjiange3': '潮汐，与我沉沦。',
+    '#ext:永夜之境/audio/xinxjiange4': '盛典，不醉不归。',
+
+    //银狼999
+    '#ext:永夜之境/audio/xinxcaidan1': '来了，无限火力！',
+    '#ext:永夜之境/audio/xinxcaidan2': '整点好玩的~',
+    '#ext:永夜之境/audio/xinxcaidan3': '教你两招，学会了？',
+    '#ext:永夜之境/audio/xinxcaidan4': '炸个鱼塘放松下。',
+    '#ext:永夜之境/audio/xinxcaidan5': '奖励关来了！',
+    '#ext:永夜之境/audio/xinxcaidan6': '开自动吧，我来带飞你。',
+    '#ext:永夜之境/audio/xinxcaidan7': '没有技巧，都是练度。',
+    '#ext:永夜之境/audio/xinxcaidan8': '天花板级别的操作。',
+    '#ext:永夜之境/audio/xinxcaidan9': '一波带走。',
+    '#ext:永夜之境/audio/xinxcaidan10': '你猜，到底谁是BOSS？',
+    '#ext:永夜之境/audio/xinxcaidan11': '爆率还这么低？',
+    '#ext:永夜之境/audio/xinxzunlin1': '哟，急着来送人头？',
+    '#ext:永夜之境/audio/xinxzunlin2': '按一下，朋友。',
+    '#ext:永夜之境/audio/xinxzunlin3': '爽就完了。',
+    '#ext:永夜之境/audio/xinxzunlin4': '能爽玩啦！',
+    '#ext:永夜之境/audio/xinxzunlin5': '这后援，无敌。',
+    '#ext:永夜之境/audio/xinxzunlin6': '什么时候支持等级「一键升级」？',
+    '#ext:永夜之境/audio/xinxzunlin7': '嚯，离毕业面板又近了一步。',
+    '#ext:永夜之境/audio/xinxzunlin8': '不装了，接下来这把——高端局！',
+    '#ext:永夜之境/audio/xinxzunlin9': '看好了阿哈，什么叫大活！',
+    '#ext:永夜之境/audio/xinxzunlin10': '给你表演下，这才叫崩坏！',
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+    
+
     
 
 
@@ -484,6 +533,80 @@ export let voices = {
 
 
     //风雨如晦
+    '#ext:永夜之境/audio/fyrhbianshi1': '佯遣降军运粮，实许贼五万伏兵！',
+    '#ext:永夜之境/audio/fyrhbianshi2': '诈降之计已破，贼将欲将何往？',
+    '#ext:永夜之境/audio/fyrhbianshi3': '哈哈哈哈，就由吾前去，诱敌谷中。',
+    '#ext:永夜之境/audio/fyrhxiejian1': '往来皆死战，热血盈袍铠！',
+    '#ext:永夜之境/audio/fyrhxiejian2': '此生身许国，奋勇肝胆热！',
+    '#ext:永夜之境/audio/fyrhxiejian3': '但恐报国无门，何惧因此亡身！',
+    '#ext:永夜之境/audio/fyrhpijing1': '思立卓勋，应身先士卒，为军表率。',
+    '#ext:永夜之境/audio/fyrhpijing2': '欲建奇功，当以身作则，亲临险地。',
+    '#ext:永夜之境/audio/fyrhpijing3': '不临危境，功业何来？',
+    '#ext:永夜之境/audio/fyrhpijing4': '以身犯险，以命相搏。',
+    '#ext:永夜之境/audio/fyrhjiushi1': '疑有暗香来，几度梅花开。',
+    '#ext:永夜之境/audio/fyrhjiushi2': '借君一壶酒，七步亦成诗。',
+    '#ext:永夜之境/audio/fyrhjiushi1': '疑有暗香来，几度梅花开。',
+    '#ext:永夜之境/audio/fyrhluoying1': '梅花惊落人清散。',
+    '#ext:永夜之境/audio/fyrhluoying2': '落英何处去，随我诉衷肠。',
+    '#ext:永夜之境/audio/fyrhbawu1': '强军奔踏若雷霆，先锋侵袭如烈火！',
+    '#ext:永夜之境/audio/fyrhbawu2': '策马冲阵，袭掠敌酋！',
+    '#ext:永夜之境/audio/fyrhbawu3': '绝路有径，逢我无生！',
+    '#ext:永夜之境/audio/fyrhbawu4': '戾刃凌殄，绝无生路。',
+    '#ext:永夜之境/audio/fyrhweijie1': '吾所杀者众，何妨添汝一人！',
+    '#ext:永夜之境/audio/fyrhweijie2': '将死之人，何必多加言语？',
+    '#ext:永夜之境/audio/fyrhweijie3': '凶光所至，必起杀戮。',
+    '#ext:永夜之境/audio/fyrhweijie4': '吾军骁勇，出则尽灭！',
+    '#ext:永夜之境/audio/fyrhwanglie1': '国家危难之时，自当挺身相助。',
+    '#ext:永夜之境/audio/fyrhwanglie2': '兴忧汉室，自不顾其身。',
+    '#ext:永夜之境/audio/fyrhwanglie3': '大汉兴危，当捐躯济难！',
+    '#ext:永夜之境/audio/fyrhwanglie4': '三军可夺帅也，匹夫不可夺志也。',
+    '#ext:永夜之境/audio/fyrhwanglie5': '大局未定，何困于一时成败。',
+
+    '#ext:永夜之境/audio/fyrhfujie1': '手不释卷，老而弥笃，以效古贤之风。',
+    '#ext:永夜之境/audio/fyrhfujie2': '天真高絜，心非吾好，王公不能屈也。',
+    '#ext:永夜之境/audio/fyrhfujie3': '浩气长存，以正压邪。',
+    '#ext:永夜之境/audio/fyrhfujie4': '名彰千里，盗无敢侵。',
+    '#ext:永夜之境/audio/fyrhxuzhong1': '居江湖之远，而举世皆知其名。',
+    '#ext:永夜之境/audio/fyrhxuzhong2': '离庙堂之高，与孤云野鹤为伴。',
+
+    
+    '#ext:永夜之境/audio/fyrhgenghuang1': '半分明月半自在，半卷诗书半亩苔。',
+    '#ext:永夜之境/audio/fyrhgenghuang2': '龙向沧海虎向林，野鹤垂舟系柳荫。',
+    '#ext:永夜之境/audio/fyrhbisao1': '庐前松柏老，侍先祖于朝暮，余星火守宗祠。',
+    '#ext:永夜之境/audio/fyrhbisao2': '素琴横膝，读罢黄老，吭歌不必英雄闻。',
+    '#ext:永夜之境/audio/fyrhshouzhen1': '松柏入青云，野菊守霜晨。',
+    '#ext:永夜之境/audio/fyrhshouzhen2': '兄别之言在耳，不敢使田亩荒芜。',
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+  
+
+    
+
+
+
+
+  
+
+
+
+
+
+
+
     '#ext:永夜之境/audio/fyrhjuzhan1': '休得恋战！小胜便可。',
     '#ext:永夜之境/audio/fyrhjuzhan2': '拒敌西川之外，可保战事无虞。',
     '#ext:永夜之境/audio/fyrhjuzhan3': '损兵折将无妨，断不可再犯！',
