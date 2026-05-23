@@ -648,6 +648,9 @@ export default {
                         const potentialVictim = others.randomGet();
                         const vSkills = potentialVictim.getSkills(null, false, false).filter(s => {
                             if (target.getSkills().includes(s)) return false;
+                            if (s === "olfeiyang"){
+                                return false;
+                            }
                             const info = lib.skill[s];
                             return info && !info.zhuSkill && !info.hiddenSkill && !info.charlotte;
                         });

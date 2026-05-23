@@ -468,7 +468,7 @@ export let voices = {
 
     //银狼999
     '#ext:永夜之境/audio/xinxcaidan1': '来了，无限火力！',
-    '#ext:永夜之境/audio/xinxcaidan2': '整点好玩的~',
+    '#ext:永夜之境/audio/xinxcaidan2': '整点好玩的～',
     '#ext:永夜之境/audio/xinxcaidan3': '教你两招，学会了？',
     '#ext:永夜之境/audio/xinxcaidan4': '炸个鱼塘放松下。',
     '#ext:永夜之境/audio/xinxcaidan5': '奖励关来了！',
@@ -488,6 +488,17 @@ export let voices = {
     '#ext:永夜之境/audio/xinxzunlin8': '不装了，接下来这把——高端局！',
     '#ext:永夜之境/audio/xinxzunlin9': '看好了阿哈，什么叫大活！',
     '#ext:永夜之境/audio/xinxzunlin10': '给你表演下，这才叫崩坏！',
+    //符玄
+    '#ext:永夜之境/audio/xinxqiongguan1': '以额间之眼观之…',
+    '#ext:永夜之境/audio/xinxqiongguan2': '风云不测，若涉渊水。',
+    '#ext:永夜之境/audio/xinxqiongguan3': '成象，效法！',
+    '#ext:永夜之境/audio/xinxqiongguan4': '极数，知来！',
+    '#ext:永夜之境/audio/xinxgeze1': '相与为一。',
+    '#ext:永夜之境/audio/xinxgeze2': '上下象易。',
+
+    
+
+
 
 
 
@@ -505,27 +516,6 @@ export let voices = {
     
 
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -533,6 +523,52 @@ export let voices = {
 
 
     //风雨如晦
+     '#ext:永夜之境/audio/fyrhmenglong1': '好啦，不要再胡闹啦。',
+     '#ext:永夜之境/audio/fyrhmenglong2': '等会就让你们安静下来~',
+     '#ext:永夜之境/audio/fyrhmenglong3': '那些璀璨的花朵，正是新生的梦。',
+     '#ext:永夜之境/audio/fyrhmenglong4': '别担心，闭上双眼。',
+     '#ext:永夜之境/audio/fyrhmenglong5': '好好记着。',
+     '#ext:永夜之境/audio/fyrhmenglong6': '好好招待大家~',
+     '#ext:永夜之境/audio/fyrhmenglong7': '命运般的邂逅，不是么？',
+     '#ext:永夜之境/audio/fyrhmenglong8': '别想逃走哦。',
+     '#ext:永夜之境/audio/fyrhmenglong9': '夜色将要落幕…嘘，晚安。',
+     '#ext:永夜之境/audio/fyrhmenglong10': '诸位，后会有期~',
+     '#ext:永夜之境/audio/fyrhmenglong11': '天亮了，该醒啦~',
+     '#ext:永夜之境/audio/fyrhmenglong12': '再见。我的意思是，在恰当的时间再见。',
+     '#ext:永夜之境/audio/fyrhmenglong13': '别纠结了…不是还有我吗？',
+     '#ext:永夜之境/audio/fyrhmenglong14': '这个的话，还是我更擅长吧？',
+     '#ext:永夜之境/audio/fyrhmenglong15': '疼……',
+     '#ext:永夜之境/audio/fyrhmenglong16': '下手真狠……',
+
+     '#ext:永夜之境/audio/fyrhpitai1': '否极泰来。',
+     '#ext:永夜之境/audio/fyrhpitai2': '互通有无，实为妙计',
+     '#ext:永夜之境/audio/fyrhpitai3': '阴阳变转，生生不绝。',
+     '#ext:永夜之境/audio/fyrhpitai4': '物皆自成，无所不利。',
+
+     '#ext:永夜之境/audio/fyrhjiaxie1': '我虽蛮人，亦有筹谋部划之智。',
+     '#ext:永夜之境/audio/fyrhjiaxie2': '智御百蛮，胜得雄兵十万。',
+     '#ext:永夜之境/audio/fyrhcangren1': '耻为内斗，当提刀北向。',
+     '#ext:永夜之境/audio/fyrhcangren2': '裔继南中，威同兄长。',
+     '#ext:永夜之境/audio/fyrhchicui1': '国仇未报，奋决死之意、执无生继前！',
+     '#ext:永夜之境/audio/fyrhchicui2': '家恨当雪，提三尺之剑、斩宵小仇雠！',
+     '#ext:永夜之境/audio/fyrhhuanhuo1': '以战养战，所向披靡！',
+     '#ext:永夜之境/audio/fyrhhuanhuo2': '战不旋踵，横扫千军！',
+     '#ext:永夜之境/audio/fyrhjiabai1': '孤有一剑予君，或提之戮贼，或藏之受戮。',
+     '#ext:永夜之境/audio/fyrhjiabai2': '卿乃国之股肱，或奉诏讨贼，或引咎自戕。',
+     '#ext:永夜之境/audio/fyrhjiabai3': '推令如山，敢不从者，斩立决！',
+     '#ext:永夜之境/audio/fyrhjiabai4': '畜养汝等，正为今日！',
+
+    
+
+
+       
+
+      
+    '#ext:永夜之境/audio/fyrhchuailing1': '将军性豪，必不吝此小物。',
+    '#ext:永夜之境/audio/fyrhchuailing2': '且割将军虎须，织我青云大道。',
+    '#ext:永夜之境/audio/fyrhchuailing3': '其力不足者，可附骥尾而行，得千里之惠。',
+    '#ext:永夜之境/audio/fyrhhufu1': '非我摇摆不定，实乃形势所逼。',
+    '#ext:永夜之境/audio/fyrhhufu2': '风卷云涌，龙虎相斗，顺势可生，逆势则亡。',
     '#ext:永夜之境/audio/fyrhbianshi1': '佯遣降军运粮，实许贼五万伏兵！',
     '#ext:永夜之境/audio/fyrhbianshi2': '诈降之计已破，贼将欲将何往？',
     '#ext:永夜之境/audio/fyrhbianshi3': '哈哈哈哈，就由吾前去，诱敌谷中。',
@@ -568,14 +604,44 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhfujie4': '名彰千里，盗无敢侵。',
     '#ext:永夜之境/audio/fyrhxuzhong1': '居江湖之远，而举世皆知其名。',
     '#ext:永夜之境/audio/fyrhxuzhong2': '离庙堂之高，与孤云野鹤为伴。',
-
-    
     '#ext:永夜之境/audio/fyrhgenghuang1': '半分明月半自在，半卷诗书半亩苔。',
     '#ext:永夜之境/audio/fyrhgenghuang2': '龙向沧海虎向林，野鹤垂舟系柳荫。',
     '#ext:永夜之境/audio/fyrhbisao1': '庐前松柏老，侍先祖于朝暮，余星火守宗祠。',
     '#ext:永夜之境/audio/fyrhbisao2': '素琴横膝，读罢黄老，吭歌不必英雄闻。',
     '#ext:永夜之境/audio/fyrhshouzhen1': '松柏入青云，野菊守霜晨。',
     '#ext:永夜之境/audio/fyrhshouzhen2': '兄别之言在耳，不敢使田亩荒芜。',
+    '#ext:永夜之境/audio/fyrhlietu1': '社稷之重，可倾山河湖海，负肩当驱千里。',
+    '#ext:永夜之境/audio/fyrhlietu2': '乱臣如逆潮当空，臣宁舍残躯以遏浊流。',
+    '#ext:永夜之境/audio/fyrhkuizong1': '心如驳龙之奔马，甘为国朝所驱驰。',
+
+    '#ext:永夜之境/audio/fyrhyijin1': '聚万民之力，行黄天之法。',
+    '#ext:永夜之境/audio/fyrhyijin2': '来感受黄天的召唤吧。',
+    '#ext:永夜之境/audio/fyrhyijin3': '雷奔云决，威震四方。',
+    '#ext:永夜之境/audio/fyrhyijin4': '鬼道改命，天劫万变。',
+    '#ext:永夜之境/audio/fyrhhuangsheng1': '民心所向，善莫大焉。',
+    '#ext:永夜之境/audio/fyrhhuangsheng2': '他日成事，汝当首功！',
+    '#ext:永夜之境/audio/fyrhhuangsheng3': '风来，雨来，雷来！',
+    '#ext:永夜之境/audio/fyrhhuangsheng4': '汝命，由我来把控！',
+    '#ext:永夜之境/audio/fyrhhuangsheng5': '太平术，判生死！',
+    '#ext:永夜之境/audio/fyrhcanjue1': '黄巾的力量，需要你们的维护。',
+    '#ext:永夜之境/audio/fyrhcanjue2': '黄天挥军，四海皆应！',
+
+   
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+    
 
 
 
@@ -959,6 +1025,22 @@ export let voices = {
 
 
     //杏雅三国
+    //张辽
+    '#ext:永夜之境/audio/xinxyufu1': '久闻盛名，今日一见，不过尔尔。',
+    '#ext:永夜之境/audio/xinxyufu2': '堂堂大将，甘为缩头之鼠乎？',
+    '#ext:永夜之境/audio/xinxyufu3': '大丈夫避而不战，此是何理也？',
+    '#ext:永夜之境/audio/xinxyufu4': '汝若有胆，便来一战！',
+    '#ext:永夜之境/audio/xinxyufu5': '莫非畏我勇名，不然何以避战？',
+    '#ext:永夜之境/audio/xinxliangye1': '以攻代守，以为疲位之策。',
+    '#ext:永夜之境/audio/xinxliangye2': '因敌变化而取胜者，方谓之神。',
+    '#ext:永夜之境/audio/xinxliangye3': '用兵以巧，则无敌不胜。',
+    '#ext:永夜之境/audio/xinxliangye4': '不可操之过急，还需从长计议。',
+    '#ext:永夜之境/audio/xinxliangye5': '事急从权，断不可功亏一篑。',
+    '#ext:永夜之境/audio/xinxliangye6': '吾等重整旗鼓，必有功成之日。',
+    '#ext:永夜之境/audio/xinxyinghuanren1': '今日便为尔等逆贼之终日！',
+    '#ext:永夜之境/audio/xinxyinghuanren2': '贼子，莫非只敢逞口舌之快？',
+    '#ext:永夜之境/audio/xinxyinghuanren3': '众将依此布之，战必无懈可击！',
+    '#ext:永夜之境/audio/xinxyinghuanren4': '待敌攻关不克，野无散谷，自然疲乏。',
     //刘备
     '#ext:永夜之境/audio/xinxlianlin1': '曹公海纳宇内，备愧为座上之宾。',
     '#ext:永夜之境/audio/xinxlianlin2': '曹公礼遇之重，备却之不恭。',

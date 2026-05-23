@@ -75,6 +75,37 @@ export default {
 			game.saveConfig('extension_永夜之境_custom_voice_switch', item);
 		}
 	},
+	fgx0: {
+		name: "<font size='4'>---------武将测试工具---------</font>",
+		clear: true,
+	},
+	//搬运《奇妙工具》
+	autoSwap: {
+		name: "控制AI武将",
+		init: false,
+		intro: "开启后立即生效，接管场上所有角色的操作。",
+	},
+	autoSwapSetting: {
+		name: "控制AI设置",
+		init: "all",
+		item: {
+			"all": "全部都操控",
+			"onlyFriend": "仅限队友",
+			"onlyRealFriend": "仅限真实队友",
+		},
+		intro: "关于控制AI的设置",
+	},
+	replaceCharacter: {
+		name: "AI换将",
+		init: false,
+		intro: "开启后在游戏开始时可以给其他人换将",
+	},
+	//搬运《自用插件》
+	AIcheat: {
+		init: false,
+		name: "武将测试辅助",
+		intro: '<font color="#FFFF00">开启后可以使用一些测试武将的小功能。',
+	},
 	
 
 }

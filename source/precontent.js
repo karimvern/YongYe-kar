@@ -67,7 +67,7 @@ export async function precontent(config, pack) {
                 // 全名匹配
                 if (characterIntro[name]) {
                     lib.characterIntro[name] = characterIntro[name];
-                } 
+                }
                 // 后缀匹配
                 else if (name.includes('_')) {
                     let suffix = name.substring(name.indexOf('_') + 1);
@@ -150,10 +150,30 @@ export async function precontent(config, pack) {
             nature: 'watermm',
             showName: '叶',
         });
+        lib.namePrefix.set('秀', {
+            color: '#B3B0DE',
+            nature: 'thundermm',
+            showName: '秀',
+        });
+        lib.namePrefix.set('雨', {
+            color: '#B6C6EC',
+            nature: 'watermm',
+            showName: '雨',
+        });
+        lib.namePrefix.set('正', {
+            color: '#C482CE',
+            nature: 'thundermm',
+            showName: '正',
+        });
+        lib.namePrefix.set('夏', {
+            color: '#9FD1CE',
+            nature: 'watermm',
+            showName: '夏',
+        });
 
 
 
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星','骥','闪','族','乐','OL谋','OL'];
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', '乐', 'OL谋', 'OL', '廷','玄蝶','OL界','手杀神'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`
@@ -189,7 +209,8 @@ export async function precontent(config, pack) {
     // 导入 poptip
     Object.assign(lib.poptip, poptip);
 
-    lib.config.all.cards.push("永夜之境");
+    //lib.config.all.cards.push("永夜之境");
+
 
 
     //装备区无副类别，by《名将杀》暴暴龙
@@ -214,315 +235,314 @@ export async function precontent(config, pack) {
         }
         return xorigin_player_canEquip.apply(this, arguments);
     };
-    lib.skill["_xinxchangeToEquip"] = {
-        trigger: {
-            player: "equipBegin",
-        },
-        forced: true,
-        silent: true,
-        charlotte: true,
-        ruleSkill: true,
-        filter(event, player) {
-            return player.hasSkill('xinxduoyi');
-        },
-        async content(event, trigger, player) {
-            trigger.setContent(lib.skill._xinxchangeToEquip.equipContent);
-        },
-        async equipContent(event, trigger, player) {
-            event.visible = true;
-            //先确定这次的cards是什么成分也防止有人在equipBegin之类的时机往里面塞垃圾
-            if (event.cards.length > 1 && event.cards.some(cardx => cardx.isViewAsCard)) {
-                //实体牌数大于1且里面有虚拟假牌，终止此事件
-                event.untrigger();
-                return;
-            }
-            //进行第一轮先行判断，让所有装备牌的原主失去装备牌
-            let loseCards = [];
-            //判断card是不是假牌，如果是改为失去假牌
-            if (event.card.isViewAsCard) {
-                loseCards.add(event.card);
-            } else {
-                loseCards.addArray(event.cards);
-            }
-            if (loseCards.length) {
-                const map = {};
-                for (const i of loseCards) {
-                    var owner = get.owner(i, "judge");
-                    if (owner && (owner != player || get.position(i) != "e")) {
-                        var id = owner.playerid;
-                        if (!map[id]) {
-                            map[id] = [[], [], []];
-                        }
-                        map[id][0].push(i);
-                        var position = get.position(i);
-                        if (position == "h") {
-                            map[id][1].push(i);
-                        } else {
-                            map[id][2].push(i);
-                        }
-                    } else if (!event.updatePile && get.position(i) == "c") {
-                        event.updatePile = true;
-                    }
-                    if (event.visible) {
-                        i.addKnower("everyone");
-                    }
-                }
-                event.losing_map = map;
-                for (const i in map) {
-                    const owner = (_status.connectMode ? lib.playerOL : game.playerMap)[i];
-                    const next = owner.lose(map[i][0], ui.special).set("type", "equip").set("forceDie", true).set("getlx", false);
-                    if (event.visible == true) {
-                        // @ts-expect-error ignore
-                        next.visible = true;
-                    }
-                    await next;
-                    event.relatedLose = next;
-                }
-            }
-            player.equiping = true;
-            const handleEquip = async card => {
-                let cards = [];
-                // @ts-expect-error ignore
-                if (get.itemtype(card) === "card" && !card.isViewAsCard) {
-                    cards = [card];
-                    card = card.cardSymbol ? card[card.cardSymbol] : get.autoViewAs(card, void 0, false);
-                    event.vcards.push(card);
-                } else {
-                    if (get.itemtype(card) === "card" && card.isViewAsCard) {
-                        event.vcards.push(card[card.cardSymbol]);
-                    } else {
-                        event.vcards.push(card);
-                    }
-                    cards = event.cards ?? [];
-                }
-                let cardInfo = get.info(card, false);
-                if (player.isMin() || !player.canEquip(card)) {
-                    await game.cardsDiscard(cards);
-                    delete player.equiping;
+    Object.assign(lib.skill, {
+        _xinxchangeToEquip: {
+            trigger: {
+                player: "equipBegin",
+            },
+            forced: true,
+            silent: true,
+            charlotte: true,
+            ruleSkill: true,
+            filter(event, player) {
+                return player.hasSkill('xinxduoyi');
+            },
+            async content(event, trigger, player) {
+                trigger.setContent(lib.skill._xinxchangeToEquip.equipContent);
+            },
+            async equipContent(event, trigger, player) {
+                event.visible = true;
+                //先确定这次的cards是什么成分也防止有人在equipBegin之类的时机往里面塞垃圾
+                if (event.cards.length > 1 && event.cards.some(cardx => cardx.isViewAsCard)) {
+                    //实体牌数大于1且里面有虚拟假牌，终止此事件
+                    event.untrigger();
                     return;
                 }
-                let audioSubtype = get.subtype(card);
-                if (audioSubtype == "equip6") {
-                    audioSubtype = "equip3";
+                //进行第一轮先行判断，让所有装备牌的原主失去装备牌
+                let loseCards = [];
+                //判断card是不是假牌，如果是改为失去假牌
+                if (event.card.isViewAsCard) {
+                    loseCards.add(event.card);
+                } else {
+                    loseCards.addArray(event.cards);
                 }
-                // @ts-expect-error ignore
-                game.broadcastAll(type => {
-                    if (lib.config.background_audio) {
-                        // @ts-expect-error ignore
-                        game.playAudio("effect", type);
+                if (loseCards.length) {
+                    const map = {};
+                    for (const i of loseCards) {
+                        var owner = get.owner(i, "judge");
+                        if (owner && (owner != player || get.position(i) != "e")) {
+                            var id = owner.playerid;
+                            if (!map[id]) {
+                                map[id] = [[], [], []];
+                            }
+                            map[id][0].push(i);
+                            var position = get.position(i);
+                            if (position == "h") {
+                                map[id][1].push(i);
+                            } else {
+                                map[id][2].push(i);
+                            }
+                        } else if (!event.updatePile && get.position(i) == "c") {
+                            event.updatePile = true;
+                        }
+                        if (event.visible) {
+                            i.addKnower("everyone");
+                        }
                     }
-                }, audioSubtype);
-                player.addVirtualEquip(card, cards);
-                //player.$equip(card);
-                //game.addVideo("equip", player, get.cardInfo(card));
-                if (event.log != false) {
-                    const isViewAsCard = cards.length !== 1 || cards[0].name !== card.name;
-                    if (isViewAsCard && cards.length) {
-                        game.log(player, '装备了<span class="yellowtext">' + get.translation(card) + "</span>（", cards, "）");
+                    event.losing_map = map;
+                    for (const i in map) {
+                        const owner = (_status.connectMode ? lib.playerOL : game.playerMap)[i];
+                        const next = owner.lose(map[i][0], ui.special).set("type", "equip").set("forceDie", true).set("getlx", false);
+                        if (event.visible == true) {
+                            // @ts-expect-error ignore
+                            next.visible = true;
+                        }
+                        await next;
+                        event.relatedLose = next;
+                    }
+                }
+                player.equiping = true;
+                const handleEquip = async card => {
+                    let cards = [];
+                    // @ts-expect-error ignore
+                    if (get.itemtype(card) === "card" && !card.isViewAsCard) {
+                        cards = [card];
+                        card = card.cardSymbol ? card[card.cardSymbol] : get.autoViewAs(card, void 0, false);
+                        event.vcards.push(card);
                     } else {
-                        game.log(player, "装备了", card);
+                        if (get.itemtype(card) === "card" && card.isViewAsCard) {
+                            event.vcards.push(card[card.cardSymbol]);
+                        } else {
+                            event.vcards.push(card);
+                        }
+                        cards = event.cards ?? [];
                     }
-                }
-                if (cardInfo.onEquip && (!cardInfo.filterEquip || cardInfo.filterEquip(card, player))) {
-                    if (Array.isArray(cardInfo.onEquip)) {
-                        for (var i = 0; i < cardInfo.onEquip.length; i++) {
+                    let cardInfo = get.info(card, false);
+                    if (player.isMin() || !player.canEquip(card)) {
+                        await game.cardsDiscard(cards);
+                        delete player.equiping;
+                        return;
+                    }
+                    let audioSubtype = get.subtype(card);
+                    if (audioSubtype == "equip6") {
+                        audioSubtype = "equip3";
+                    }
+                    // @ts-expect-error ignore
+                    game.broadcastAll(type => {
+                        if (lib.config.background_audio) {
+                            // @ts-expect-error ignore
+                            game.playAudio("effect", type);
+                        }
+                    }, audioSubtype);
+                    player.addVirtualEquip(card, cards);
+                    //player.$equip(card);
+                    //game.addVideo("equip", player, get.cardInfo(card));
+                    if (event.log != false) {
+                        const isViewAsCard = cards.length !== 1 || cards[0].name !== card.name;
+                        if (isViewAsCard && cards.length) {
+                            game.log(player, '装备了<span class="yellowtext">' + get.translation(card) + "</span>（", cards, "）");
+                        } else {
+                            game.log(player, "装备了", card);
+                        }
+                    }
+                    if (cardInfo.onEquip && (!cardInfo.filterEquip || cardInfo.filterEquip(card, player))) {
+                        if (Array.isArray(cardInfo.onEquip)) {
+                            for (var i = 0; i < cardInfo.onEquip.length; i++) {
+                                var next = game.createEvent("equip_" + card.name);
+                                next.setContent(cardInfo.onEquip[i]);
+                                next.player = player;
+                                next.card = event.vcards[0];
+                                await next;
+                            }
+                        } else {
                             var next = game.createEvent("equip_" + card.name);
-                            next.setContent(cardInfo.onEquip[i]);
+                            next.setContent(cardInfo.onEquip);
                             next.player = player;
                             next.card = event.vcards[0];
                             await next;
                         }
-                    } else {
-                        var next = game.createEvent("equip_" + card.name);
-                        next.setContent(cardInfo.onEquip);
-                        next.player = player;
-                        next.card = event.vcards[0];
-                        await next;
+                        if (cardInfo.equipDelay != false) {
+                            await game.delayx();
+                        }
                     }
-                    if (cardInfo.equipDelay != false) {
+                    delete player.equiping;
+                    if (event.delay) {
                         await game.delayx();
                     }
-                }
-                delete player.equiping;
-                if (event.delay) {
-                    await game.delayx();
-                }
-            };
-            //检查实体牌会不会被销毁
-            let stop = false;
-            const list = [];
-            for (const cardx of event.cards) {
-                if (cardx.willBeDestroyed("equip", player, event)) {
-                    cardx.selfDestroy(event);
-                    stop = true;
-                } else if ("hejx".includes(get.position(cardx, true))) {
-                    stop = true;
-                } else {
-                    list.add(cardx);
-                }
-            }
-            if (stop) {
-                if (list.length) {
-                    await game.cardsDiscard(list);
-                }
-                return;
-            }
-            //同时播放所有装备牌的装备动画
-            if (event.cards.length) {
-                if (event.draw) {
-                    player.$draw(event.cards);
-                    await game.delay(0, 300);
-                } else {
-                    // @ts-expect-error ignore
-                    game.broadcast(
-                        function (cards, player) {
-                            cards.forEach(card => {
-                                if (card.clone) {
-                                    card.clone.moveDelete(player);
-                                }
-                            });
-                        },
-                        event.cards,
-                        player
-                    );
-                    event.cards.forEach(card => {
-                        if (card.clone) {
-                            card.clone.moveDelete(player);
-                            game.addVideo("gain2", player, get.cardsInfo([card.clone]));
-                        }
-                    });
-                }
-            }
-            //将多张装备牌的牌替换事件合并为一个，废弃卡牌的replaceEquip自定义事件属性（反正没人用）
-            const replaceEquipEvent = game.createEvent("replaceEquip");
-            replaceEquipEvent.player = player;
-            // @ts-expect-error ignore
-            replaceEquipEvent.card = event.card;
-            replaceEquipEvent.setContent(lib.skill._xinxchangeToEquip.replaceEquipContent);
-            const result = await replaceEquipEvent.forResult();
-            // @ts-expect-error ignore
-            if (get.itemtype(result?.cards) == "cards") {
-                // @ts-expect-error ignore
-                event.swapped = true;
-                const loseEvent = player.lose(result.cards, "visible").set("type", "equip").set("getlx", false);
-                loseEvent.swapEquip = true;
-                if (get.info(event.card, true)?.loseThrow) {
-                    player.$throw(result.cards, 1000);
-                }
-                await loseEvent;
-                // @ts-expect-error ignore
-                for (let card of result.cards) {
-                    if (card.willBeDestroyed("discardPile", player, event)) {
-                        card.selfDestroy(event);
+                };
+                //检查实体牌会不会被销毁
+                let stop = false;
+                const list = [];
+                for (const cardx of event.cards) {
+                    if (cardx.willBeDestroyed("equip", player, event)) {
+                        cardx.selfDestroy(event);
+                        stop = true;
+                    } else if ("hejx".includes(get.position(cardx, true))) {
+                        stop = true;
+                    } else {
+                        list.add(cardx);
                     }
                 }
-            }
-            //就算是vcard也应该用lose处理
-            /*
-            result?.vcards?.forEach(card => {
-                player.removeVirtualEquip(card);
-            });
-            */
-            //然后处理每一张装备牌的装备
-            event.vcards = [];
-            await handleEquip(event.card);
-            //如果event.card是实体牌，改为虚拟牌
-            if (get.itemtype(event.card) == "card") {
-                event.card = event.card[event.card.cardSymbol];
-            }
-            if (event.updatePile) {
-                game.updateRoundNumber();
-            }
-        },
-        async replaceEquipContent(event, trigger, player) {
-            let vcards = [];
-            vcards.push(event.card[event.card.cardSymbol] ? event.card[event.card.cardSymbol] : get.autoViewAs(event.card, void 0, false));
-            const specializedVCards = [],
-                normalVCards = [];
-            const replacedCards = [];
-            vcards.forEach(card => {
-                const info = get.info(card, false);
-                (info?.customSwap ? specializedVCards : normalVCards).push(card);
-            });
-            specializedVCards.forEach(card => {
-                const info = get.info(card, false);
-                replacedCards.addArray(player.getVCards("e", card => info.customSwap(card)));
-            });
-            const types = normalVCards.reduce((types, card) => {
-                return types.concat(get.subtypes(card, false));
-            }, []);
-            if (types.length > 0) {
-                const slots = types,
-                    slotsx = [];
-                if (get.is.mountCombined()) {
-                    slots.forEach(type => {
-                        if (type == "equip3" || type == "equip4") {
-                            slotsx.add("equip3_4");
-                        } else {
-                            slotsx.add(type);
-                        }
-                    });
-                } else {
-                    slotsx.addArray(slots);
+                if (stop) {
+                    if (list.length) {
+                        await game.cardsDiscard(list);
+                    }
+                    return;
                 }
-                slotsx.sort();
-                for (const slot of slotsx) {
-                    let left = player.xinxgetEquipLimit(),
-                        lose = Math.min(left, normalVCards.length);
-                    let result;
-                    if (lose <= 0) {
-                        continue;
+                //同时播放所有装备牌的装备动画
+                if (event.cards.length) {
+                    if (event.draw) {
+                        player.$draw(event.cards);
+                        await game.delay(0, 300);
                     } else {
-                        const cards = player.getVCards("e").filter(card => {
-                            return !replacedCards.includes(card) && lib.filter.canBeReplaced(card, player);
+                        // @ts-expect-error ignore
+                        game.broadcast(
+                            function (cards, player) {
+                                cards.forEach(card => {
+                                    if (card.clone) {
+                                        card.clone.moveDelete(player);
+                                    }
+                                });
+                            },
+                            event.cards,
+                            player
+                        );
+                        event.cards.forEach(card => {
+                            if (card.clone) {
+                                card.clone.moveDelete(player);
+                                game.addVideo("gain2", player, get.cardsInfo([card.clone]));
+                            }
                         });
-                        if (cards.length > 0) {
-                            if (lose >= left) {
-                                result = { bool: true, links: cards };
-                            } else if (cards.length > left - lose) {
-                                var source = event.source,
-                                    num = cards.length - (left - lose);
-                                if (!source || !source.isIn()) {
-                                    source = player;
+                    }
+                }
+                //将多张装备牌的牌替换事件合并为一个，废弃卡牌的replaceEquip自定义事件属性（反正没人用）
+                const replaceEquipEvent = game.createEvent("replaceEquip");
+                replaceEquipEvent.player = player;
+                // @ts-expect-error ignore
+                replaceEquipEvent.card = event.card;
+                replaceEquipEvent.setContent(lib.skill._xinxchangeToEquip.replaceEquipContent);
+                const result = await replaceEquipEvent.forResult();
+                // @ts-expect-error ignore
+                if (get.itemtype(result?.cards) == "cards") {
+                    // @ts-expect-error ignore
+                    event.swapped = true;
+                    const loseEvent = player.lose(result.cards, "visible").set("type", "equip").set("getlx", false);
+                    loseEvent.swapEquip = true;
+                    if (get.info(event.card, true)?.loseThrow) {
+                        player.$throw(result.cards, 1000);
+                    }
+                    await loseEvent;
+                    // @ts-expect-error ignore
+                    for (let card of result.cards) {
+                        if (card.willBeDestroyed("discardPile", player, event)) {
+                            card.selfDestroy(event);
+                        }
+                    }
+                }
+                //就算是vcard也应该用lose处理
+                /*
+                result?.vcards?.forEach(card => {
+                    player.removeVirtualEquip(card);
+                });
+                */
+                //然后处理每一张装备牌的装备
+                event.vcards = [];
+                await handleEquip(event.card);
+                //如果event.card是实体牌，改为虚拟牌
+                if (get.itemtype(event.card) == "card") {
+                    event.card = event.card[event.card.cardSymbol];
+                }
+                if (event.updatePile) {
+                    game.updateRoundNumber();
+                }
+            },
+            async replaceEquipContent(event, trigger, player) {
+                let vcards = [];
+                vcards.push(event.card[event.card.cardSymbol] ? event.card[event.card.cardSymbol] : get.autoViewAs(event.card, void 0, false));
+                const specializedVCards = [],
+                    normalVCards = [];
+                const replacedCards = [];
+                vcards.forEach(card => {
+                    const info = get.info(card, false);
+                    (info?.customSwap ? specializedVCards : normalVCards).push(card);
+                });
+                specializedVCards.forEach(card => {
+                    const info = get.info(card, false);
+                    replacedCards.addArray(player.getVCards("e", card => info.customSwap(card)));
+                });
+                const types = normalVCards.reduce((types, card) => {
+                    return types.concat(get.subtypes(card, false));
+                }, []);
+                if (types.length > 0) {
+                    const slots = types,
+                        slotsx = [];
+                    if (get.is.mountCombined()) {
+                        slots.forEach(type => {
+                            if (type == "equip3" || type == "equip4") {
+                                slotsx.add("equip3_4");
+                            } else {
+                                slotsx.add(type);
+                            }
+                        });
+                    } else {
+                        slotsx.addArray(slots);
+                    }
+                    slotsx.sort();
+                    for (const slot of slotsx) {
+                        let left = player.xinxgetEquipLimit(),
+                            lose = Math.min(left, normalVCards.length);
+                        let result;
+                        if (lose <= 0) {
+                            continue;
+                        } else {
+                            const cards = player.getVCards("e").filter(card => {
+                                return !replacedCards.includes(card) && lib.filter.canBeReplaced(card, player);
+                            });
+                            if (cards.length > 0) {
+                                if (lose >= left) {
+                                    result = { bool: true, links: cards };
+                                } else if (cards.length > left - lose) {
+                                    var source = event.source,
+                                        num = cards.length - (left - lose);
+                                    if (!source || !source.isIn()) {
+                                        source = player;
+                                    }
+                                    const chooseEvent = source
+                                        .chooseButton(["选择替换掉" + get.cnNumber(num) + "张装备牌", [cards, "vcard"]], true, [1, num]);
+                                    result = await chooseEvent.forResult();
                                 }
-                                const chooseEvent = source
-                                    .chooseButton(["选择替换掉" + get.cnNumber(num) + "张装备牌", [cards, "vcard"]], true, [1, num]);
-                                result = await chooseEvent.forResult();
                             }
                         }
-                    }
-                    if (result?.links) {
-                        replacedCards.addArray(result.links);
+                        if (result?.links) {
+                            replacedCards.addArray(result.links);
+                        }
                     }
                 }
-            }
-            event.result = {
-                vcards: replacedCards,
-                cards: player.getCards("e", i => replacedCards.includes(i[i.cardSymbol])),
-            };
-        },
-        ai: {
-            effect: {
-                target(card, player, target) {
-                    if (!target.xinxhasEquipType()) return;
-                    if (player == target && get.type(card) == "equip") {
-                        const cards = target.getVCards("e").filter(card => {
-                            return lib.filter.canBeReplaced(card, target);
-                        });
-                        if (target.xinxgetEquipLimit() >= cards.length + 1) return;
-                        if (cards.some(cardx => cardx.name == card.name)) {
-                            return 0;
-                        }
-                        if (cards.every(cardx => get.equipValue(card) <= get.equipValue(cardx))) {
-                            return 0;
-                        }
-                    }
-                },
+                event.result = {
+                    vcards: replacedCards,
+                    cards: player.getCards("e", i => replacedCards.includes(i[i.cardSymbol])),
+                };
             },
-        }
-
-    };
-    Object.assign(lib.skill, {
+            ai: {
+                effect: {
+                    target(card, player, target) {
+                        if (!target.xinxhasEquipType()) return;
+                        if (player == target && get.type(card) == "equip") {
+                            const cards = target.getVCards("e").filter(card => {
+                                return lib.filter.canBeReplaced(card, target);
+                            });
+                            if (target.xinxgetEquipLimit() >= cards.length + 1) return;
+                            if (cards.some(cardx => cardx.name == card.name)) {
+                                return 0;
+                            }
+                            if (cards.every(cardx => get.equipValue(card) <= get.equipValue(cardx))) {
+                                return 0;
+                            }
+                        }
+                    },
+                },
+            }
+        },
         xinxequip: {
             mod: {
                 maxEquipBase(player, num) {
@@ -546,6 +566,55 @@ export async function precontent(config, pack) {
                 },
             },
         },
+        _xinx_autoswap: {
+            firstDo: true,
+            trigger: {
+                player: [
+                    "playercontrol",
+                    "chooseToUseBegin",
+                    "chooseToRespondBegin",
+                    "chooseToDiscardBegin",
+                    "chooseToCompareBegin",
+                    "chooseButtonBegin",
+                    "chooseCardBegin",
+                    "chooseTargetBegin",
+                    "chooseCardTargetBegin",
+                    "chooseControlBegin",
+                    "chooseBoolBegin",
+                    "choosePlayerCardBegin",
+                    "discardPlayerCardBegin",
+                    "gainPlayerCardBegin",
+                    "chooseToMoveBegin",
+                    "chooseToPlayBeatmapBegin",
+                    "chooseToGiveBegin",
+                ],
+            },
+            forced: true,
+            priority: 100,
+            forceDie: true,
+            popup: false,
+            filter: function (event, player) {
+                if (!game.getExtensionConfig("永夜之境", "autoSwap"))
+                    return false;
+                if (event.autochoose && event.autochoose()) return false;
+                if (lib.filter.wuxieSwap(event)) return false;
+                if (_status.auto || player.isUnderControl(true))
+                    return false;
+                if (game.getExtensionConfig("永夜之境", "autoSwapSetting") == "all") {
+                    return true;
+                }
+                if ((game.getExtensionConfig("永夜之境", "autoSwapSetting") == "onlyRealFriend" && player.isFriendsOf(game.me))) {
+                    return true;
+                }
+                if (game.getExtensionConfig("永夜之境", "autoSwapSetting") == "onlyFriend" && get.attitude(game.me, player) > 0) {
+                    return true;
+                }
+            },
+            content: function () {
+                game.swapPlayerAuto(player);
+            },
+        },
+
     });
 
     Object.assign(lib.element.player, {
@@ -918,7 +987,7 @@ export async function precontent(config, pack) {
     // 角色出牌语音注入模块
     // ==========================================
     const myExtension = "永夜之境";
-    const charSuffixes = ["zhonghui", "guojia",'duyu'];
+    const charSuffixes = ["zhonghui", "guojia", 'duyu'];
     // 改用对象来分类存放不同角色的语音
     // { "zhonghui": ["sha", "nanman"], "xxxx": ["sha", "wuzhong"] }
     let customVoices = {};
@@ -1064,6 +1133,50 @@ export async function precontent(config, pack) {
         }
     };
 
+    //搬运《奇妙工具》，按钮
+    lib.arenaReady.push(() => {
+        let button = ui.create.system("AI控制", function () {
+            var bool = this.classList.toggle("glow");
+            game.saveConfig("extension_永夜之境_autoSwap", bool);
+        }, true);
+        button.classList.toggle("glow", Boolean(game.getExtensionConfig("永夜之境", "autoSwap")));
+    });
+
+    lib.announce.subscribe("Noname.Game.Event.GameStart", function () {
+        if (game.getExtensionConfig("永夜之境", "replaceCharacter")) {
+            var next = game.createEvent("replaceCharacter", false);
+            next.player = game.me;
+            next.setContent(async function (event, trigger, player) {
+                while (true) {
+                    var result = await player
+                        .chooseTarget("请选择一名角色替换其武将牌")
+                        .set("ai", function () {
+                            return false;
+                        })
+                        .forResult();
+                    if (result.bool) {
+                        var dialog =
+                            ui.create.characterDialog("heightset");
+                        var select = [1, 2];
+                        var result2 = await player
+                            .chooseButton(dialog, select)
+                            .forResult();
+                        if (result2.bool) {
+                            lib.element.player.uninit.apply(
+                                result.targets[0]
+                            );
+                            lib.element.player.init.apply(
+                                result.targets[0],
+                                [result2.links[0], result2.links[1]]
+                            );
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            });
+        }
+    });
 
     //虚数属性
     game.addNature('xinx_xushu', '虚数', {
@@ -1112,6 +1225,19 @@ export async function precontent(config, pack) {
             }
         }
     };
+    Object.assign(lib.translate, {
+        //自用插件
+        _xinxastral_draw: "摸牌",
+        _xinxastral_draw_info: "出牌阶段，你可以摸七张牌。",
+        _xinxastral_recover: "体力",
+        _xinxastral_recover_info: "出牌阶段，你可以回复全部体力或受到体力值-1点伤害。",
+        _xinxastral_action: "行动",
+        _xinxastral_action_info: "出牌阶段，你可以令其他角色翻面或执行一个额外回合。",
+        _xinxastral_gain: "定向",
+        _xinxastral_gain_info: "出牌阶段，你可以获得指定牌各一张。",
+        _xinxastral_change: "换将",
+        _xinxastral_change_info: "游戏开始时，你可以更换一名角色的武将。",
+    });
 
 
 
