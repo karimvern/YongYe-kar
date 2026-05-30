@@ -496,6 +496,33 @@ export let voices = {
     '#ext:永夜之境/audio/xinxgeze1': '相与为一。',
     '#ext:永夜之境/audio/xinxgeze2': '上下象易。',
 
+    //爻光
+    '#ext:永夜之境/audio/xinxhongji1': '今天是什么好日子？',
+    '#ext:永夜之境/audio/xinxhongji2': '吉人自有天相。',
+    '#ext:永夜之境/audio/xinxhongji3': '若当真「法眼无遗」，岂非太无意趣？',
+    '#ext:永夜之境/audio/xinxhongji4': '和你一起，果真惊喜连连。',
+    
+    
+
+ 
+    '#ext:永夜之境/audio/xinxpoju1': '今日宜强攻，信我的。',
+    '#ext:永夜之境/audio/xinxpoju2': '祝你大运正当头，开门红！',
+    '#ext:永夜之境/audio/xinxpoju3': '本座偏要，执此一签，观照诸天。',
+    '#ext:永夜之境/audio/xinxpoju4': '赠你一支下下签，请笑纳。',
+    '#ext:永夜之境/audio/xinxpoju5': '光映十方，百无禁忌。',
+    '#ext:永夜之境/audio/xinxpoju6': '手到擒来。',
+    '#ext:永夜之境/audio/xinxpoju7': '哎呀，这都不用掐指一算呐。',
+    '#ext:永夜之境/audio/xinxpoju8': '有此一劫…怪我咯？',
+    '#ext:永夜之境/audio/xinxpoju9': '来搅局？本座也恰有此意。',
+    '#ext:永夜之境/audio/xinxpoju10': '就拿这个来考验本座？',
+    '#ext:永夜之境/audio/xinxpoju11': '法眼之中，仍有无限可能。',
+    '#ext:永夜之境/audio/xinxpoju12': '机遇险中求，大胆来吧。',
+    '#ext:永夜之境/audio/xinxpoju13': '看看，这就是爻老板的手气。',
+    
+    
+
+ 
+
     
 
 
@@ -523,6 +550,7 @@ export let voices = {
 
 
     //风雨如晦
+
      '#ext:永夜之境/audio/fyrhmenglong1': '好啦，不要再胡闹啦。',
      '#ext:永夜之境/audio/fyrhmenglong2': '等会就让你们安静下来~',
      '#ext:永夜之境/audio/fyrhmenglong3': '那些璀璨的花朵，正是新生的梦。',
@@ -539,6 +567,30 @@ export let voices = {
      '#ext:永夜之境/audio/fyrhmenglong14': '这个的话，还是我更擅长吧？',
      '#ext:永夜之境/audio/fyrhmenglong15': '疼……',
      '#ext:永夜之境/audio/fyrhmenglong16': '下手真狠……',
+
+     '#ext:永夜之境/audio/fyrhchunleidong1': '风雷动！',
+     '#ext:永夜之境/audio/fyrhchunleidong2': '落青霆！',
+     '#ext:永夜之境/audio/fyrhchunleidong3': '释剑去！',
+     '#ext:永夜之境/audio/fyrhchunleidong4': '还不服软？',
+     '#ext:永夜之境/audio/fyrhchunleidong5': '何苦胡搅蛮缠！',
+     '#ext:永夜之境/audio/fyrhwanwusheng1': '惊霆无声，流电掣雨。',
+     '#ext:永夜之境/audio/fyrhwanwusheng2': '雷雨并作，化育万物。',
+
+     '#ext:永夜之境/audio/fyrhminglv1': '腰悬三江，肩担六山，衡方圆于乱世。',
+     '#ext:永夜之境/audio/fyrhminglv2': '坐断东南，挥斥宇内，彼以何论英雄？',
+     '#ext:永夜之境/audio/fyrhminglv3': '今日授汝天子剑，且以敌祭杀贼戈。',
+     '#ext:永夜之境/audio/fyrhminglv4': '江东之水成潮，必没江准、摧幽冀、湮雍凉！',
+    
+    
+    
+
+
+
+
+
+
+
+    
 
      '#ext:永夜之境/audio/fyrhpitai1': '否极泰来。',
      '#ext:永夜之境/audio/fyrhpitai2': '互通有无，实为妙计',
@@ -1098,6 +1150,11 @@ export let voices = {
 
 
     //武将修改
+    "#ext:永夜之境/audio/xinxhjjianying1": "主公坐占胜机，缓行亦无所碍。",
+    "#ext:永夜之境/audio/xinxhjjianying2": "得胜已是定局，何必急功近利？",
+    "#ext:永夜之境/audio/xinxhjjianying3": "遣精骑抄其边鄙，彼不得安，我取其逸。",
+    "#ext:永夜之境/audio/xinxhjjianying4": "今北利在于缓搏，宜徐持久，旷以日月。",
+   
     "#ext:永夜之境/audio/xinxhjwuku1": "万结之绳，不过一剑即解。",
     "#ext:永夜之境/audio/xinxhjwuku2": "千计万策，随江即来也。",
     "#ext:永夜之境/audio/xinxhjwuku3": "以计代战，一可当万！",

@@ -462,7 +462,7 @@ export let info = {
         xinxluexin: '掠星',
         xinxluexin_info: "一名角色的结束阶段，若本回合你的牌因弃置而进入过弃牌堆，你可以依次使用之。",
         xinxyangjian: '佯箭',
-        xinxyangjian_info: `锁定技。当你不因${get.poptip('xinxluexin')}而使用或打出基本牌时，你弃置手牌数一半的牌（向上取整），然后将手牌摸至体力上限。`,
+        xinxyangjian_info: `锁定技。当你不因${get.poptip('xinxluexin')}而使用或打出基本牌时，你弃置手牌数一半张牌（向上取整），然后将手牌摸至体力上限。`,
         xinxjinbi: "矜愎",
         xinxjinbi_info: "锁定技。①当你每回合首次受到伤害时，你防止此伤害并将伤害来源的一张牌置于你的武将牌上，称为“愎”；当你造成1点伤害后，你获得一张“愎”。②结束阶段，你弃置所有“愎”，然后失去等量体力上限。",
         xinxwusheng: '武圣',
@@ -3793,110 +3793,80 @@ export let info = {
                     },
                 }
             },
-
         },
-        'xing_ewaimopai': {},
         xing_zhupo: {
-
             audio: "ext:永夜之境/audio:2",
             usable: 1,
-
-            // usable(skill, player) {
-            //   return player.hp;
-            //  },
-
             locked: true,
             enable: ["chooseToUse", "chooseToRespond"],
-            filter: function (event, player) {
-                if (event.type == 'wuxie') return false;
-                if (!player.countCards("hes")) return false;
-                for (var name of lib.inpile) {
-                    if (get.type2(name) != "basic") continue;
-                    var card = { name: name };
-                    if (event.filterCard(get.autoViewAs(card, "unsure"), player, event)) return true;
-                    if (name == "sha") {
-                        for (var nature of lib.inpile_nature) {
-                            card.nature = nature;
-                            if (event.filterCard(get.autoViewAs(card, "unsure"), player, event)) return true;
-                        }
-                    }
-                }
-                return false;
-            },
-            init: function (player) {
-                if (!player.storage.xing_zhupo) player.storage.xing_zhupo = [];
+            filter(event, player) {
+                return get.inpileVCardList(info => {
+                    const name = info[2];
+                    return get.type(name) === 'basic'
+                }).some(info => {
+                    return player.hasCard(card => event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, [card]), player, event), 'hes');
+                });
             },
             chooseButton: {
-                dialog: function (event, player) {
-                    var list = [];
-                    for (var name of lib.inpile) {
-                        if (name == "sha") {
-                            if (event.filterCard(get.autoViewAs({ name }, "unsure"), player, event)) list.push(["基本", "", "sha"]);
-                            for (var nature of lib.inpile_nature) {
-                                if (event.filterCard(get.autoViewAs({ name, nature }, "unsure"), player, event)) list.push(["基本", "", "sha", nature]);
-                            }
-                        } else if (get.type(name) == "basic" && event.filterCard(get.autoViewAs({ name }, "unsure"), player, event)) list.push(["基本", "", name]);
-                    }
-                    var dialog = ui.create.dialog("铸魄", [list, "vcard"]);
+                dialog(event, player) {
+                    const list = get.inpileVCardList(info => {
+                        const name = info[2];
+                        return get.type(name) === 'basic'
+                    }).filter(info => {
+                        return player.hasCard(card => event.filterCard(get.autoViewAs({ name: info[2], nature: info[3] }, [card]), player, event), 'hes');
+                    });
+                    const dialog = ui.create.dialog("铸魄", [list, "vcard"]);
                     dialog.direct = true;
                     return dialog;
                 },
-                filter: function (button, player) {
-                    return _status.event.getParent().filterCard(get.autoViewAs({ name: button.link[2], nature: button.link[3] }, "unsure"), player, _status.event.getParent());
+                check(button) {
+                    if (_status.event.getParent().type == 'phase') {
+                        const player = get.player(), card = { name: button.link[2], nature: button.link[3] };
+                        return player.getUseValue(card);
+                    }
+                    return 1 + Math.random();
                 },
-                check: function (button) {
-                    if (_status.event.getParent().type != "phase") return 1;
-                    var player = _status.event.player;
-                    if (["wugu", "zhulu_card", "yiyi", "lulitongxin", "lianjunshengyan", "diaohulishan"].includes(button.link[2])) return 0;
-                    return player.getUseValue({
-                        name: button.link[2],
-                        nature: button.link[3],
-                    });
-                },
-                backup: function (links, player) {
+                backup(links, player) {
                     return {
                         filterCard: true,
                         selectCard: 1,
                         popname: true,
-                        check: function (card) {
+                        check(card) {
                             return 6 - get.value(card);
                         },
                         position: 'hse',
                         viewAs: { name: links[0][2], nature: links[0][3] },
-                        onuse: function (result, player) {
+                        onuse(result, player) {
                             game.log(player, '发动了【铸魄】');
                             player.logSkill('xing_zhupo');
-                            player.storage.xing_zhupo.add(result.card.name);
                         },
                     }
                 },
-                prompt: function (links, player) {
+                prompt(links, player) {
                     return '将一张牌当做' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + '使用';
 
                 },
             },
-            hiddenCard: function (player, name) {
+            hiddenCard(player, name) {
                 if (!lib.inpile.includes(name)) return false;
-                var type = get.type2(name);
-                return type == "basic" && player.countCards("hes") > 0 && !player.isTempBanned("xing_zhupo");
+                let type = get.type2(name);
+                return type == "basic" && player.countCards("hes") > 0;
             },
             ai: {
                 fireAttack: true,
                 respondSha: true,
                 respondShan: true,
-                skillTagFilter: function (player) {
+                skillTagFilter(player) {
                     if (!player.countCards("hes") || player.isTempBanned("xing_zhupo")) return false;
                 },
                 order: 1,
                 result: {
-                    player: function (player) {
+                    player(player) {
                         if (_status.event.dying) return get.attitude(player, _status.event.dying);
                         return 1;
                     },
                 },
             },
-
-
         },
         xxxhuanren: {
             audio: "ext:永夜之境/audio:2",
@@ -7310,7 +7280,7 @@ export let info = {
                 global: "gainAfter",
             },
             usable: 1,
-            filter (event, player) {
+            filter(event, player) {
                 if (event.parent.parent.name == 'phaseDraw') return false;
                 if (event.player == player) return false;
                 return event.cards && event.cards.length > 0;
@@ -8519,7 +8489,7 @@ export let info = {
             logTarget(event, player) {
                 return player == event.player ? event.target : event.player;
             },
-            check (event, player) {
+            check(event, player) {
                 return get.attitude(player, player == event.player ? event.target : event.player) <= 0;
             },
             async content(event, trigger, player) {
@@ -11233,23 +11203,6 @@ export let info = {
                 player: "phaseEnd",
             },
             forced: true,
-            // hiddenLP(target){
-            //     target.storage.hiddenLP = {hp:target.hp, maxHp:target.maxHp}
-            //     target.classList.add('unseen');
-            //     target.classList.add('unseen_show');
-            //     target.hidden = true;
-            //     game.delay();
-            //     target.update();
-            //     target.when({player:'showCharacterEnd'}).then(()=>{
-            //         target.maxHp = target.storage.hiddenLP.maxHp;
-            //         target.hp = target.storage.hiddenLP.hp;
-            //         target.update();
-            //     }).vars({target:target})
-            //     game.log(target,'进入了隐匿状态');
-            // },
-            // content: function () {
-            //     lib.skill.xinxzhebian.hiddenLP(player);
-            // },
             async content(event, trigger, player) {
                 const Pskills = player.getSkills(null, false, false).filter(skill => {
                     let info = get.info(skill);

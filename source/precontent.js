@@ -170,16 +170,24 @@ export async function precontent(config, pack) {
             nature: 'watermm',
             showName: '夏',
         });
+        lib.namePrefix.set('U', {
+            color: '#59ACD9',//59ACD9 A0A0B5
+            nature: 'woodmm', //woodmm  metalmm
+            showName: 'U',
+        });
 
 
 
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', '乐', 'OL谋', 'OL', '廷','玄蝶','OL界','手杀神'];
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', '乐', 'OL谋', 'OL', '廷','玄蝶','OL界','手杀神','夏','手杀界','族'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`
             })
             lib.namePrefix.set(`改${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('改')}${get.prefixSpan(n)}`
+            })
+            lib.namePrefix.set(`U${n}`, {
+                getSpan: (prefix, name) => `${get.prefixSpan('U')}${get.prefixSpan(n)}`
             })
         };
 

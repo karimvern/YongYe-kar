@@ -92,9 +92,9 @@ export let info = {
         xinx_haiseyin: ["female", "xinx", 4, ['xinxanliu', 'xinxjiange'], ['epic']],//, 'smyyingshi'
         xinx_luka: ["male", "xinx", 4, ['xinxangyang', 'xinxbuxiu'], ['epic']],
         xinx_yinlang999: ["female", "xinx", 4, ['xinxcaidan', 'xinxzunlin'], ['legend']],
-        /* xinx_huohua: ["female", "xinx", 4, [], ['epic']],
-        xinx_yaoguang: ["female", "xinx", 4, [], ['epic']],
-        xinx_feiying: ["female", "xinx", 4, [], ['legend']], */
+        xinx_huohua: ["female", "xinx", 4, [], ['epic']],
+        xinx_yaoguang: ["female", "xinx", 3, ['xinxhongji', 'xinxpoju'], ['epic']],
+        xinx_feiying: ["female", "xinx", 4, [], ['legend']],
         //xinxzhu_sanyueqi: ["female", "xinx", 4, [], ['epic']],
         //xinx_laite: ["male", "qun", 4, [], ["border:xinx",'legend']],
 
@@ -141,6 +141,7 @@ export let info = {
         xinx_luka: '<font color=#E86664>设计：云雾梦叶</font>',
         xinx_haiseyin: '<font color=#B88AD1>设计：杏、黄袍爱音、云雾梦叶</font>',
         xinx_yinlang999: '<font color=#CBDFF6>无敌玩家</font>',
+        xinx_yaoguang: '<font color=#3CE2D4>六爻皆吉</font>',
 
         // 58A7A6
         //65B8B1
@@ -288,6 +289,10 @@ export let info = {
 
 
         //技能翻译
+        xinxhongji: '鸿集',
+        xinxhongji_info: '有阶段被跳过时，你额外执行之。',
+        xinxpoju: '破局',
+        xinxpoju_info: `每回合限一次，你的主要阶段开始时，可以改为令一名角色执行。此阶段中，你与其可于${get.poptip('xinx_hsjinengshiji')}发动同时机的${get.poptip('pingjian')}。`,//从随机三个同时机技能中选择一个发动
         xinxcaidan: '彩弹',
         xinxcaidan_info: `出牌阶段，你可以将两张牌${get.poptip('xinx_hecheng')}一张牌，此牌附带随机${get.poptip('xinx_biaoqian')}，你使用这些牌时触发对应标签效果。`,
         xinxzunlin: '尊临',
@@ -780,6 +785,232 @@ export let info = {
     },
     //技能
     skill: {
+        //爻光
+        xinxhongji: {
+            audio: "ext:永夜之境/audio:4",
+            trigger: {
+                global: [
+                    "phaseZhunbeiSkipped", "phaseZhunbeiCancelled",
+                    "phaseDrawSkipped", "phaseDrawCancelled",
+                    "phaseUseSkipped", "phaseUseCancelled",
+                    "phaseDiscardSkipped", "phaseDiscardCancelled",
+                    "phaseJieshuSkipped", "phaseJieshuCancelled",
+                ],
+            },
+            forced: true,
+            firstDo: true,
+            locked: false,
+            filter(event, player) {
+                //防止额外阶段被跳过时触发
+                let evt = event;
+                while (evt) {
+                    if (evt._extraPhaseReason) return false;
+                    evt = evt.parent;
+                }
+                return true;
+            },
+            async content(event, trigger, player) {
+                /* const phaseName = trigger.name.replace(/(Skipped|Cancelled)$/, "");
+                game.log(player, "插入执行了", `#g${get.translation(phaseName)}`);
+                const next = player[phaseName]();
+                next._extraPhaseReason = event.name;
+                await next; */
+                const triggerName = event.triggername;
+                const phaseName = triggerName.replace(/Skipped|Cancelled/, "");
+                game.log(player, "插入执行了", `#g${get.translation(phaseName)}`);
+                //await player[phaseName]();
+                //if (typeof player[phaseName] === "function") {
+                const next = player[phaseName]();
+                next._extraPhaseReason = event.name;
+                await next;
+            }
+        },
+        xinxpoju: {
+            audio: "ext:永夜之境/audio:13",
+            logAudio: index => "ext:永夜之境/audio/xinxpoju" + (typeof index === "number" ? index : get.rand(1, 4)) +".mp3",
+            trigger: {
+                player: ["phaseDrawBegin", "phaseUseBegin", "phaseDiscardBegin"],//"phaseJudgeBegin",
+            },
+            usable:1,
+            filter(event, player) {
+                /* let evt = event;
+                while (evt) {
+                    // 只要在任何一层父事件中发现了“额外阶段”标签，停止触发
+                    if (evt._extraPhaseReason) return false;
+                    evt = evt.parent;
+                } */
+                return game.hasPlayer(current => current?.isIn() && current !== player);
+            },
+            async cost(event, trigger, player) {
+                const triggerName = trigger.name;
+                event.result = await player
+                    .chooseTarget(get.prompt2(event.skill), `将你的${get.translation(triggerName)}改为由一名角色执行`, (card, player, target) => {
+                        return true;
+                    })
+                    .set("ai", target => {
+                        const triggerName = trigger.name;
+                        const player = get.player();
+                        const att = get.attitude(player, target);
+                        if (!["phaseUse", "phaseDraw"].includes(triggerName)) {
+                            return 0; 
+                        }
+                        if (att <= 0) return 0; 
+                        const needDraw = game.hasPlayer(current => {
+                            return get.attitude(player, current) >= 0 && current.countCards('h') < 3;
+                        });
+                        if (triggerName === "phaseDraw") {
+                            if (!needDraw) return 0; 
+                            return att / Math.max(1, target.countCards("h")); 
+                        }
+                        if (triggerName === "phaseUse") {
+                            if (needDraw) return 0; 
+                            return att * target.countCards("h")*2; 
+                        }
+                        return 0;
+                    })
+                    .forResult();
+            },
+            async content(event, trigger, player) {
+                const target = event.targets[0];
+                const phaseName = trigger.name;
+                game.log(player, "将", `#g${get.translation(phaseName)}`, "交由", target, "执行");
+                trigger.cancel();
+                for (let current of [player, target]) {
+                    current.addTempSkill("xinxpoju_effect", 'phaseChange');
+                    current.addTempSkill("xinxpoju_use", 'phaseChange');
+                }
+                const next = target[phaseName]();
+                next._extraPhaseReason = event.name;
+                await next;
+            },
+            subSkill: {
+                effect: {
+                    trigger: {
+                        source: "damageSource",
+                        /*  player: ["damageEnd", "phaseZhunbeiBegin", "phaseJieshuBegin",
+                             "phaseUseBegin", "phaseBegin", "phaseEnd", "phaseDiscardBegin",
+                             "phaseDrawBegin", "phaseJudgeBegin", "loseHp", "changeHp", "turnOver", "dying"], */
+                             player: ["damageEnd", "phaseZhunbeiBegin", "phaseJieshuBegin",
+                                "phaseUseBegin", "phaseBegin", "phaseEnd", "phaseDiscardBegin",
+                                 "phaseDrawBegin","phaseJudgeBegin", "loseHp", "changeHp","turnOver","dying",
+                                 "phaseZhunbeiEnd", "phaseJieshuEnd", "phaseUseEnd", "phaseDiscardEnd", "phaseDrawEnd", "phaseJudgeEnd",
+                                ],
+                    },
+                    forced: true,
+                    charlotte: true,
+                    async content(event, trigger, player) {
+                        const timing = event.triggername;
+                        const checkTrigger = skill => {
+                            const info = get.info(skill);
+                            if (!info || info.charlotte || info.silent || info.init) return false;
+                            if (info.ai && (info.ai.combo || info.ai.notemp || info.ai.neg)) return false;
+
+                            const toArray = arr => Array.isArray(arr) ? arr : !arr ? [] : [arr];
+                            const triggers = [...toArray(info.trigger?.player), ...toArray(info.trigger?.global), ...toArray(info.trigger?.source)];
+                            
+                            if (!triggers.includes(timing)) return false;
+                           
+                            if (info.filter) {
+                                try {
+                                    if (!info.filter(trigger, player, timing)) return false;
+                                } catch (e) { return false; }
+                            }
+                            return true;
+                        };
+
+
+                        if (!_status.characterlist) game.initCharacterList();
+                        let allSkills = [];
+                        for (const name of _status.characterlist) {
+                            const character = get.character(name);
+                            if (character && character.skills) allSkills.addArray(character.skills);
+                        }
+                        let validSkills = allSkills.filter(checkTrigger);
+
+                        if (!validSkills.length) return;
+                        let options = validSkills.randomGets(3);
+                        const result = await player.chooseButton(['请选择触发一个技能', [options, 'skill']])
+                            .set('ai', button => get.priority(button.link))
+                            .set('forced', true)
+                            .forResult();
+                        if (result.bool && result.links?.length) {
+                            if (player.hasSkill('xinxpoju')) {
+                                game.playAudio("../extension/永夜之境/audio/", 'xinxpoju' + get.rand(5, 11) + '.mp3');
+                            }
+                            const chosenSkill = result.links[0];
+                            player.addInvisibleSkill(chosenSkill);
+                          
+                            player.addTempSkill(`xinxpoju_check`);
+                            player.markAuto(`xinxpoju_check`, [chosenSkill]);
+                            const next = game.createEvent(`xinxpoju_check`, false, trigger);
+                            next.player = player;
+                            next.skills = [chosenSkill];
+                            trigger.next.remove(next);
+                            trigger.after.push(next);
+                            /* next.setContent(async (e, t, p) => {
+                                p.removeInvisibleSkill(e.skills);
+                                p.removeSkill(`${e.name}`);
+                            }); */
+                            next.setContent(async (event, trigger, player) => {
+                                const { skills } = event;
+                                player.removeInvisibleSkill(skills);
+                                player.removeSkill("xinxpoju_check");
+                            });
+                        }
+                    }
+                },
+                use: {
+                    charlotte: true,
+                    enable: "phaseUse",
+                    usable: 1,
+                    async content(event, trigger, player) {
+                        if (!player.storage.bolan) {
+                            lib.skill.bolan.initList(player);
+                        }
+                        const list = player.storage.bolan.randomGets(3);
+                        if (!list.length) {
+                            return;
+                        }
+                        game.playAudio("../extension/永夜之境/audio/",'xinxpoju'+ get.rand(12,13) +'.mp3');
+                        const result = await player.chooseButton(['请选择要尝试发动的技能', [list, 'skill']])
+                            .set('ai', button => get.priority(button.link))
+                            .set('forced', true)
+                            .forResult();
+                        if (result.bool && result.links?.length) {
+                            const chosenSkill = result.links[0];
+                            player.addTempSkills(chosenSkill, 'phaseChange');
+                            player.popup(chosenSkill);
+                        }
+                    },
+                    ai:{
+                        order:7,
+                        result:{
+                            player:1,
+                        }
+                    }
+                },
+                check: {
+                    charlotte: true,
+                    onremove: true,
+                    silent: true,
+                    trigger: { player: ["logSkillBegin", "useSkill"] },
+                    filter(event, player) {
+                        const info = get.info(event.skill);
+                        if (info && info.charlotte) return false;
+                        const skill = get.sourceSkillFor(event);
+                        return player.getStorage("xinxpoju_check").includes(skill);
+                    },
+                    async content(event, trigger, player) {
+                        const skill = get.sourceSkillFor(trigger);
+                        player.removeInvisibleSkill(skill);
+                        player.unmarkAuto(event.name, skill);
+                        if (!player.getStorage(event.name).length) {
+                            player.removeSkill(event.name);
+                        }
+                    },
+                }
+            }
+        },
         //银狼lv999
         xinxcaidan: {
             audio: "ext:永夜之境/audio:11",
@@ -2107,17 +2338,17 @@ export let info = {
                         let top = [],
                             bottom = [];
                         const getScore = (card) => {
-                            if (card.name === 'sha') return -100;
+                            if (get.name(card) === 'sha') return -100;
                             return get.value(card, player);
                         };
                         cards.sort((a, b) => getScore(b) - getScore(a));
                         while (cards.length) {
                             const card = cards.shift();
                             const score = getScore(card);
-                            if (card.name === 'sha') {
+                            if (get.name(card) === 'sha') {
                                 bottom.push(card);
                             }
-                            else if (score > 0) {
+                            else if (score > 0 && get.name(card) !== 'sha') {
                                 top.push(card);
                             } else {
                                 bottom.push(card);
@@ -14981,7 +15212,7 @@ export let info = {
             forced: true,
             filter(event, player) {
                 const cards = get.discarded().filterInD("d");
-                return cards.length && !player.hasSkill("xinxbeichan_locked");
+                return cards?.length && !player.hasSkill("xinxbeichan_locked");
             },
             async content(event, trigger, player) {
                 const types = ["basic", "trick", "equip", 'red', 'black'];
@@ -15034,12 +15265,13 @@ export let info = {
                             await player.chooseUseTarget(gainedCard, false, true);
                         }
                         if ((get.type2(gainedCard) == declared) || (get.color(gainedCard) == declared)) {
+                            player.chat("猎物落网啰^_^");
                             game.playAudio("../extension/永夜之境/audio/", 'xinxbeichan' + [5] + '.mp3');
                             await player.draw();
                             player.removeSkill("xinxbeichan_locked");
                             delete player.getStat("skill")["xinxbeichan"];
                             game.log(player, '重置了', "#g【悲颤】");
-                            player.chat("猎物落网啰^_^");
+
                         } else {
                             game.playAudio("../extension/永夜之境/audio/", 'xinxbeichan' + [6] + '.mp3');
                             player.chat("有点意思…");
