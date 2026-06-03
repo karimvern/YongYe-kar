@@ -580,6 +580,15 @@ export let voices = {
      '#ext:永夜之境/audio/fyrhminglv2': '坐断东南，挥斥宇内，彼以何论英雄？',
      '#ext:永夜之境/audio/fyrhminglv3': '今日授汝天子剑，且以敌祭杀贼戈。',
      '#ext:永夜之境/audio/fyrhminglv4': '江东之水成潮，必没江准、摧幽冀、湮雍凉！',
+
+     '#ext:永夜之境/audio/fyrhzhengjing1': '敏而好学，雅量豁然。',
+     '#ext:永夜之境/audio/fyrhzhengjing2': '清秀飘然，雍容闲雅。',
+     '#ext:永夜之境/audio/fyrhzhengjing3': '观天地之变，以料敌虚实。',
+     '#ext:永夜之境/audio/fyrhzhengjing4': '仰面观太虚，疑是玉龙斗',
+
+    
+    
+    
     
     
     

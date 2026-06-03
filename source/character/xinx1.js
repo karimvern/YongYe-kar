@@ -384,7 +384,7 @@ export let info = {
         xing_sizhu: '思助',
         xing_sizhu_info: '锁定技，每回合每种牌字数限一次。当你不因本技能使用或打出牌结算完毕后，你视为使用一张与此牌字数相同的基本牌或普通锦囊牌（无距离和次数限制），然后你可将此牌对应的所有实体牌交给一名其他角色。',
         xing_mengran: '梦染',
-        xing_mengran_info: '每轮限一次。当你需要使用或打出基本牌时，你可视为使用或打出之。',
+        xing_mengran_info: '每轮限一次，你可以视为使用或打出一张基本牌。',
         dz_xing_beifa: "北伐",
         dz_xing_beifa_info: "锁定技。①当你对一名其他角色造成伤害时，你令其将一张牌置于其武将牌上，称为“伐”，然后其获得技能〖悖逆〗。②当你使用牌指定其他角色为目标时，若其有“伐”，你摸一张牌。",
         dz_xing_beini: "悖逆",
@@ -3196,7 +3196,6 @@ export let info = {
             round: 1,
             chooseButton: {
                 dialog: function (event, player) {
-                    //只剩一个牌名时直接跳过选择
                     /* var list = [];
                     for (var name of lib.inpile) {
                         if (name == "sha") {
@@ -3249,26 +3248,8 @@ export let info = {
                 if (player.getStat("skill").xing_mengran) return false;
                 return get.type(name) == "basic" && lib.inpile.includes(name);
             },
-
             ai: {
-                order: function (item, player) {
-                    if (player && _status.event.type == 'phase') {
-                        var max = 0, add = false;
-                        var list = lib.inpile.filter(name => get.type(name) == 'basic');
-                        if (list.includes('sha')) add = true;
-                        list = list.map(namex => { return { name: namex, isCard: true } });
-                        if (add) {
-                            lib.inpile_nature.forEach(naturex => list.push({ name: 'sha', nature: naturex, isCard: true }));
-                        }
-                        for (var card of list) {
-                            if (player.getUseValue(card) > 0) {
-                                var temp = get.order(card);
-                                if (temp > max) max = temp;
-                            }
-                        }
-                        if (max > 0) max += 0.3;
-                        return max;
-                    }
+                order(item, player) {
                     return 10;
                 },
                 respondShan: true,
@@ -3849,8 +3830,8 @@ export let info = {
             },
             hiddenCard(player, name) {
                 if (!lib.inpile.includes(name)) return false;
-                let type = get.type2(name);
-                return type == "basic" && player.countCards("hes") > 0;
+                if (!player.countCards('hes')) return false;
+                return get.type(name) == "basic";
             },
             ai: {
                 fireAttack: true,
@@ -7043,7 +7024,6 @@ export let info = {
                 }
                 player.gain(trigger.cards, "gain2");
             },
-
             group: ['xinxcangren_init', 'xinxcangren_da'],
             marktext: '藏',
             onremove: true,
@@ -7051,8 +7031,25 @@ export let info = {
                 markcount: () => 0,
                 content: '已被灵雎标记',
             },
-
             subSkill: {
+                effect: {
+                    mod: {
+                        aiValue(player, card, num) {
+                            if (get.itemtype(card) == "card" && get.type(card, player) == 'delay') {
+                                return -1;
+                            }
+                        },
+                        aiUseful() {
+                            return lib.skill.xinxcangren_effect.subSkill.debuff.mod.aiValue.apply(this, arguments);
+                        },
+                        aiOrder(player, card, num) {
+                            if (get.itemtype(card) == "card" && get.type(card, player) == 'delay') {
+                                return 0;
+                            }
+                        },
+                    },
+
+                },
                 init: {
                     audio: "xinxcangren",
                     logAudio: () => ["ext:永夜之境/audio/xinxcangren3.mp3", "ext:永夜之境/audio/xinxcangren4.mp3"],
@@ -7081,13 +7078,10 @@ export let info = {
                         if (result?.bool && result.targets?.length) {
                             const [target] = result.targets;
                             player.line(target);
+                            target.addSkill("xinxcangren_effect");
                             target.addMark('xinxcangren', 1);
                         }
                     },
-                    sub: true,
-                    sourceSkill: "xinxcangren",
-                    "_priority": 0,
-
                 },
                 da: {
                     audio: "xinxcangren",
@@ -7101,11 +7095,9 @@ export let info = {
                     },
                     async content(event, trigger, player) {
                         await player.gainMaxHp();
-                        //player.recover();
                     }
                 },
             },
-
             ai: {
                 order: 1,
                 result: {
@@ -7122,8 +7114,6 @@ export let info = {
                 }
             }
         },
-
-
         xinxfenglu: {
             mod: {
                 // {       targetInRange:function(card,player,target){

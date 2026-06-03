@@ -559,20 +559,6 @@ export async function precontent(config, pack) {
                     return num + info;
                 },
             },
-            mark: true,
-            marktext: "装",
-            intro: {
-                content(num, player) {
-                    var str = "<li>装备上限";
-                    if (num >= 0) {
-                        str += "+";
-                    }
-                    str += num;
-                    str += "<br><li>当前装备上限：";
-                    str += player.xinxgetEquipLimit();
-                    return str;
-                },
-            },
         },
         _xinx_autoswap: {
             firstDo: true,

@@ -48,7 +48,7 @@ export let info = {
         xinx_qiong_shadow2: ["male", "xinx", 4, ['xinxjizou', 'xinxmengxing'], ["unseen", "sex:male_castrated"]],
         xinx_qiong_shadow3: ["male", "xinx", 4, ['xinxzhupo', 'xinxyanqiang'], ["unseen", "sex:male_castrated"]],
         xinx_mimi: ["female", "xinx", 3, ['xinxhuoban'], ["unseen", "sex:male_castrated", 'legend']],
-        xinx_Pollux: ["female", "xinx", 4, ['xinxhuiyi', 'xinxxsusheng_turn'], ["unseen", "sex:male_castrated", 'legend']],
+        xinx_Pollux: ["female", "xinx", 4, ['xinxhuiyi'], ["unseen", "sex:male_castrated", 'legend']],
         xinx_yinglang: ["female", "xinx", 3, ['xinxpojie', 'xinxhairu'], ['epic']],
         xinx_xiadie: ["female", "xinx", 3, ['xinxxsusheng', 'xinxxmingxi'], ['legend']],
         xinx_huangquan: ["female", "xinx", 4, ['xinxleizhi', 'xinxcanmeng', 'xinxjizhen'], ['legend']],
@@ -93,8 +93,8 @@ export let info = {
         xinx_luka: ["male", "xinx", 4, ['xinxangyang', 'xinxbuxiu'], ['epic']],
         xinx_yinlang999: ["female", "xinx", 4, ['xinxcaidan', 'xinxzunlin'], ['legend']],
         xinx_huohua: ["female", "xinx", 4, [], ['epic']],
-        xinx_yaoguang: ["female", "xinx", 3, ['xinxhongji', 'xinxpoju'], ['epic']],
         xinx_feiying: ["female", "xinx", 4, [], ['legend']],
+        xinx_yaoguang: ["female", "xinx", 3, ['xinxhongji', 'xinxpoju'], ['epic']],
         //xinxzhu_sanyueqi: ["female", "xinx", 4, [], ['epic']],
         //xinx_laite: ["male", "qun", 4, [], ["border:xinx",'legend']],
 
@@ -827,11 +827,11 @@ export let info = {
         },
         xinxpoju: {
             audio: "ext:永夜之境/audio:13",
-            logAudio: index => "ext:永夜之境/audio/xinxpoju" + (typeof index === "number" ? index : get.rand(1, 4)) +".mp3",
+            logAudio: index => "ext:永夜之境/audio/xinxpoju" + (typeof index === "number" ? index : get.rand(1, 4)) + ".mp3",
             trigger: {
                 player: ["phaseDrawBegin", "phaseUseBegin", "phaseDiscardBegin"],//"phaseJudgeBegin",
             },
-            usable:1,
+            usable: 1,
             filter(event, player) {
                 /* let evt = event;
                 while (evt) {
@@ -852,19 +852,19 @@ export let info = {
                         const player = get.player();
                         const att = get.attitude(player, target);
                         if (!["phaseUse", "phaseDraw"].includes(triggerName)) {
-                            return 0; 
+                            return 0;
                         }
-                        if (att <= 0) return 0; 
+                        if (att <= 0) return 0;
                         const needDraw = game.hasPlayer(current => {
                             return get.attitude(player, current) >= 0 && current.countCards('h') < 3;
                         });
                         if (triggerName === "phaseDraw") {
-                            if (!needDraw) return 0; 
-                            return att / Math.max(1, target.countCards("h")); 
+                            if (!needDraw) return 0;
+                            return att / Math.max(1, target.countCards("h"));
                         }
                         if (triggerName === "phaseUse") {
-                            if (needDraw) return 0; 
-                            return att * target.countCards("h")*2; 
+                            if (needDraw) return 0;
+                            return att * target.countCards("h") * 2;
                         }
                         return 0;
                     })
@@ -890,11 +890,11 @@ export let info = {
                         /*  player: ["damageEnd", "phaseZhunbeiBegin", "phaseJieshuBegin",
                              "phaseUseBegin", "phaseBegin", "phaseEnd", "phaseDiscardBegin",
                              "phaseDrawBegin", "phaseJudgeBegin", "loseHp", "changeHp", "turnOver", "dying"], */
-                             player: ["damageEnd", "phaseZhunbeiBegin", "phaseJieshuBegin",
-                                "phaseUseBegin", "phaseBegin", "phaseEnd", "phaseDiscardBegin",
-                                 "phaseDrawBegin","phaseJudgeBegin", "loseHp", "changeHp","turnOver","dying",
-                                 "phaseZhunbeiEnd", "phaseJieshuEnd", "phaseUseEnd", "phaseDiscardEnd", "phaseDrawEnd", "phaseJudgeEnd",
-                                ],
+                        player: ["damageEnd", "phaseZhunbeiBegin", "phaseJieshuBegin",
+                            "phaseUseBegin", "phaseBegin", "phaseEnd", "phaseDiscardBegin",
+                            "phaseDrawBegin", "phaseJudgeBegin", "loseHp", "changeHp", "turnOver", "dying",
+                            "phaseZhunbeiEnd", "phaseJieshuEnd", "phaseUseEnd", "phaseDiscardEnd", "phaseDrawEnd", "phaseJudgeEnd",
+                        ],
                     },
                     forced: true,
                     charlotte: true,
@@ -907,9 +907,9 @@ export let info = {
 
                             const toArray = arr => Array.isArray(arr) ? arr : !arr ? [] : [arr];
                             const triggers = [...toArray(info.trigger?.player), ...toArray(info.trigger?.global), ...toArray(info.trigger?.source)];
-                            
+
                             if (!triggers.includes(timing)) return false;
-                           
+
                             if (info.filter) {
                                 try {
                                     if (!info.filter(trigger, player, timing)) return false;
@@ -917,6 +917,45 @@ export let info = {
                             }
                             return true;
                         };
+                        
+                        /* if (triggers.includes(timing)) {
+                            if (info.ai && (info.ai.combo || info.ai.notemp || info.ai.neg)) {
+                                return false;
+                            }
+                            if (info.init) {
+                                return false;
+                            }
+                            if (typeof info.getIndex == "function") {
+                                try {
+                                    const indexedResult = info.getIndex(trigger, player, timing);
+                                    if (Array.isArray(indexedResult)) {
+                                        if (!info.filter || indexedResult.some(indexedData => info.filter(trigger, player, timing, indexedData))) {
+                                            return true;
+                                        }
+                                    }
+                                    if (typeof indexedResult == "number" && indexedResult > 0) {
+                                        if (!info.filter || info.filter(trigger, player, timing)) {
+                                            return true;
+                                        }
+                                    }
+                                    return false;
+                                } catch (e) {
+                                    return false;
+                                }
+                            } else if (info.filter) {
+                                try {
+                                    const bool = info.filter(trigger, player, timing);
+                                    if (!bool) {
+                                        return false;
+                                    }
+                                } catch (e) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }
+
+                    }; */
 
 
                         if (!_status.characterlist) game.initCharacterList();
@@ -939,7 +978,7 @@ export let info = {
                             }
                             const chosenSkill = result.links[0];
                             player.addInvisibleSkill(chosenSkill);
-                          
+
                             player.addTempSkill(`xinxpoju_check`);
                             player.markAuto(`xinxpoju_check`, [chosenSkill]);
                             const next = game.createEvent(`xinxpoju_check`, false, trigger);
@@ -971,7 +1010,7 @@ export let info = {
                         if (!list.length) {
                             return;
                         }
-                        game.playAudio("../extension/永夜之境/audio/",'xinxpoju'+ get.rand(12,13) +'.mp3');
+                        game.playAudio("../extension/永夜之境/audio/", 'xinxpoju' + get.rand(12, 13) + '.mp3');
                         const result = await player.chooseButton(['请选择要尝试发动的技能', [list, 'skill']])
                             .set('ai', button => get.priority(button.link))
                             .set('forced', true)
@@ -982,10 +1021,10 @@ export let info = {
                             player.popup(chosenSkill);
                         }
                     },
-                    ai:{
-                        order:7,
-                        result:{
-                            player:1,
+                    ai: {
+                        order: 7,
+                        result: {
+                            player: 1,
                         }
                     }
                 },
@@ -6176,6 +6215,7 @@ export let info = {
             audio: "ext:永夜之境/audio:6",
             logAudio: index => (typeof index === "number" ? "ext:永夜之境/audio/xinxzhili" + index + ".mp3" : "ext:永夜之境/audio/xinxzhili" + get.rand(3, 4) + ".mp3"),
             enable: "phaseUse",
+            manualConfirm: true,
             trigger: {
                 player: "useCard",
             },
@@ -9100,9 +9140,7 @@ export let info = {
                 if (player.hasSkill('xinxqiongguan_add')) { return false; }
                 return event.num < 0;
             },
-            forced: true,
-            locked: false,
-            popup: false,
+            direct: true,
             async content(event, trigger, player) {
                 let cards = player.getStorage("xinxqiongguan_mark").slice().filterInD("odchesj");
                 let num = 0;
