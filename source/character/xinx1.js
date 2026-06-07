@@ -118,7 +118,7 @@ export let info = {
         },
 
         //xinx_qinxi: ["female", "xing", 3, ['xinxxiangfu'], ['legend']],
-        // xinx_zoushi: ["female", "qun", 3, [], ['epic'],["forbidai"]],
+        //xinx_zoushi: ["female", "qun", 3, [], ['epic'], ["forbidai"]],
         // xinx_yuanshao: ["male", "qun", 4, [], ['epic'],["forbidai"]],
         // xinx_chengong: ["male", "qun", 3, [], ['epic'],["forbidai"]],
         // xinx_caoshuang: ["male", "wei", 4, [], ['epic'],["forbidai"]],
@@ -321,8 +321,12 @@ export let info = {
 
 
         //技能翻译
+        hyygushe: '鼓舌',
+        hyygushe_info: `出牌阶段，你可以拼点且目标增加牌堆顶的牌和最后进入中央区的牌，若你拼点牌点数排名第：1.获得一张拼点牌并使用剩余一张拼点牌。2.弃置所有手牌并摸两张牌。3.受到两点伤害。4.分配本次拼点牌给你和拼点目标。`,
+        hyyzuobao: '作保',
+        hyyzuobao_info: `每回合限一次，你受伤时，若你的手牌数与体力值相等，你可摸一张牌并防止此伤害。`,
         xinxyufu: '迂覆',
-        xinxyufu_info: `连招技（黑色牌+指向性${get.poptip('xinx_jishipai')}）。你选择一名目标角色，将你与其至多X张牌替换为【影】（X为本局本技能发动次数）。【影】无法被弃置，进入弃牌堆时不会被销毁。`,
+        xinxyufu_info: `连招技（黑色牌+指向性${get.poptip('xinx_jishipai')}）。你选择一名目标角色，将你与其至多X张牌替换为【影】（X为本回合本技能发动次数）。【影】无法被弃置，进入弃牌堆时不会被销毁。`,
         xinxliangye: '良夜',
         xinxliangye_info: `每回合每种牌名限一次，你可以将1/2张【影】当任意普通锦囊牌/基本牌使用，然后失去并获得${get.poptip('xinxyinghuanren')}/获得并发动${get.poptip('xinxyinghuanren')}①。`,
         xinxyinghuanren: '焕刃',
@@ -865,6 +869,7 @@ export let info = {
             let str = `①每轮开始时，你可以视为使用无距离限制的［${cardNames}］。②你造成伤害后，选择你与受伤角色的一张牌，若此牌有合法目标，你将之加入${get.poptip('xinxyinghuanren')}的[]中，否则你获得之并令本技能本回合失效。`;
             return str;
         },
+
     },
     //武将介绍
     characterIntro: {
@@ -953,7 +958,8 @@ export let info = {
             },
             async content(event, trigger, player) {
                 trigger.set(event.name, true);
-                let num = player.getAllHistory("useSkill", evt => evt.skill == event.name).length;
+                //let num = player.getAllHistory("useSkill", evt => evt.skill == event.name).length;
+                let num = player.getHistory("useSkill", evt => evt.skill == event.name).length;
                 const target = event.targets[0];
                 /* const dialog = ui.create.dialog('hidden', `###${get.prompt(event.name)}###<div class="text center">选择你与${get.translation(target)}至多共${num}张牌</div>`);
                 dialog.add(`<div class="text center">${get.translation(player)}的牌</div>`);
@@ -14996,10 +15002,13 @@ export let info = {
                         selectedVCardInfo = virt[0];
                         validSelection = true;
                     } else {
-                        if (player.isUnderControl()) break;
+                        return false;
+                        /* if (player.isUnderControl()) {
+                            break;
+                        }
                         if (virt.length === 0) alert("请选择一张转化牌！");
                         else if (virt.length > 1) alert("只能选择一张转化牌！");
-                        else alert(`请选择与转化牌【${virt[0][2]}】名字字数（${get.cardNameLength(virt[0][2])}）相等的实体牌！`);
+                        else alert(`请选择与转化牌【${virt[0][2]}】名字字数（${get.cardNameLength(virt[0][2])}）相等的实体牌！`); */
                     }
                 }
                 if (validSelection && selectedVCardInfo) {

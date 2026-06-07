@@ -471,7 +471,6 @@ export let info = {
         xinxbuli_info: `锁定技，你的摸牌阶段改为摸3张牌并进行3次判定，若其中一张牌的判定过程中有角色体力值变化，你令${get.poptip('xinxbuli')}的判定次数+1并于结束阶段获得此判定牌。`,
         xinxyilian: "漪涟",
         xinxyilian_info: `每回合限一次，当你需要使用一张未以此法使用过的${get.poptip('xinx_jishipai')}时，你可以将你的一个阶段交给一名其他角色，调整其阶段顺序。然后你复制你的一个剩余阶段，调整你的阶段顺序并视为使用之。`,
-        xinxyilian_phase: "漪涟",
         xinxguiren: "归刃",
         xinxguiren_info: `限定技。你可以将任意张牌当无距离次数限制的刺【杀】使用，此【杀】所需弃置牌数/伤害值改为实体牌牌数/描述中的带“伤害”字样的牌数。`,
         xinxzaixian: "再现",
@@ -12480,6 +12479,7 @@ export let info = {
             mark: true,
             markimage: 'extension/永夜之境/image/mark/xinxyilian_phase.png',
             intro: {
+                name: "阶段顺序",
                 content(storage, player) {
                     const phaseMap = {
                         phaseZhunbei: '准备',

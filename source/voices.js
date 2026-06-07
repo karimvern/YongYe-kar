@@ -584,7 +584,30 @@ export let voices = {
      '#ext:永夜之境/audio/fyrhzhengjing1': '敏而好学，雅量豁然。',
      '#ext:永夜之境/audio/fyrhzhengjing2': '清秀飘然，雍容闲雅。',
      '#ext:永夜之境/audio/fyrhzhengjing3': '观天地之变，以料敌虚实。',
-     '#ext:永夜之境/audio/fyrhzhengjing4': '仰面观太虚，疑是玉龙斗',
+     '#ext:永夜之境/audio/fyrhzhengjing4': '仰面观太虚，疑是玉龙斗。',
+
+     '#ext:永夜之境/audio/fyrhpaoleidi1': '幻境吐真！',
+     '#ext:永夜之境/audio/fyrhpaoleidi2': '是真亦是幻！',
+     '#ext:永夜之境/audio/fyrhpaoleidi3': '前尘随烟渺渺音！',
+     '#ext:永夜之境/audio/fyrhpaohuanhun1': '笛烟化魂！',
+     '#ext:永夜之境/audio/fyrhpaohuanhun2': '心若澄明，何惧仙鬼？',
+     '#ext:永夜之境/audio/fyrhpaohuanhun3': '幻鬼哀仙系何情？',
+     "#ext:永夜之境/audio/die/fyrh_gongsunli:die": "深情被负，盟誓不存……",
+
+     '#ext:永夜之境/audio/fyrhxixi1': '鸿鹄比翼游，群飞戏太清。',
+     '#ext:永夜之境/audio/fyrhxixi2': '有之为有，恃无以生。',
+     '#ext:永夜之境/audio/fyrhxixi3': '附会者升进，违忤者罢退。',  
+     '#ext:永夜之境/audio/fyrhxixi4': '铦巧好利，莫敢忤旨。',
+    
+    
+
+
+    
+
+
+
+   
+   
 
     
     
@@ -594,12 +617,6 @@ export let voices = {
     
 
 
-
-
-
-
-
-    
 
      '#ext:永夜之境/audio/fyrhpitai1': '否极泰来。',
      '#ext:永夜之境/audio/fyrhpitai2': '互通有无，实为妙计',
@@ -688,50 +705,6 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhcanjue2': '黄天挥军，四海皆应！',
 
    
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-    
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-  
-
-    
-
-
-
-
-  
-
-
-
-
-
 
 
     '#ext:永夜之境/audio/fyrhjuzhan1': '休得恋战！小胜便可。',
