@@ -14,7 +14,7 @@ export let info = {
 				'xinxhj_sunba', 'xinxhj_liubian', 'xinxhj_yue_caiyong', 'xinxhj_dongxu', 'xinxhj_dc_wuban'],
 			'shousha': ['xinxhj_new_simayi', 'xinxhj_mb_huangzu', 'xinxhj_simashi', 'xinxhj_hefei_zhangliao', 'xinxhj_sp_zhonghui', 'xinxhj_sb_zhangliao',
 				'xinxhj_hefei_lidian', 'xinxhj_hefei_yuejin', 'xinxhj_luotong', 'xinxhj_wangyuanji', 'xinxhj_yanghuiyu', 'xinxhj_sp_duyu', 'xinxhj_mb_shen_machao'
-				, 'xinxhj_jushou', 'xinxhj_yj_ganning','xinxhj_friend_shitao'],
+				, 'xinxhj_jushou', 'xinxhj_yj_ganning', 'xinxhj_friend_shitao'],
 			'xinxol': ['xinxhj_ol_jsrg_caocao', 'xinxhj_jsrg_zhangliao', 'xinxhj_clan_zhonghui', 'xinxhj_wangkuang', 'xinxhj_jsrg_zhanghe', 'xinxhj_haopu',
 				'xinxhj_sb_jiangwei', 'xinxhj_ol_qinlang', 'xinxhj_clan_wuqiao', 'xinxhj_yangzhi', 'xinxhj_yangyan', 'xinxhj_ol_lingtong', 'xinxhj_caoying', 'xinxhj_duanjiong'],
 			'xinxhaiwai': ['xinxhj_daxiaoqiao', 'xinxhj_bingyuan'],
@@ -925,7 +925,7 @@ export let info = {
 		xinxhjqixin: "契心",
 		xinxhjqixin_info: "每回合各限两次，当你不因本技能使用牌时/摸牌后，你可以摸一张牌/使用一张牌。",
 		xinxhjjiusi: "纠思",
-		xinxhjjiusi_info: `每回合限一次，你可以视为使用一张${get.poptip('xinx_jishipai')}。`,
+		xinxhjjiusi_info: `每回合限一次，你可以视为使用一张本轮未以此法使用过的${get.poptip('xinx_jishipai')}。`,
 		xinxhj_dc_zhushuo: "改朱铄",
 		xinxhj_dc_zhushuo_prefix: "改",
 		xinxhjzsshuhe: "疏和",
@@ -9880,6 +9880,7 @@ export let info = {
 				return get
 					.inpileVCardList(info => {
 						const name = info[2];
+						if (player.getStorage('xinxhjjiusi_used').includes(name)) return false;
 						return ['basic', 'trick'].includes(get.type(name));
 					})
 					.some(card => {
@@ -9893,6 +9894,7 @@ export let info = {
 						//.inpileVCardList(info => get.type(info[2]) == "basic")
 						.inpileVCardList(info => {
 							const name = info[2];
+							if (player.getStorage('xinxhjjiusi_used').includes(name)) return false;
 							return ['basic', 'trick'].includes(get.type(name));
 						})
 						.filter(card => {
@@ -9922,6 +9924,8 @@ export let info = {
 						log: false,
 						async precontent(event, trigger, player) {
 							player.logSkill("xinxhjjiusi");
+							player.addTempSkill('xinxhjjiusi_used', 'roundEnd');
+							player.markAuto('xinxhjjiusi_used', [event.result.card.name]);
 							/* await player.chooseToDiscard('he', 2, true)
 								.set("ai", card => {
 									return 6 - get.value(card);
@@ -9934,7 +9938,7 @@ export let info = {
 				if (player.getStat("skill").xinxhjjiusi) {
 					return false;
 				}
-				return ['basic', 'trick'].includes(get.type(name)) && lib.inpile.includes(name);
+				return ['basic', 'trick'].includes(get.type(name)) && lib.inpile.includes(name) && !player.getStorage('xinxhjjiusi_used').includes(name);
 			},
 			ai: {
 				order: 10,
@@ -9955,6 +9959,16 @@ export let info = {
 					},
 				},
 			},
+			subSkill: {
+				used: {
+					charlotte: true,
+					onremove: true,
+					marktext:'纠',
+					intro: {
+						content: "本轮已使用牌名：$",
+					},
+				}
+			}
 		},
 		//朱铄
 		xinxhjzsshuhe: {

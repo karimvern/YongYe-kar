@@ -175,6 +175,16 @@ export async function precontent(config, pack) {
             nature: 'woodmm', //woodmm  metalmm
             showName: 'U',
         });
+        lib.namePrefix.set('Y', {
+            color: '#44DA67',
+            nature: 'watermm',
+            showName: 'Y',
+        });
+        lib.namePrefix.set('屑', {
+            color: '#EB9395',//EB9395 ACBDD8
+            nature: 'soilmm',
+            showName: '屑',
+        });
 
 
 

@@ -374,7 +374,7 @@ export let info = {
         xinxguizi_info: "锁定技。每回合限一次，当你受到伤害时，若伤害来源有“生”，你防止此伤害。",
         xinxchiyu: "赤羽",
         xinxchiyu_tag: "羽",
-        xinxchiyu_info: "锁定技。当你使用或打出红色牌时，你将牌堆顶的一张牌置于你的武将牌上，称为“羽”。你可以将“羽”如手牌般使用或打出（无使用次数和距离限制）。",
+        xinxchiyu_info: "锁定技。当你使用或打出红色牌时，你将牌堆顶的一张牌置于你的武将牌上，称为“羽”。你可以将“羽”如手牌般使用或打出（无次数距离限制）。",
         xinxshuangmang: "霜芒",
         xinxshuangmang_info: "当你将“羽”置于武将牌上时，若此“羽”可以使用，你可立即使用“羽”。每回合限一次，你可将一张“羽”当作任意基本牌或锦囊牌使用。",
         xinxshiren: "识人",
@@ -423,7 +423,7 @@ export let info = {
         xinxyiyue: '倚月',
         xinxyiyue_info: '每回合限一次，当你伤害牌的目标时，你可选择一名不为此牌使用者的角色，令其视为对此牌使用者使用一张【决斗】。若其因此【决斗】造成了伤害，你令此牌无效，并与其各摸一张牌。',
         xinxjuewu: '绝舞',
-        xinxjuewu_info: "结束阶段，你可令所有其他角色依次对你使用一张牌（无距离限制），否则你获得其一张牌。当你因此受到伤害时，防止之。结算完成后，你获得“绝舞”过程中进入弃牌堆的牌。",
+        xinxjuewu_info: "结束阶段，你可令所有其他角色依次对你使用一张牌（无距离限制），否则你弃置其一张牌。结算完成后，你获得“绝舞”过程中进入弃牌堆的牌。",
         xinxqingchen: '倾城',
         xinxqingchen_info: '蓄力技（1/7）。①出牌阶段限一次，你可消耗7点蓄力值，令一名其他角色的下回合改为由你操控。该回合结束时，其可将一张牌当【决斗】使用。②当你造成1点伤害后，你获得1点蓄力值。',
         xinxqingchen2: '倾城',
@@ -694,7 +694,7 @@ export let info = {
         xinxxiaoling: '枭翎',
         xinxxiaoling_info: "锁定技。当你需要使用或打出【杀】或【闪】时，你可以获得场上一张牌，视为使用或打出之。若此牌不为防具牌或当你造成伤害后，此技能本回合失效；若为防具牌，你下次受到的伤害+1。",
         xinxyuanyan: '渊偃',
-        xinxyuanyan_info: "锁定技。一张牌结算后，若你为此牌的使用者或目标，且你因此造成或受到伤害，你可以使用一张本回合进入弃牌堆的牌。若此牌为基本牌或普通锦囊牌，你将其置于武将牌上，称为“渊”，然后对方获得一张【影】。",
+        xinxyuanyan_info: "锁定技，一张牌结算后，若你为此牌的使用者或目标，且你不因本技能造成或受到伤害，你可以使用一张本回合进入弃牌堆的牌。若此牌为基本牌或普通锦囊牌，你将其置于武将牌上，称为“渊”，然后对方获得一张【影】。",
         xinxchengshu: '承枢',
         xinxchengshu_info: "锁定技。其他角色失去【影】后，你摸一张牌并可用任意张手牌替换等量的“渊”，然后你可以使用一张“渊”（无距离限制），若此时你的“渊”颜色均相同，你摸一张牌。",
         xinxlongxiang: '龙骧',
@@ -702,7 +702,7 @@ export let info = {
         xinxcangnuo: '沧诺',
         xinxcangnuo_info: "当你于回合外成为伤害牌的目标后，你可以将至多X张牌当作无距离限制的【杀】使用（X为本回合此技能的触发次数），此【杀】结算后，你弃置目标角色对应实体牌数张牌。",
         xinxlujing: '掳京',
-        xinxlujing_info: "每回合限一次。当你使用牌指定其他角色为目标后，你可以选择其中一个目标，直到你下回合开始，当其获得牌/回复体力时，你获得其中一半的牌（向下取整）/改为你增加等量体力上限。",
+        xinxlujing_info: "每回合限一次。当你使用牌指定其他角色为目标后，你可以选择其中一个目标，直到你下回合开始，当其获得牌后/回复体力时，你观看并获得其中一半的牌（向下取整）/改为你增加等量体力上限。",
         xinxzisui: '恣睢',
         xinxzisui_info: "锁定技，结束阶段，你选择一名其他角色并选择一项：<br>1.令其摸X张牌；<br>2.令其回复X点体力；<br>3.令其将X张手牌当【决斗】对你使用，否则你与其各失去1点体力。<br>然后你移除此选项。当所有选项移除后，你减4点体力上限（X为场上牌数）。",
         xinxqiyi: '契翊',
@@ -739,7 +739,7 @@ export let info = {
         xinxnewquanmou_info: `锁定技，当你使用指定自己为目标的牌或于回合外失去牌时，你移出当前回合角色等量张牌并摸一张牌。你的额定摸牌数+X（X为点数大于你手牌点数最小值牌数的移出牌数）。`,
         xinxnewwugui: '无归',
         xinxnewwugui_info: `觉醒技，当你进入濒死状态或移出牌数达到13时，你回复1点体力并修改${get.poptip('xinxnewquanmou')}，然后你可以将半数向下张移出牌交给一名其他角色。`,
-        xinxnewquanmoux: '权谋',
+        xinxnewquanmoux: '权谋·改',
         xinxnewquanmoux_info: `锁定技，当你使用指定自己为目标的牌或于回合外失去牌时，你移出当前回合角色等量张牌并视为使用等量张移出牌。你的额定摸牌数+X（X为点数大于你手牌点数最小值牌数的移出牌数）。`,
 
 
@@ -3580,7 +3580,6 @@ export let info = {
             filter(event, player) {
                 return game.hasPlayer(target => target !== player);
             },
-            locked: true,
             forced: true,
             async content(event, trigger, player) {
                 game.addGlobalSkill('xing_xingyu_xingluo');
@@ -6428,39 +6427,35 @@ export let info = {
             trigger: {
                 target: "useCardToTarget",
             },
-            locked: true,
             filter: function (event, player) {
                 return get.is.damageCard(event.card);
             },
             usable: 1,
-            content: function () {
-                "step 0"
-                player.chooseTarget(get.prompt("xinxyiyue"), function (card, player, target) {
-                    return target != _status.event.getTrigger().player;
-                    // return target!=player&&target!=_status.event.getTrigger().player;
-                }).set('ai', function (target) {
-                    return target.canUse("juedou", source);
-                }).set("ai", function (target) {
-                    var source = _status.event.getTrigger().player;
-                    return get.effect(source, { name: "juedou" }, target, player);
-                });
-                "step 1"
-                if (result.bool) {
-                    var target = result.targets[0];
-                    event.target = target;
-                    player.logSkill("xinxyiyue", target);
-                    if (target.canUse("juedou", trigger.player)) {
-                        event.useCardx = target.useCard({ name: "juedou" }, trigger.player, "noai");
-                    } else event.finish();
-                } else event.finish();
-                "step 2"
-                if (target.hasHistory("sourceDamage", function (evt) {
-                    return evt.card == event.useCardx.card;
-                })) {
-                    game.asyncDraw([player, target]);
-                    trigger.targets.length = 0;
-                    trigger.all_excluded = true;
-                };
+            async cost(event, trigger, player) {
+                event.result = await player
+                    .chooseTarget(get.prompt2(event.skill), (card, player, target) => {
+                        return target != _status.event.getTrigger().player;
+                    })
+                    .set("ai", target => {
+                        let source = _status.event.getTrigger().player;
+                        return get.effect(source, { name: "juedou" }, target, player);
+                    })
+                    .forResult();
+            },
+            async content(event, trigger, player) {
+                const target = event.targets[0];
+                if (target.canUse("juedou", trigger.player)) {
+                    let useCardx = get.autoViewAs({ name: "juedou" ,isCard: true});
+                    const useEvent = target.useCard(useCardx, trigger.player, "noai");
+                    await useEvent;
+                    if (target.hasHistory("sourceDamage", function (evt) {
+                        return evt.card == useEvent.card;
+                    })) {
+                        await game.asyncDraw([player, target]);
+                        trigger.targets.length = 0;
+                        trigger.all_excluded = true;
+                    };
+                }
             },
         },
         xinxjuewu: {
@@ -6491,7 +6486,7 @@ export let info = {
                 if (event.targetsx.length > 0) {
                     var target = event.targetsx.shift();
                     event.target = target;
-                    target.chooseToUse('绝舞：请对' + get.translation(player) + '使用一张牌(无距离限制)，否则其获得你一张牌')
+                    target.chooseToUse('绝舞：请对' + get.translation(player) + '使用一张牌(无距离限制)，否则其弃置你一张牌')
                         .set('complexSelect', true).set('filterTarget', function (card, player, target) {
                             if (target != _status.event.sourcex && !ui.selected.targets.includes(_status.event.sourcex)) {
                                 return false;
@@ -6502,16 +6497,15 @@ export let info = {
 
 
                 "step 2"
-                if (!result.bool && target.countGainableCards(player, "he")) player.gainPlayerCard("he", target, true);
+                //if (!result.bool && target.countGainableCards(player, "he")) player.gainPlayerCard("he", target, true);
+                if (!result.bool && target.countDiscardableCards(player, "he")) player.discardPlayerCard("he", target, true);
 
                 if (event.targetsx.length > 0) event.goto(1);
                 "step 3"
                 player.removeSkill("xinxjuewu_record");
             },
-
-            group: "xinxjuewu_dying",
+            //group: "xinxjuewu_dying",
             subSkill: {
-
                 dying: {
                     audio: "ext:永夜之境/audio:2",
                     trigger: {
@@ -6524,12 +6518,7 @@ export let info = {
                     },
                     content: function () {
                         trigger.cancel();
-
                     },
-
-                    sub: true,
-                    "_priority": 0,
-                    sourceSkill: "xinxjuewu",
                 },
                 record: {
                     trigger: {
@@ -7046,7 +7035,7 @@ export let info = {
                             }
                         },
                         aiUseful() {
-                            return lib.skill.xinxcangren_effect.subSkill.debuff.mod.aiValue.apply(this, arguments);
+                            return lib.skill.xinxcangren.subSkill.effect.mod.aiValue.apply(this, arguments);
                         },
                         aiOrder(player, card, num) {
                             if (get.itemtype(card) == "card" && get.type(card, player) == 'delay') {
@@ -12073,24 +12062,19 @@ export let info = {
             filter(event, player) {
                 return event.cards.length && event.player != player;
             },
-
             async content(event, trigger, player) {
                 const cards = trigger.cards;
                 await player.addToExpansion(cards, "gain2").gaintag.add("xinxqueyi");
                 await game.asyncDraw([player, trigger.player]);
                 trigger.player.addTempSkill('xinxqueyi_use');
-                if (!trigger.player.storage.xinxqueyi_count) {
-                    trigger.player.storage.xinxqueyi_count = 0;
-                }
-                trigger.player.storage.xinxqueyi_count += 1;
+                trigger.player.addMark("xinxqueyi_use", 1, false);
                 // if (cards.filter(card => get.tag(card, "damage")).length>0) {
                 //     //  await player.addJudge({ name: "xumou_jsrg" },cards);
                 //     await player.addToExpansion(cards, "gain2").gaintag.add("xinxqueyi");
                 // }
-                if (trigger.player.storage.xinxqueyi_count > 2 && trigger.player.countGainableCards(player, "he")) {
-                    player.gainPlayerCard(trigger.player, "he", 1, "visible", true);
+                if (trigger.player.countMark('xinxqueyi_use') > 2 && trigger.player.countGainableCards(player, "he")) {
+                    await player.gainPlayerCard(trigger.player, "he", 1, "visible", true);
                 }
-
             },
             marktext: "阙",
             intro: {
@@ -12103,20 +12087,10 @@ export let info = {
             },
             subSkill: {
                 use: {
-                    trigger: {
-                        global: "phaseEnd",
-                    },
                     charlotte: true,
-                    forced: true,
-                    popup: false,
-                    priority: 10,
-                    content() {
-                        player.storage.xinxqueyi_count = 0;
-                    }
                 },
             }
         },
-
         xinxshexin: {//判定阶段开始时，你可以展示判定区任意张牌，然后令一名其他角色选择一项：1.将所有手牌置入牌堆，然后获得展示的牌；2.令你弃置其等量张牌，并使用展示的牌。
 
             audio: "ext:永夜之境/audio:4",
@@ -13147,6 +13121,7 @@ export let info = {
                 global: "useCardAfter",
             },
             filter(event, player) {
+                if (event.getParent(2).name === 'xinxyuanyan') return false;
                 const { card, targets } = event;
                 return player == event.player || targets.includes(player);
             },
@@ -13684,7 +13659,6 @@ export let info = {
                     });
 
             },
-            // group: 'xinxlujing_remove',
             subSkill: {
                 gain: {
                     marktext: "掳",
@@ -13695,7 +13669,7 @@ export let info = {
                     },
                     audio: "ext:永夜之境/audio:2",
                     trigger: {
-                        global: ["recoverBegin", "gainAfter", "loseAsyncAfter"],
+                        global: ["recoverBefore", "gainAfter", "loseAsyncAfter"],
                     },
                     direct: true,
                     superCharlotte: true,
@@ -13705,15 +13679,8 @@ export let info = {
                     },
                     async content(event, trigger, player) {
                         if (trigger.name == "gain" || trigger.name == "loseAsync") {
-                            const lostCards = trigger.cards || [];
+                            const lostCards = trigger.getg(trigger.player);
                             if (lostCards.length > 0) {
-                                //  player.gain(lostCards, trigger.player, 'giveAuto', 'bySelf');
-
-                                // const basicCards = lostCards.filter(card => get.type(card) === 'basic');
-                                // if (basicCards.length > 0) {
-                                //     player.gain(basicCards, trigger.player, 'giveAuto', 'bySelf');
-                                // }
-
                                 const num = Math.floor(lostCards.length / 2);
                                 if (num > 0) {
                                     // if (num === 1) {
@@ -13724,7 +13691,6 @@ export let info = {
                                     if (result.bool) await player.gain(result.links, 'gain2', trigger.player);
                                 }
                             }
-
                         }
                         else {
                             trigger.cancel();

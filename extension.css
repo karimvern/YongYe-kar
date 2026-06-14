@@ -14,6 +14,84 @@
 	text-shadow: 0 0 5px rgb(170, 170, 170), 0 0 10px rgb(118, 118, 118), 0 0 15px rgb(118, 118, 118);
 }
 
+
+.yyzj-domain-state {
+    /* 🔴0.5  50% 半透明 */
+    /* opacity: 0.3; */
+    
+    /* 同时保留一丝的紫光 *//* grayscale(0.7) brightness(0.8) */
+    filter:   drop-shadow(0 0 10px #ed759b);
+    
+    /* 增加一个极其轻微的呼吸漂浮感，证明他们不在现实空间 */
+    /* animation: yyzj-domain-float 3s ease-in-out infinite alternate; */
+}
+
+@keyframes yyzj-domain-float {
+    0% { transform: translateY(0px) scale(1); }
+    100% { transform: translateY(-3px) scale(0.98); }
+}
+
+
+/* ==========================================
+   斩杀与樱花特效基础样式
+========================================== */
+
+/* 特效底层容器，盖在目标牌上方 */
+.yyzj-slash-container {
+    position: absolute;
+    z-index: 100;
+    pointer-events: none; /* 穿透点击，不影响玩家出牌操作 */
+    overflow: visible;
+}
+
+/* 一闪刀光的基础样式 */
+.yyzj-slash-blade {
+    position: absolute;
+    left: -20%;
+    bottom: -10%;
+    width: 140%;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #ffb7c5, #ff1493, #fff, #ff1493, transparent);
+    box-shadow: 0 0 15px #ff1493, 0 0 30px #ff1493;
+    transform-origin: left bottom;
+    transform: rotate(-55deg) scaleX(0);
+    opacity: 1;
+}
+
+/* 被劈开的虚影基础样式 */
+.yyzj-slash-half {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    /* 粉色高能滤镜 */
+    /* filter: drop-shadow(0 0 8px #ff1493) brightness(1.5) sepia(0.5) hue-rotate(-50deg) saturate(3); */
+}
+
+/* 左半部分和右半部分的裁剪蒙版 */
+.yyzj-slash-half-left {
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+.yyzj-slash-half-right {
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+/* 樱花花瓣的基础形状 */
+.yyzj-slash-petal {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* 对角线圆角：生成花瓣形状 */
+    border-radius: 100% 0 100% 0;
+    box-shadow: 0 0 6px #ff69b4;
+    opacity: 0;
+}
+
+
+
 /* 定义一道扫光动画 */
 @keyframes sweep-light {
 	0% {

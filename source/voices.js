@@ -518,6 +518,64 @@ export let voices = {
     '#ext:永夜之境/audio/xinxpoju11': '法眼之中，仍有无限可能。',
     '#ext:永夜之境/audio/xinxpoju12': '机遇险中求，大胆来吧。',
     '#ext:永夜之境/audio/xinxpoju13': '看看，这就是爻老板的手气。',
+    //绯英
+    '#ext:永夜之境/audio/xinxliaopan1': '落英一刹，缘结永恒~',
+    '#ext:永夜之境/audio/xinxliaopan2': '经典套路呀，大反派登场~',
+    '#ext:永夜之境/audio/xinxliaopan3': '头发越粉，打人越狠…你听过没？',
+    '#ext:永夜之境/audio/xinxliaopan4': '真以为我是吉祥物咩？',
+    '#ext:永夜之境/audio/xinxliaopan5': '踩到红线咯~',
+    '#ext:永夜之境/audio/xinxliaopan6': '已成定局啦~',
+    '#ext:永夜之境/audio/xinxliaopan7': '难道是…主角光环？',
+    '#ext:永夜之境/audio/xinxliaopan8': '我知道了，是你准备的惊喜？',
+    '#ext:永夜之境/audio/xinxliaopan9': '代表幻月消灭你！',
+    '#ext:永夜之境/audio/xinxliaopan10': '再见啦，各位！',
+    '#ext:永夜之境/audio/xinxliaopan11': '就是你了。',
+    '#ext:永夜之境/audio/xinxliaopan12': '让我量量，犯规程度…超标了！',
+    '#ext:永夜之境/audio/xinxwushe1': '一起上吧，狐狸老师——',
+    '#ext:永夜之境/audio/xinxwushe2': '游戏的规则，我来裁定——你，out了！',
+    '#ext:永夜之境/audio/xinxwushe3': '封印解除，看我名刀出鞘！',
+    '#ext:永夜之境/audio/xinxwushe4': '终于可以用出那一招了！',
+    '#ext:永夜之境/audio/xinxwushe5': '完结，撒花~',
+    '#ext:永夜之境/audio/xinxwushe6': '剧情还没完呢。',
+    '#ext:永夜之境/audio/xinxwushe7': '走过，笑过，哭过，就是我的每一天啦~',
+
+    //火花
+    '#ext:永夜之境/audio/xinxkuanghuan1': '好戏开场，点点赞点点关注哦~',
+    '#ext:永夜之境/audio/xinxkuanghuan2': '我说，这里很适合安排一场「火花大会」呢~',
+    '#ext:永夜之境/audio/xinxkuanghuan3': '欢迎来到我的频道～今天玩点什么？',
+    '#ext:永夜之境/audio/xinxkuanghuan4': '哼哼，还有谁会质疑火花？',
+    '#ext:永夜之境/audio/xinxkuanghuan5': '那么狂呀？待会儿就让你下播~',
+    '#ext:永夜之境/audio/xinxkuanghuan6': '现在，我才是欢愉！',
+    '#ext:永夜之境/audio/xinxkuanghuan7': '这…违规了！',
+    '#ext:永夜之境/audio/xinxkuanghuan8': '想蹭热度…没门……',
+    '#ext:永夜之境/audio/xinxkuanghuan9': '不要为告别而难过，「火花」会一直陪着你——在屏幕的另一端，也在你的心里~',
+    '#ext:永夜之境/audio/xinxkuanghuan10': '嘻嘻，下次直播不见不散~',
+    '#ext:永夜之境/audio/xinxkuanghuan11': '完结撒花～才怪，我还没玩够呢。',
+    '#ext:永夜之境/audio/xinxkuanghuan12': '和火花一起，狂欢到世界尽头吧！',
+    '#ext:永夜之境/audio/xinxkuanghuan13': '别太保守嘛~我们还要顶峰相见呢。',
+    '#ext:永夜之境/audio/xinxkuanghuan14': '独家放送订阅成功～猜猜，下一个我会是谁？',
+    '#ext:永夜之境/audio/xinxkuanghuan15': '给我踩~',
+    '#ext:永夜之境/audio/xinxkuanghuan16': '弹幕轰炸！',
+    '#ext:永夜之境/audio/xinxkuanghuan17': '下次安排个抽奖，回报大家的心意~',
+    
+    
+    
+
+
+
+
+
+    '#ext:永夜之境/audio/xinxzhumu1': '打赏无论大小，我都收下啦~',
+    '#ext:永夜之境/audio/xinxzhumu2': '就这点火花？',
+    '#ext:永夜之境/audio/xinxzhumu3': '前方高能，小心哦~',
+    '#ext:永夜之境/audio/xinxzhumu4': '有没有想我呀？',
+    
+    
+    
+    
+
+
+   
     
     
 
@@ -600,21 +658,24 @@ export let voices = {
      '#ext:永夜之境/audio/fyrhxixi4': '铦巧好利，莫敢忤旨。',
     
     
+     '#ext:永夜之境/audio/fyrhyicheng1': '疑城假楼之虚实，绵连百里可御魏军。',
+     '#ext:永夜之境/audio/fyrhyicheng2': '百里疑城天险为平，魏贼岂敢觊觎东吴之地！',
+     '#ext:永夜之境/audio/fyrhwuji1': '何人助我？',  
+     '#ext:永夜之境/audio/fyrhwuji2': '休要伤我！',
+     '#ext:永夜之境/audio/fyrhligang1': '为臣者，当晓君之需，济君之急。',
+     '#ext:永夜之境/audio/fyrhligang2': '臣当殚精竭虑，弭吾主后顾之忧。',
+     '#ext:永夜之境/audio/fyrhkenjian1': '此策，可劝业、安国、兴邦。',
+     '#ext:永夜之境/audio/fyrhkenjian2': '此言，可除弊、为公、佐君。',
+     '#ext:永夜之境/audio/fyrhkenjian3': '天下分合，承运者舍君其谁。',
+     '#ext:永夜之境/audio/fyrhkenjian4': '愿吾有生之年，得见卿君临天下。',
 
 
-    
 
 
-
-   
-   
-
+     
+      
     
-    
-    
-    
-    
-    
+      
 
 
 
@@ -636,10 +697,8 @@ export let voices = {
      '#ext:永夜之境/audio/fyrhjiabai3': '推令如山，敢不从者，斩立决！',
      '#ext:永夜之境/audio/fyrhjiabai4': '畜养汝等，正为今日！',
 
+
     
-
-
-       
 
       
     '#ext:永夜之境/audio/fyrhchuailing1': '将军性豪，必不吝此小物。',
