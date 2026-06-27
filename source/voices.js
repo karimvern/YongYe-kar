@@ -558,17 +558,34 @@ export let voices = {
     '#ext:永夜之境/audio/xinxkuanghuan16': '弹幕轰炸！',
     '#ext:永夜之境/audio/xinxkuanghuan17': '下次安排个抽奖，回报大家的心意~',
     
-    
-    
-
-
-
-
-
     '#ext:永夜之境/audio/xinxzhumu1': '打赏无论大小，我都收下啦~',
     '#ext:永夜之境/audio/xinxzhumu2': '就这点火花？',
     '#ext:永夜之境/audio/xinxzhumu3': '前方高能，小心哦~',
     '#ext:永夜之境/audio/xinxzhumu4': '有没有想我呀？',
+    //欢愉
+    '#ext:永夜之境/audio/xinxshuangjian1': '现在请称呼我为，银河双剑侠！',
+    '#ext:永夜之境/audio/xinxshuangjian2': '高光时刻，为你点亮。',
+    '#ext:永夜之境/audio/xinxshuangjian3': '双剑齐下！',
+    '#ext:永夜之境/audio/xinxshuangjian4': '这一次，我们会携手同行。',
+    '#ext:永夜之境/audio/xinxshuangjian5': '可以，你成功引起了我的注意。',
+    '#ext:永夜之境/audio/xinxshuangjian6': '这就心态崩了？',
+    '#ext:永夜之境/audio/xinxshuangjian7': '开拓旋风，走你！',
+    '#ext:永夜之境/audio/xinxshuangjian8': '欢愉之力，笑死。',
+    '#ext:永夜之境/audio/xinxshuangjian9': '天下武功，为我所用…拿下！',
+    '#ext:永夜之境/audio/xinxshuangjian10': '没想到吧？观众的最爱——反转。',
+    '#ext:永夜之境/audio/xinxshuangjian11': '炸翻全场！',
+    '#ext:永夜之境/audio/xinxshuangjian12': '别让场面冷下来。',
+    '#ext:永夜之境/audio/xinxshuangjian13': '欢笑，是人类的赞歌！',
+    '#ext:永夜之境/audio/xinxshuangjian14': '多谢，我还能再打五百年。',
+    '#ext:永夜之境/audio/xinxtongxing1': '我会记得，我会前进。一同走向群星吧，昔涟。',
+    '#ext:永夜之境/audio/xinxtongxing2': '成为英雄的道路并不孤单，搭档。',
+    '#ext:永夜之境/audio/xinxtongxing3': '这一次，我们会携手同行。',
+    '#ext:永夜之境/audio/xinxtongxing4': '丹恒，继续一起开拓吧！',
+    '#ext:永夜之境/audio/xinxtongxing5': '风堇，感谢你洒下的色彩。',
+    '#ext:永夜之境/audio/xinxtongxing6': '无论欢乐或痛苦，都应是我们自己的选择。',
+   
+    
+    
     
     
     

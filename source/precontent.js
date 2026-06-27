@@ -47,9 +47,22 @@ export async function precontent(config, pack) {
         if (!info) continue;
         for (let name in info.character) {
             let char = info.character[name];
+            const imagePath = ((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/' + name + '.png';
+            const objectImagePath = 'extension/永夜之境/image/' + name + '.png';
             if (!char[4]) char[4] = [];
-            char[4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/' + name + '.png');
             char[4].push('die:ext:永夜之境/audio/die/' + name);
+            const dieAudio = 'die:ext:永夜之境/audio/die/' + name;
+            if (Array.isArray(char)) {
+                /*  if (!char[4]) char[4] = [];
+                 if (!char[4].includes(dieAudio)) char[4].push(dieAudio); */
+                if (!char[4].includes(imagePath)) char[4].push(imagePath);
+            }
+            else if (char && typeof char == 'object') {
+                if (!char.img) char.img = objectImagePath;
+            }
+            /* if (!char[4]) char[4] = [];
+            char[4].push(((lib.device || lib.node) ? 'ext:' : 'db:extension-') + '永夜之境/image/' + name + '.png');
+            char[4].push('die:ext:永夜之境/audio/die/' + name); */
             //阵亡台词接口
             lib.translate[`#ext:永夜之境/audio/die/${name}:die`] = dieWordsDict[name] || '点击播放阵亡配音';
 
@@ -185,10 +198,27 @@ export async function precontent(config, pack) {
             nature: 'soilmm',
             showName: '屑',
         });
+        lib.namePrefix.set('糖', {
+            color: '#FAFAFA',
+            nature: 'soilmm',
+            showName: '糖',
+        });
+        lib.namePrefix.set('欢', {
+            color: '#BF80DB',
+            nature: 'soilmm',
+            showName: '欢',
+        });
+        lib.namePrefix.set('袍', {
+            color: '#FBA2E2',
+            nature: 'soilmm',
+            showName: '袍',
+        });
 
 
 
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', '乐', 'OL谋', 'OL', '廷','玄蝶','OL界','手杀神','夏','手杀界','族','☆','友'];
+
+
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', '乐', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友','雁翎'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`
@@ -574,12 +604,14 @@ export async function precontent(config, pack) {
             firstDo: true,
             trigger: {
                 player: [
+                    /* "phaseBegin", */
                     "playercontrol",
                     "chooseToUseBegin",
                     "chooseToRespondBegin",
                     "chooseToDiscardBegin",
                     "chooseToCompareBegin",
                     "chooseButtonBegin",
+                    "chooseButtonTargetBegin",
                     "chooseCardBegin",
                     "chooseTargetBegin",
                     "chooseCardTargetBegin",
@@ -589,6 +621,7 @@ export async function precontent(config, pack) {
                     "discardPlayerCardBegin",
                     "gainPlayerCardBegin",
                     "chooseToMoveBegin",
+                    "chooseToMove_newBegin",
                     "chooseToPlayBeatmapBegin",
                     "chooseToGiveBegin",
                 ],
