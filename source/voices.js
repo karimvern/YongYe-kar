@@ -1282,6 +1282,7 @@ export let voices = {
     '#ext:永夜之境/audio/xinxchenlan2': '壁立千仞，泰然本英雄！',
     '#ext:永夜之境/audio/xinxchenlan3': '不动如山，气定神闲。',
     '#ext:永夜之境/audio/xinxchenlan4': '胸怀若谷，波澜不惊。',
+    '#ext:永夜之境/audio/xinxchenlan5': '曹魏气数未尽，且在隐忍一时。',
     '#ext:永夜之境/audio/xinxyiyue1': '不要小瞧了女人。',
     '#ext:永夜之境/audio/xinxyiyue2': '你愿意，为了我而死吗？',
     '#ext:永夜之境/audio/xinxcangren1': '大逆无道，罪当伏诛！',

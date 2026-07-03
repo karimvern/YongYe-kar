@@ -2220,8 +2220,34 @@ export let info = {
             },
             async content(event, trigger, player) {
                 const target = event.targets[0];
-                const dialog = ui.create.dialog('hidden', `###${get.prompt(event.name)}###<div class="text center">选择你与${get.translation(target)}各至多5张牌</div>`);
-                dialog.add(`<div class="text center">${get.translation(player)}的牌</div>`);
+                 const dialog = ui.create.dialog('hidden', `###${get.prompt(event.name)}###<div class="text center">选择你与${get.translation(target)}各至多5张牌</div>`);
+                if (player.getCards("h").length) {
+                    dialog.add(`<div class="text center">${get.translation(player)}的手牌</div>`);
+                    dialog.add(player.getCards("h"));
+                }
+                if (player.getCards("e").length) {
+                    dialog.add(`<div class="text center">${get.translation(player)}的装备区</div>`);
+                    dialog.add(player.getCards("e"));
+                } 
+                let hcards = target.getCards("h");
+                let ecards = target.getCards("e");
+                if (hcards.length) {
+                    dialog.addText('<div class="text center">' + get.translation(target) + "的手牌</div>");
+                    let knows = target.getKnownCards(player);
+                    let unknows = hcards.filter(card=> !knows.includes(card));
+                    if (knows.length) {
+                        dialog.add(knows);
+                    }
+                    if (unknows.length) {
+                        dialog.add([unknows.slice().randomSort(), "blank"]);
+                    }
+                }
+                if (ecards.length) {
+                    dialog.addText('<div class="text center">' + get.translation(target) + "的装备区</div>");
+                    dialog.add(ecards);
+                } 
+               
+                /* dialog.add(`<div class="text center">${get.translation(player)}的牌</div>`);
                 dialog.add(player.getCards("he"));
                 dialog.add(`<div class="text center">${get.translation(target)}的牌</div>`);
                 const targetCards = target.getCards("he");
@@ -2236,7 +2262,7 @@ export let info = {
                     if (hidden.length) {
                         dialog.add([hidden.slice().randomSort(), 'blank']);
                     }
-                }
+                } */
                 const result2 = await player.chooseButton(dialog, [1, 10])
                     .set('filterButton', button => {
                         const card = button.link;
@@ -6235,19 +6261,23 @@ export let info = {
             },
             forced: true,
             popup: false,
-            // filter(event, player) {
-            //     return player.countMark('xinxchenlan') > 2;
-            // },
+            /* filter(event, player) {
+                return player.getHistory("sourceDamage").length > 0;
+            }, */
             async content(event, trigger, player) {
-                if (player.countMark('xinxchenlan') < 2) {
+                let damage = 0;
+                player.getHistory("sourceDamage", evt => {
+                    damage += evt.num;
+                });
+                if (damage < 2) {
                     player.logSkill("xinxchenlan", null, null, null, [5]);
                     await player.loseHp();
-                }
-                if (player.isDamaged() && player.countMark('xinxchenlan') > 2) {
+                } else if (player.isDamaged() && damage > 2) {
                     player.logSkill("xinxchenlan", null, null, null, [get.rand(1, 4)]);
                     await player.recover();
                 }
-                if (player.countMark('xinxchenlan') > 3) {
+                if (damage > 3) {
+                    player.logSkill("xinxchenlan", null, null, null, [5]);
                     var cards = [];
                     for (var i = 1; i <= 1; i++) {
                         var card = get.cardPile2(function (card) {
@@ -6264,7 +6294,6 @@ export let info = {
                         await game.delayx();
                     }
                 }
-
             },
             group: "xinxchenlan_mark",
             subSkill: {
@@ -6282,9 +6311,7 @@ export let info = {
                         else player.addMark('xinxchenlan', trigger.num, false);
                     },
                 }
-
             }
-
         },
 
 
@@ -9699,7 +9726,7 @@ export let info = {
             },
             async content(event, trigger, player) {
                 const target = trigger.target;
-                target.addToExpansion(trigger.cards, 'gain2').set('gaintag', ["xinxbeifa"]);
+                await target.addToExpansion(trigger.cards, 'gain2').set('gaintag', ["xinxbeifa"]);
             },
             marktext: "伐",
             intro: {
@@ -9717,7 +9744,6 @@ export let info = {
                     filter(event, player) {
                         return event.player.getExpansions("xinxbeifa").length;
                     },
-                    "prompt2": "依次使用或打出你所有的“伐”",
                     async content(event, trigger, player) {
                         //player.addTempSkill("xinxbeifa_use");
                         while (trigger.player.getExpansions("xinxbeifa").length) {
@@ -9729,8 +9755,7 @@ export let info = {
                         }
                         //player.removeSkill("xinxbeifa_use");
                     },
-                    sub: true,
-                    "_priority": 100,
+                    priority: 100,
                 },
                 use: {
                     enable: ["chooseToUse", "chooseToRespond"],
@@ -11694,7 +11719,7 @@ export let info = {
             filter(event, player) {
                 return player.countCards("he") > 1;
             },
-            direct:true,
+            direct: true,
             async content(event, trigger, player) {
                 const result = await player.chooseCard(get.prompt("xinxyanhui"), "重铸至多两张牌", 'he', [1, 2])
                     .set("ai", function (card) {
@@ -11725,7 +11750,7 @@ export let info = {
                     if (cards.length) {
                         const names = cards.map(card => card.name).unique();
                         if (names.length === cards.length) {
-                            let list = cards.slice(); 
+                            let list = cards.slice();
                             while (list.some(card => player.hasUseTarget(card))) {
                                 const result = await player.chooseButton(['是否使用其中的一张牌？', list]).set('filterButton', button => {
                                     return get.player().hasUseTarget(button.link);
@@ -13003,6 +13028,7 @@ export let info = {
                 return player == event.player || targets.includes(player);
             },
             forced: true,
+            lastDo:true,
             popup: false,
             logTarget(event, player) {
                 return player == event.player ? event.target : event.player;
@@ -13131,7 +13157,9 @@ export let info = {
                             const result = await player
                                 .chooseToUse({
                                     filterCard(card) {
-                                        if (!card.hasGaintag("xinxchengshu")) { return false; }
+                                        if (!card?.hasGaintag("xinxchengshu")) { 
+                                            return false; 
+                                        }
                                         return true;
                                     },
                                     filterTarget(card, player, target) {
@@ -14905,8 +14933,8 @@ export let info = {
             onremove: true,
             popup: false,
             filter(event, player) {
-                if (!get.is.damageCard(event.card)) { 
-                    return false; 
+                if (!get.is.damageCard(event.card)) {
+                    return false;
                 }
                 /* const hasChanged = game.hasGlobalHistory("everything", evt => {
                     const cardMoveEvents = ["gain", "lose", "loseAsync", "draw", "discard", "equip", "addJudge", 'addToExpansion'];

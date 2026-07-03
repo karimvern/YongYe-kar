@@ -101,12 +101,22 @@ export const xinx1Character = {
 
 //永夜之始
 export const xinx2Character = {
+    xinxnew_changyeyue:{
+        sex: "female",
+        group: "xinx",
+        hp: 4,
+        trashBin: ['epic'],
+        skinPath: "extension/永夜之境/skin/xinx_changyeyue/",
+        skills: ['xinxnewbuli','xinxnewyiyu'],
+        dieAudios: ['fyrh_changyeyue'],
+    },
     xinxhy_qiong: {
         sex: "male",
         group: "xinx",
         hp: 4,
         img: "extension/永夜之境/image/xinxhy_qiong.png",
         trashBin: ['legend'],
+        skinPath: "extension/永夜之境/skin/xinx_qiong/",
         skills: ['xinxshuangjian', 'xinxtongxing'],
         dieAudios: ['xinx_qiong'],
     },
@@ -118,6 +128,7 @@ export const xinx2Character = {
         trashBin: ['legend'],
         skills: ['xinxyingshi', 'xinxxinzhui'],
     },
+    xinxmeng_liuying: ["female", "xinx", 3, ['xinxyueding'],['legend',"skinPath:extension/永夜之境/skin/xinxnew_liuying/"]],
     xinx_jingliu: ["female", "xinx", 4, ['xinxxiaguang', 'xinxshuohua'], ['legend']],
     xinx_ren: ["male", "xinx", 5, ['xinxzhili', 'xinxfandu'], ['legend']],
     //开拓者
@@ -136,7 +147,6 @@ export const xinx2Character = {
     xinx_daheita: ["female", "xinx", 3, ['xinxjiegou', 'xinxlinggan'], ['legend']],
     xinx_feixiao: ["female", "xinx", 4, ['xinxjueying', 'xinxzhuodeng'], ['legend']],
     xinx_guinaifen: ["female", "xinx", 4, ['xinxduoyi', 'xinxbashi'], ['legend']],
-    xinxmeng_liuying: ["female", "xinx", 3, ['xinxyueding'], ['legend']],
     xinx_baie: ["male", "xinx", "4/5", ['xinxzhuhuo', 'xinxfushi'], ['legend']],
     xinx_fengjin: ["female", "xinx", 3, ['xinxtianqi', 'xinxhongzhu'], ['epic']],
     xinx_changyeyue: ["female", "xinx", 3, ['xinxyiyu', 'xinxbuli'], ['epic']],
@@ -179,6 +189,25 @@ export const xinx2Character = {
 
 //风雨如晦
 export const xinxfengyuCharacter = {
+    fyrhy_ningsui:{
+        sex: "male",
+        group: "shu",
+        hp: 1,
+		maxHp: 4,
+		hujia: 3,
+        trashBin: ['epic'],
+        skills: ['fyrhzhuyue','fyrhpoyong'],
+        dieAudios: ['xinxying_zhangliao'],
+    },
+    fyrhy_simayi:{
+        sex: "male",
+        group: "wei",
+        hp: 4,
+        trashBin: ['epic'],
+        skills: ['fyrhshuanshi','fyrhfulin'],
+        dieAudios: ['xin_simayi'],
+        tempname: ["new_simayi"],
+    },
     fyrh_huanggai: {
         sex: "male",
         group: "wu",
@@ -567,6 +596,7 @@ export const xinxfengyuCharacter = {
         hp: 4,
         trashBin: ['legend'],
         img: "extension/永夜之境/image/fyrh_daheita.png",
+        skinPath: "extension/永夜之境/skin/xinx_daheita/",
         skills: ['fyrhpouxi'],
         dieAudios: ['xinx_daheita'],
     },
@@ -576,6 +606,7 @@ export const xinxfengyuCharacter = {
         hp: 4,
         trashBin: ['legend'],
         img: "extension/永夜之境/image/fyrh_changyeyue.png",
+        skinPath: "extension/永夜之境/skin/xinx_changyeyue/",
         skills: ['fyrhmenglong'],
     },
     fyrh_xilian: {
@@ -584,6 +615,7 @@ export const xinxfengyuCharacter = {
         hp: 4,
         trashBin: ['legend'],
         img: "extension/永夜之境/image/fyrh_xilian.png",
+        skinPath: "extension/永夜之境/skin/xinx_xilian/",
         skills: ['fyrhningxi'],
         dieAudios: ['xinx_xilian'],
     },
@@ -829,6 +861,44 @@ export const xinxfengyuCharacter = {
 
 //武将修改
 export const xinxhuaijiuCharacter = {
+    xinxhj_clan_wangshen: {
+		sex: "male",
+		group: "wei",
+		hp: 4,
+        img: "image/character/clan_wangshen.jpg",
+		skills: ["xinxhjclananran", "xinxhjclangaobian", "clanzhongliu"],
+		clans: ["太原王氏"],
+        trashBin: ['legend'],
+        tempname: ["clan_wangshen"],
+        dieAudios: ["clan_wangshen"],
+	},
+    xinxhj_sb_zhuran: {
+		sex: "male",
+		group: "wu",
+		hp: 4,
+        trashBin: ['rare'],
+        img: "image/character/sb_zhuran.jpg",
+		skills: ["xinxhjsbzhenwei", "xinxhjsbheyuan"],
+        dieAudios: ["sb_zhuran"],
+	},
+    xinxhj_clan_lujing: {
+		sex: "male",
+		group: "wu",
+		hp: 4,
+        trashBin: ['legend'],
+		skills: ["xinxhjclantanfeng", "xinxhjclanjuewei", "clanzelie"],
+		clans: ["吴郡陆氏"],
+        tempname: ["clan_lujing"],
+        dieAudios: ["clan_lujing"],
+	},
+    xinxhj_star_sunshangxiang: {
+		sex: "female",
+		group: "wu",
+		hp: 4,
+        trashBin: ['legend'],
+		skills: ["xinxhjsaying", "xinxhjjiaohao"],
+        dieAudios: ["star_sunshangxiang"],
+	},
     xinxhjylyg_xuhuang: {
 		sex: "male",
 		group: "wei",
