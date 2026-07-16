@@ -3,6 +3,49 @@ import { lib, game, ui, get, ai, _status } from "noname";
 
 //本体技能AI修正
 
+
+lib.skill.olzongluan = {
+    audio: 2,
+    trigger: { player: "phaseZhunbeiBegin" },
+    filter(event, player) {
+        return game.hasPlayer(t => t.hasUseTarget(new lib.element.VCard({ name: "sha", storage: { olzongluan: true }, isCard: true })));
+    },
+    async cost(event, trigger, player) {
+        event.result = await player
+            .chooseTarget(get.prompt2(event.skill), (card, player, target) => {
+                return target.hasUseTarget(new lib.element.VCard({ name: "sha", storage: { olzongluan: true }, isCard: true }));
+            })
+            .set("ai", target => {
+                const player = get.player();
+                return get.attitude(player, target);
+            })
+            .forResult();
+    },
+    async content(event, trigger, player) {
+        const target = event.targets[0];
+        const next = target.chooseUseTarget(new lib.element.VCard({ name: "sha", storage: { olzongluan: true }, isCard: true }), true, false).set("selectTarget", [1, Infinity]);
+        await next;
+        const num = game.countPlayer2(current => current.hasHistory("damage", evt => evt.getParent(3) == next), true);
+        if (num > 0) {
+            await player.chooseToDiscard(num, true, "he", "allowChooseAll");
+        }
+    },
+    init(player, skill) {
+        game.addGlobalSkill(`${skill}_effect`);
+    },
+    subSkill: {
+        effect: {
+            mod: {
+                playerEnabled(card, player, target) {
+                    if (card.storage?.olzongluan && !player.inRange(target)) {
+                        return false;
+                    }
+                },
+            },
+        },
+    },
+}
+
 lib.skill.starchengfeng = {
     marktext: "匡",
     intro: {
@@ -258,37 +301,49 @@ lib.translate._guohe_info = "出牌阶段，对区域里有牌的一名其他角
             return target.hasCard(card => lib.filter.canBeDiscarded(card, player, target), get.is.single() ? "he" : "hej");
         },
         defaultYingbianEffect: "add",
-        content() {
-            "step 0";
+        async content(event, trigger, player) {
+            const target = event.target;
+            let result;
             if (get.is.single()) {
-                let bool1 = target.countDiscardableCards(player, "h"),
-                    bool2 = target.countDiscardableCards(player, "e");
+                const bool1 = target.hasDiscardableCards(player, "h");
+                const bool2 = target.hasDiscardableCards(player, "e");
                 if (bool1 && bool2) {
-                    player
-                        .chooseControl("手牌区", "装备区")
-                        .set("ai", function () {
-                            return Math.random() < 0.5 ? 1 : 0;
+                    result = await player
+                        .chooseControl({
+                            prompt: `弃置${get.translation(target)}装备区的一张牌，或观看其手牌并弃置其中的一张牌。`,
+                            controls: ["手牌区", "装备区"],
+                            ai() {
+                                return Math.random() < 0.5 ? 1 : 0;
+                            },
                         })
-                        .set("prompt", "弃置" + get.translation(target) + "装备区的一张牌，或观看其手牌并弃置其中的一张牌。");
+                        .forResult();
                 } else {
-                    event._result = { control: bool1 ? "手牌区" : "装备区" };
+                    result = { control: bool1 ? "手牌区" : "装备区" };
                 }
             } else {
-                event._result = { control: "所有区域" };
+                result = { control: "所有区域" };
             }
-            "step 1";
-            let pos,
-                vis = "visible";
+            let pos;
+            let vis = true;
             if (result.control === "手牌区") {
                 pos = "h";
             } else if (result.control === "装备区") {
                 pos = "e";
             } else {
                 pos = "hej";
-                vis = undefined;
+                vis = false;
             }
-            if (target.countDiscardableCards(player, pos)) {
-                player.discardPlayerCard(pos, target, true, vis).set("target", target).set("complexSelect", false).set("ai", lib.card.guohe.ai.button);
+            if (target.hasDiscardableCards(player, pos)) {
+                await player
+                    .discardPlayerCard({
+                        target,
+                        position: pos,
+                        forced: true,
+                        visible: vis,
+                    })
+                    .set("target", target)
+                    .set("complexSelect", false)
+                    .set("ai", lib.card.guohe.ai.button);
             }
         },
         ai: {
@@ -348,14 +403,14 @@ lib.translate._guohe_info = "出牌阶段，对区域里有牌的一名其他角
                     pos = get.position(button.link),
                     viewAs = button.link.viewAs,
                     name = get.name(button.link);
-                    if (att > 0 && pos === "j") {
-                        if (viewAs === "lebu"  || name === "lebu") {
-                            return 100 + btv;
-                        }
-                        if (viewAs === "bingliang"  || name === "bingliang") {
-                            return 50 + btv;
-                        }
+                if (att > 0 && pos === "j") {
+                    if (viewAs === "lebu" || name === "lebu") {
+                        return 100 + btv;
                     }
+                    if (viewAs === "bingliang" || name === "bingliang") {
+                        return 50 + btv;
+                    }
+                }
                 if (pos === "j") {
                     let viewAs = button.link.viewAs;
                     if (viewAs === "lebu") {
@@ -465,7 +520,6 @@ lib.translate._guohe_info = "出牌阶段，对区域里有牌的一名其他角
             },
         },
     }
-lib.translate._guohe_info = "出牌阶段，对距离为1且区域里有牌的一名其他角色使用。你获得其区域里的一张牌。",
     lib.skill.shunshou = {
         audio: true,
         fullskin: true,
@@ -521,14 +575,14 @@ lib.translate._guohe_info = "出牌阶段，对距离为1且区域里有牌的�
                     pos = get.position(button.link),
                     viewAs = button.link.viewAs,
                     name = get.name(button.link);
-                    if (att > 0 && pos === "j") {
-                        if (viewAs === "lebu"  || name === "lebu") {
-                            return 100 + btv;
-                        }
-                        if (viewAs === "bingliang"  || name === "bingliang") {
-                            return 50 + btv;
-                        }
+                if (att > 0 && pos === "j") {
+                    if (viewAs === "lebu" || name === "lebu") {
+                        return 100 + btv;
                     }
+                    if (viewAs === "bingliang" || name === "bingliang") {
+                        return 50 + btv;
+                    }
+                }
                 if (pos === "j") {
                     let viewAs = button.link.viewAs;
                     if (viewAs === "lebu") {

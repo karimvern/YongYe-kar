@@ -583,6 +583,30 @@ export let voices = {
     '#ext:永夜之境/audio/xinxtongxing4': '丹恒，继续一起开拓吧！',
     '#ext:永夜之境/audio/xinxtongxing5': '风堇，感谢你洒下的色彩。',
     '#ext:永夜之境/audio/xinxtongxing6': '无论欢乐或痛苦，都应是我们自己的选择。',
+    //千冶刃
+    '#ext:永夜之境/audio/xinxcuixin1': '此行，迈向终结吧。',
+    '#ext:永夜之境/audio/xinxcuixin2': '所有恩怨，都就此作别。',
+    '#ext:永夜之境/audio/xinxcuixin3': '于万死中归来……',
+    '#ext:永夜之境/audio/xinxcuixin4': '支离血肉，千冶成刃。',
+    '#ext:永夜之境/audio/xinxcuixin5': '焚此残躯，以尔等淬火！',
+    '#ext:永夜之境/audio/xinxcuixin6': '一步一步，将仇怨尽数了断。',
+    '#ext:永夜之境/audio/xinxcuixin7': '以炽烈的死亡，熔炼此身。',
+    '#ext:永夜之境/audio/xinxcuixin8': '浴血淬火后，方是新生。',
+    '#ext:永夜之境/audio/xinxqianduan1': '也好，用你们开锋。',
+    '#ext:永夜之境/audio/xinxqianduan2': '剑若出鞘，不死不休。',
+    '#ext:永夜之境/audio/xinxqianduan3': '若要砥砺形骸，则必千锤百炼。',
+    '#ext:永夜之境/audio/xinxqianduan4': '为你送葬。',
+    '#ext:永夜之境/audio/xinxqianduan5': '这便是最后一面。',
+    '#ext:永夜之境/audio/xinxqianduan6': '剑冢…无间！',
+    '#ext:永夜之境/audio/xinxqianduan7': '炼狱…加身！',
+
+
+    
+
+    
+
+    
+    
    
     
     
@@ -1095,6 +1119,12 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhzhiti2': '汝颈硬，比之金铁何如？',
     '#ext:永夜之境/audio/fyrhtuxi1': '力夸劲风，可截金铁，可斩钢钉。',
     '#ext:永夜之境/audio/fyrhtuxi2': '既截千钧之铁石，当挫万军于辟易。',
+
+    '#ext:永夜之境/audio/fyrhyuba1': '千古江山同此月，昔时英雄，唯余荒冢残碣。',
+    '#ext:永夜之境/audio/fyrhyuba2': '尧舜之世，诸贤相规，桀纣之朝，群小相轧。',
+    '#ext:永夜之境/audio/fyrhyuba3': '百代王侯作黄土，起，天下苦，落，天下苦。',
+    '#ext:永夜之境/audio/fyrhxingjiang1': '生已辜七尺之形，死又岂能再负此一棺之土！',
+    '#ext:永夜之境/audio/fyrhxingjiang2': '汝若怀尽忠之心，生死又有何论？',
 
 
 

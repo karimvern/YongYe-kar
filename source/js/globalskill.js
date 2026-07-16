@@ -1,6 +1,26 @@
 import { lib, game, ui, get, ai, _status } from "noname";
 
 Object.assign(lib.skill, {
+    //淬心
+    _xinxcuixinmod:{
+        mod: {
+            ignoredHandcard(card, player) {
+              if (get.name(card) == "xinxcuixin_card") {
+                return true;
+              }
+            },
+            cardDiscardable(card, player, name) {
+              if (name === "phaseDiscard" && get.name(card) == "xinxcuixin_card") {
+                return false;
+              }
+            },
+        },
+        nopop: true,
+        charlotte: true,
+        forced: true,
+        silent: true,
+        popup: true,
+    },
     //保留
     _yyzjbaoliu: {
         ruleSkill: true,
@@ -41,7 +61,6 @@ Object.assign(lib.skill, {
             const targetCards = ['xinxguiji', 'xinxmingxinzhiyue'];
             const cards = player.getCards('h', card => targetCards.includes(card.name));
             if (cards.length) {
-                //移入场外(special)并视觉提示
                 player.lose(cards, ui.special);
                 game.log(player, '的手牌', cards, '因【虚无】效果被销毁');
                 // 销毁

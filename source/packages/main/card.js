@@ -2,6 +2,28 @@ import { lib, game, ui, get, ai, _status } from '../../../../../noname.js'
 
 export default {
     card: {
+        xinxcuixin_card:{
+            type: "basic",
+            fullimage: true,
+            image: 'ext:永夜之境/image/xinx_qianyeren.png',
+            enable: false,
+            toself: false,
+            filterTarget(card, player, target) {
+                return target == player;
+            },
+            selectTarget: -1,
+            async content(event, trigger, player) {
+
+            },
+            ai: {
+                basic: {
+                    order: 1,
+                    useful: -1,
+                    value: -1,
+                },
+                result: { target: 1 },
+            },
+        },
         jinhuanren: {
             derivation: 'xinx_jiangzhuo',
             fullskin: true,
@@ -1313,10 +1335,10 @@ export default {
                 if (target.hasSkill('xinxyuejianbiyou_effect')) {
                     await target.removeSkill('xinxyuejianbiyou_effect');
                     await target.addSkill('xinxyuejianbiyou_effect');
-                    await target.addMark('xinxyuejianbiyou_effect', 4, false);
+                    await target.addMark('xinxyuejianbiyou_effect', 5, false);
                 } else {
                     target.addSkill('xinxyuejianbiyou_effect');
-                    await target.addMark('xinxyuejianbiyou_effect', 4, false);
+                    await target.addMark('xinxyuejianbiyou_effect', 5, false);
                 }
             },
             basic: {
@@ -1336,8 +1358,10 @@ export default {
 
     },
     translate: {
+        xinxcuixin_card:'刃',
+        xinxcuixin_card_info: `无效果，不计入手牌上限。`,
         xinxyuejianbiyou: '月茧庇佑',
-        xinxyuejianbiyou_info: `${get.poptip('xinx_consume')}。出牌阶段，对自己使用。你使用的下三张非${get.poptip('xinx_jiyi')}标签的${get.poptip('xinx_jishipai')}结算后，为此实体牌附加可主动使用的记忆效果。`,
+        xinxyuejianbiyou_info: `${get.poptip('xinx_consume')}。出牌阶段，对自己使用。你使用的下五张非${get.poptip('xinx_jiyi')}标签的${get.poptip('xinx_jishipai')}结算后，为此实体牌附加可主动使用的记忆效果。`,
         jinhuanren: '金焕刃',
         jinhuanren_info: "①每轮开始时，你视为使用一张无距离限制的【杀】。②当此牌离开你的装备区时，销毁之。",
         qianjungongjin: '千军共进',
