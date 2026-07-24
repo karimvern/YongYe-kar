@@ -639,7 +639,7 @@ export let info = {
         xinxsanshi_info: "当你不因使用而失去牌后，你将其移出游戏。否则你可以获得一张已移出游戏的牌。",
         xinxsanshi_tag: '死士',
         xinxchenlue: '沉略',
-        xinxchenlue_info: "每轮开始时，你可以选择一名其他角色，你/其同时重铸/弃置一种类型的所有牌，若这些牌类型相同，你与其依次对彼此使用一张牌并重复之，未使用牌的角色受到对方造成的1点伤害并结束此流程。",
+        xinxchenlue_info: "每轮开始时，你可以选择一名其他角色，你/其重铸/弃置一种类型的所有牌，若这些牌类型相同，你与其依次对彼此使用一张牌并重复之，未使用牌的角色受到对方造成的1点伤害并结束此流程。",
         xinxnewquanmou: '权谋',
         xinxnewquanmou_info: `锁定技，当你使用指定自己为目标的牌或于回合外失去牌时，你移出当前回合角色等量张牌并摸一张牌。你的额定摸牌数+X（X为点数大于你手牌点数最小值牌数的移出牌数）。`,
         xinxnewwugui: '无归',
@@ -6739,23 +6739,24 @@ export let info = {
             logAudio: () => ["ext:永夜之境/audio/xinxxieling1.mp3", "ext:永夜之境/audio/xinxxieling2.mp3"],
             usable: 1,
             onremove: true,
-            filterTarget: function (card, player, target) {
+            filterTarget(card, player, target) {
                 return player != target;
             },
-            content: function () {
-                'step 0'
+            async content(event, trigger, player) {
+                const target = event.target;
                 target.addMark('xinxxieling_mark', 1, false);
-                var num = target.countMark("xinxxieling_mark");
-                target.chooseCard('he', num, '挟令：交给' + get.translation(player) + num + '张牌', true).set('ai', function (card) {
-                    if (get.attitude(_status.event.player, _status.event.getParent().player) > 0) {
-                        return 7 - get.value(card);
-                    }
-                    return -get.value(card);
-                });
-                // target.addSkill('xinxxieling_mark');
-                'step 1'
+                let num = target.countMark("xinxxieling_mark");
+                const result = await target.chooseCard('he', num, '挟令：交给' + get.translation(player) + num + '张牌', true)
+                    .set('ai', (card) => {
+                        if (get.attitude(_status.event.player, _status.event.getParent().player) > 0) {
+                            return 7 - get.value(card);
+                        }
+                        return -get.value(card);
+                    }).forResult();
                 if (result.bool) {
-                    player.gain(result.cards, target, 'giveAuto').gaintag.add('xinxxieling_keep1');
+                    const next = player.gain(result.cards, target, 'giveAuto');
+                    next.gaintag.add('xinxxieling_keep1');
+                    await next;
                 }
             },
             ai: {
@@ -6838,7 +6839,6 @@ export let info = {
         xinxxieling_keep1: {
             onremove(player) {
                 player.removeGaintag('xinxxieling_keep1');
-
             },
             mod: {
                 targetInRange: function (card, player, target) {
@@ -6861,7 +6861,6 @@ export let info = {
                 cardDiscardable: function (card, player, name) {
                     if (name == 'phaseDiscard' && card.hasGaintag('xinxxieling_keep1')) return false;
                 },
-
             },
         },
 
@@ -6923,7 +6922,7 @@ export let info = {
                     },
                     filter: function (event, player) {
                         return (
-                            event.player.hasMark("xinxxieling_mark") && event.player.getStockSkills("仲村由理", "天下第一").filter(function (skill) {
+                            event.player.hasMark("xinxxieling_mark") && event.player.getStockSkills().filter(function (skill) {
                                 var info = get.info(skill);
                                 return info && !info.hiddenSkill && !info.zhuSkill && !info.charlotte;
                             }).length > 0
@@ -6933,7 +6932,7 @@ export let info = {
                     locked: true,
                     content: function () {
                         "step 0";
-                        var list = trigger.player.getStockSkills("仲村由理", "天下第一").filter(function (skill) {
+                        var list = trigger.player.getStockSkills().filter(function (skill) {
                             var info = get.info(skill);
                             return info && !info.hiddenSkill && !info.zhuSkill && !info.charlotte;
                         });
@@ -8690,10 +8689,9 @@ export let info = {
                 },
 
             },
-            group: ['xinxyinshi_lose', 'xinxyinshi_charge'],
+            group: ['xinxyinshi_lose'],
             subSkill: {
                 charge: {
-
                     trigger: {
                         global: "phaseBefore",
                         player: "enterGame",
@@ -8707,9 +8705,6 @@ export let info = {
                     content() {
                         player.addCharge(3);
                     },
-                    sub: true,
-                    sourceSkill: "xinxyinshi",
-                    "_priority": 120,
                 },
                 add: {
                     charlotte: true,
@@ -11397,20 +11392,17 @@ export let info = {
                 );
             },
             async content(event, trigger, player) {
-
                 const result = await player.chooseTarget('是否弃置场上的一张牌？', (card, player, target) => {
                     return target.countDiscardableCards(player, 'ej');
                 }).set('ai', target => {
-                    var player = _status.event.player;
-                    var att = get.attitude(player, target);
-                    if (target.group == player.group && target.countDiscardableCards(player, 'ej') > 0 && att <= 0) {
-                        return 3;
+                    const player = get.player();
+                    let att = get.attitude(player, target);
+                    if (att < 0) {
+                        att = -Math.sqrt(-att);
+                    } else {
+                        att = Math.sqrt(att);
                     }
-                    if (att > 0 && (target.countCards('j') > 0 || target.countCards('e', function (card) {
-                        return get.value(card, target) < 0;
-                    }))) return 2;
-                    if (att <= 0 && target.countCards('e') > 0 && !target.hasSkillTag('noe')) return -1;
-                    return 0;
+                    return att * lib.card.guohe.ai.result.target(player, target);
                 }).forResult();
                 if (result.bool) {
                     player.logSkill('xinxshiji', result.targets[0]);
@@ -15405,6 +15397,13 @@ export let info = {
                 player.logSkill("xinxgushu", null, null, null, [get.rand(1, 3)]);
                 await player[num > 0 ? "loseMaxHp" : "gainMaxHp"](Math.abs(num));
                 await player.draw(Math.abs(num));
+            },
+            mod: {
+                aiOrder(player, card, num) {
+                    if (get.number(card) == 1) {
+                        return num - 10;
+                    }
+                },
             },
             group: ["xinxgushu_lose"],
             subSkill: {

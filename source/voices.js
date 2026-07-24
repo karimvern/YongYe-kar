@@ -599,6 +599,68 @@ export let voices = {
     '#ext:永夜之境/audio/xinxqianduan5': '这便是最后一面。',
     '#ext:永夜之境/audio/xinxqianduan6': '剑冢…无间！',
     '#ext:永夜之境/audio/xinxqianduan7': '炼狱…加身！',
+    //逐三月七
+    '#ext:永夜之境/audio/xinxxialang1': '别小瞧本姑娘！',
+    '#ext:永夜之境/audio/xinxxialang2': '快点让我打啦。',
+    '#ext:永夜之境/audio/xinxxialang3': '是时候展现真正的剑术了。',
+    '#ext:永夜之境/audio/xinxxialang4': '哦~我全都懂了！',
+    '#ext:永夜之境/audio/xinxlinglong1': '就拿你来练练手吧！',
+    '#ext:永夜之境/audio/xinxlinglong2': '看我的绝招！',
+    '#ext:永夜之境/audio/xinxlinglong3': '还不过瘾，就和他过两招吧!',
+    '#ext:永夜之境/audio/xinxlinglong4': '师父请喝茶！',  
+    '#ext:永夜之境/audio/xinxlinglong5': '劳您担待啦！',  
+    //姬子启行
+    '#ext:永夜之境/audio/xinxlinghang1': '拓星者，启行。',
+    '#ext:永夜之境/audio/xinxlinghang2': '征途，为你护航！',
+    '#ext:永夜之境/audio/xinxlinghang3': '我们…即是开拓！',
+    '#ext:永夜之境/audio/xinxlinghang4': '驶向崭新的黎明！',
+    '#ext:永夜之境/audio/xinxlinghang5': '薪火相继！',
+    '#ext:永夜之境/audio/xinxlinghang6': '化作星辰，照亮银河的长夜！',
+    '#ext:永夜之境/audio/xinxlinghang7': '还好有你。',
+    '#ext:永夜之境/audio/xinxlinghang8': '接下来是你的主场了。',
+    '#ext:永夜之境/audio/xinxlinghang9': '就按你的习惯来吧，我相信你的决定。',
+    '#ext:永夜之境/audio/xinxlinghang10': '无名客，从来不是一个人的名字。',
+    '#ext:永夜之境/audio/xinxtuoxing1': '如同那天约定的一样，我从未止步不前。',
+    '#ext:永夜之境/audio/xinxtuoxing2': '带着过去的约定，再度启程吧。',
+    '#ext:永夜之境/audio/xinxtuoxing3': '该重新认识下无名客了。',
+    '#ext:永夜之境/audio/xinxtuoxing4': '这次，我不是一个人在战斗。',
+    '#ext:永夜之境/audio/xinxtuoxing5': '可没那么容易停下。',
+    '#ext:永夜之境/audio/xinxtuoxing6': '和你们一起的旅程，璀璨如星，历历在目。',
+    '#ext:永夜之境/audio/xinxtuoxing7': '我们连接起的点点星光，又将照进谁的未来？',
+    '#ext:永夜之境/audio/xinxtuoxing8': '此行，终抵群星！',
+    //云璃
+    '#ext:永夜之境/audio/xinxkanmie1': '就是你了！',
+    '#ext:永夜之境/audio/xinxkanmie2': '来得正好！',
+    '#ext:永夜之境/audio/xinxkanmie3': '来试试自己的斤两？',
+    '#ext:永夜之境/audio/xinxkanmie4': '崩——剑——斩！',
+    '#ext:永夜之境/audio/xinxkanmie5': '碎——岩——破！',
+    '#ext:永夜之境/audio/xinxhejian1': '上决浮云，喝——',
+    '#ext:永夜之境/audio/xinxhejian2': '截云，断岳！',
+    '#ext:永夜之境/audio/xinxhejian3': '我要将你们，尽数熔断！',
+    //那刻夏
+    '#ext:永夜之境/audio/xinxqiusuo1': '彻底疯狂吧！',
+    '#ext:永夜之境/audio/xinxqiusuo2': '直击灵魂！',
+    '#ext:永夜之境/audio/xinxqiusuo3': '等价交换？不，无中生有！',
+    '#ext:永夜之境/audio/xinxqiusuo4': '如你所见，我不过是一介孱弱书生。',
+    '#ext:永夜之境/audio/xinxqiusuo5': '看呐，表演开始了……',
+    '#ext:永夜之境/audio/xinxqiusuo6': '魔术技巧！',
+    '#ext:永夜之境/audio/xinxcuijing1': '征服这种力量吧！',
+    '#ext:永夜之境/audio/xinxcuijing2': '真理，已尽在我手中。',
+    '#ext:永夜之境/audio/xinxcuijing3': '信神谕，不如信我。',
+ 
+    
+    
+    
+
+
+
+
+    
+   
+
+
+
+   
 
 
     

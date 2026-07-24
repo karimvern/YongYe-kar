@@ -286,66 +286,7 @@ lib.skill.starliangyan = {
 
 lib.translate._guohe_info = "出牌阶段，对区域里有牌的一名其他角色使用。你弃置其区域里的一张牌。",
     lib.skill.guohe = {
-        audio: true,
-        fullskin: true,
-        type: "trick",
-        enable: true,
-        selectTarget: 1,
-        postAi(targets) {
-            return targets.length === 1 && targets[0].countCards("j");
-        },
-        filterTarget(card, player, target) {
-            if (player === target) {
-                return false;
-            }
-            return target.hasCard(card => lib.filter.canBeDiscarded(card, player, target), get.is.single() ? "he" : "hej");
-        },
-        defaultYingbianEffect: "add",
-        async content(event, trigger, player) {
-            const target = event.target;
-            let result;
-            if (get.is.single()) {
-                const bool1 = target.hasDiscardableCards(player, "h");
-                const bool2 = target.hasDiscardableCards(player, "e");
-                if (bool1 && bool2) {
-                    result = await player
-                        .chooseControl({
-                            prompt: `弃置${get.translation(target)}装备区的一张牌，或观看其手牌并弃置其中的一张牌。`,
-                            controls: ["手牌区", "装备区"],
-                            ai() {
-                                return Math.random() < 0.5 ? 1 : 0;
-                            },
-                        })
-                        .forResult();
-                } else {
-                    result = { control: bool1 ? "手牌区" : "装备区" };
-                }
-            } else {
-                result = { control: "所有区域" };
-            }
-            let pos;
-            let vis = true;
-            if (result.control === "手牌区") {
-                pos = "h";
-            } else if (result.control === "装备区") {
-                pos = "e";
-            } else {
-                pos = "hej";
-                vis = false;
-            }
-            if (target.hasDiscardableCards(player, pos)) {
-                await player
-                    .discardPlayerCard({
-                        target,
-                        position: pos,
-                        forced: true,
-                        visible: vis,
-                    })
-                    .set("target", target)
-                    .set("complexSelect", false)
-                    .set("ai", lib.card.guohe.ai.button);
-            }
-        },
+        inherit: "guohe",
         ai: {
             wuxie: (target, card, player, viewer, status) => {
                 if (
@@ -521,28 +462,7 @@ lib.translate._guohe_info = "出牌阶段，对区域里有牌的一名其他角
         },
     }
     lib.skill.shunshou = {
-        audio: true,
-        fullskin: true,
-        type: "trick",
-        enable: true,
-        range: { global: 1 },
-        selectTarget: 1,
-        postAi(targets) {
-            return targets.length === 1 && targets[0].countCards("j");
-        },
-        filterTarget(card, player, target) {
-            if (player === target) {
-                return false;
-            }
-            return target.hasCard(card => lib.filter.canBeGained(card, player, target), get.is.single() ? "he" : "hej");
-        },
-        async content(event, trigger, player) {
-            const target = event.target;
-            let pos = get.is.single() ? "he" : "hej";
-            if (target.countGainableCards(player, pos)) {
-                await player.gainPlayerCard(pos, target, true).set("target", target).set("complexSelect", false).set("ai", lib.card.shunshou.ai.button);
-            }
-        },
+        inherit: "shunshou",
         ai: {
             wuxie(target, card, player, viewer) {
                 if (!target.countCards("hej") || get.attitude(viewer, player._trueMe || player) > 0) {

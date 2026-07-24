@@ -3,6 +3,7 @@ import { lib, game, ui, get, ai, _status } from '../../../../../noname.js'
 export default {
     card: {
         xinxcuixin_card:{
+            derivation: 'xinx_qianyeren',
             type: "basic",
             fullimage: true,
             image: 'ext:永夜之境/image/xinx_qianyeren.png',

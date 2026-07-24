@@ -101,6 +101,27 @@ export const xinx1Character = {
 
 //永夜之始
 export const xinx2Character = {
+    xinx_nakexia:{
+        sex: "male",
+        group: "xinx",
+        hp: 4,
+        trashBin: ['rare'],
+        skills: ['xinxqiusuo','xinxcuijing'],
+    },
+    xinx_yunli:{
+        sex: "female",
+        group: "xinx",
+        hp: 4,
+        trashBin: ['rare'],
+        skills: ['xinxkanmie','xinxhejian'],
+    },
+    xinx_jiziqixing:{
+        sex: "female",
+        group: "xinx",
+        hp: 4,
+        trashBin: ['legend'],
+        skills: ['xinxlinghang','xinxtuoxing'],
+    },
     xinxnewmeng_liuying:{
         sex: "female",
         group: "xinx",
@@ -199,12 +220,20 @@ export const xinx2Character = {
     xinx_huohua: ["female", "xinx", 4, ['xinxkuanghuan', 'xinxzhumu'], ['epic']],
     xinx_feiying: ["female", "xinx", 4, ['xinxliaopan', 'xinxwushe'], ['legend']],
     xinx_yaoguang: ["female", "xinx", 3, ['xinxhongji', 'xinxpoju'], ['epic']],
-    //xinxzhu_sanyueqi: ["female", "xinx", 4, [], ['epic']],
+    xinxzhu_sanyueqi: ["female", "xinx", 4, ['xinxxialang','xinxlinglong'], ['epic']],
     //xinx_laite: ["male", "qun", 4, [], ["border:xinx",'legend']],
 };
 
 //风雨如晦
 export const xinxfengyuCharacter = {
+    fyrhx_simayi:{
+        sex: "male",
+        group: "jin",
+        hp: 4,
+        trashBin: ['legend'],
+        skills: ['fyrhyinning','fyrhanzhe'],
+        dieAudios: ["xinxying_simayi"],
+    },
     fyrht_zhangliao:{
         sex: "male",
         group: "wei",
@@ -235,7 +264,7 @@ export const xinxfengyuCharacter = {
         hp: 4,
         trashBin: ['epic'],
         img: "extension/永夜之境/image/fyrh_huanwen.png",
-        skills: ['fyrhdyuba','fyrhxingjiang'],
+        skills: ['fyrhdyuba','fyrhnewxingjiang'],
         dieAudios: ['fyrh_huanwen'],
     },
     fyrh_huanwen:{
@@ -917,12 +946,29 @@ export const xinxfengyuCharacter = {
 
 //武将修改
 export const xinxhuaijiuCharacter = {
+    xinxhj_dc_sb_xusheng: {
+		sex: "male",
+		group: "wu",
+		hp: 4,
+        trashBin: ['rare'],
+		skills: ["xinxhjsbqinqiang", "xinxhjsbyizhen"],
+        dieAudios: ["dc_sb_xusheng"],
+	},
+    xinxhj_caobuxing: {
+		sex: "male",
+		group: "wu",
+		hp: 3,
+        trashBin: ['epic'],
+        img: "image/character/caobuxing.jpg",
+		skills: ["xinxhjmoying", "xinxhjjuanhui"],
+	},
     xinxhj_mazhong: {
 		sex: "male",
 		group: "shu",
 		hp: 4,
         trashBin: ['epic'],
 		skills: ["xinxhjfuman"],
+        dieAudios: ["mazhong"],
 	},
     xinxhj_zhenghun: {
 		sex: "male",
