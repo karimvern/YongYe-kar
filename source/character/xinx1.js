@@ -371,7 +371,7 @@ export let info = {
         xinxluexin: '掠星',
         xinxluexin_info: "一名角色的结束阶段，若本回合你的牌因弃置而进入过弃牌堆，你可以使用之。",
         xinxyangjian: '佯箭',
-        xinxyangjian_info: `锁定技。当你不因${get.poptip('xinxluexin')}而使用或打出基本牌时，你弃置手牌数一半张牌（向上取整），然后将手牌摸至体力上限。`,
+        xinxyangjian_info: `锁定技。当你不因${get.poptip('xinxluexin')}使用或打出基本牌时，你弃置半数向上张手牌，然后将手牌摸至体力上限。`,
         xinxjinbi: "矜愎",
         xinxjinbi_info: "锁定技。①当你每回合首次受到伤害时，你防止此伤害并将伤害来源的一张牌置于你的武将牌上，称为“愎”；当你造成1点伤害后，你获得一张“愎”。②结束阶段，你弃置所有“愎”，然后失去等量体力上限。",
         xinxwusheng: '武圣',
@@ -382,7 +382,7 @@ export let info = {
         xinxmingshi_info: "每回合限X次（X为你的体力值）。一名角色的判定牌生效前，你摸一张牌，然后可将判定结果改为任意花色且点数为2。",
         xinxqizhen_tag: '奇',
         xinxqizhen: "奇阵",
-        xinxqizhen_info: "锁定技。①当你获得牌时，你将所有手牌置于武将牌上，称为“奇”。你可以如手牌般使用或打出“奇”。②准备阶段，你可以获得一名其他角色一张牌，然后你失去1点体力。③当你的体力值减少时，你摸一张牌。④每回合限一次。当你失去“奇”时，你回复1点体力。",
+        xinxqizhen_info: "锁定技。①当你获得牌时，你将所有手牌置于武将牌上，称为“奇”。你可以如手牌般使用或打出“奇”。②准备阶段，你可以获得一名其他角色一张牌，然后失去1点体力。③当你的体力值减少时，你摸一张牌。④每回合限一次。当你失去“奇”时，你回复1点体力。",
         xinxshiyu: '识愚',
         xinxshiyu_info: "锁定技。每轮限一次。当其他角色使用【无懈可击】时，你可弃置两张“奇”取消此牌的所有目标，然后你获得此牌并可使用之。",
         xinxlihuo: '离火',
@@ -452,7 +452,7 @@ export let info = {
         '#ext:永夜之境/audio/xinxshunhua1': '我心悦君，愿为卿而死，愿为君刀俎。',
         '#ext:永夜之境/audio/xinxshunhua2': '我之私君者，爱也，君之私我者，情也。',
         xinxbaiyi: '白衣',
-        xinxbaiyi_info: "出牌阶段每项限一次，你可选择一项：<br>1.将一名角色区域内的一半牌置于其武将牌上，你于其回合结束时可获得其中一张牌；<br>2.获得一名角色武将牌上的牌。",
+        xinxbaiyi_info: `出牌阶段每项限一次，你可选择一项：<br>1.将一名角色区域内的半数向上张牌置于其武将牌上，你于其回合结束时可获得其中一张牌；<br>2.失去${get.poptip('xinxtaoyin')}并获得一名角色武将牌上的牌。`,
         '#ext:永夜之境/audio/xinxbaiyi1': '该是谁的，就是谁的！',
         '#ext:永夜之境/audio/xinxbaiyi2': '来！给你看点好东西！',
         xinxtaoyin: '韬隐',
@@ -752,7 +752,7 @@ export let info = {
             let str = [
                 "出牌阶段每项限一次，你可选择一项：",
                 "1.将一名角色区域内的一半牌置于其武将牌上，你于其回合结束时可获得其中一张牌；",
-                "2.获得一名角色武将牌上的牌。",
+                `2.失去${get.poptip('xinxtaoyin')}并获得一名角色武将牌上的牌。`,
             ]
             let stroage = player.getStorage("xinxbaiyi_used");
             if (stroage.includes("draw")) str[1] = `<s>${str[1]}</s>`;
@@ -9429,29 +9429,32 @@ export let info = {
             enable: "phaseUse",
             // usable: 1,
             filter(event, player, name) {
+                if (!player.hasSkill('xinxtaoyin') && player.getStorage("xinxbaiyi_used").length > 0) {
+                    return false;
+                }
                 return player.getStorage("xinxbaiyi_used").length < 2;
             },
-            filterTarget: function (card, player, target) {
-                if
-                    (player.getStorage("xinxbaiyi_used").length >= 2) {
+            filterTarget(card, player, target) {
+                if(player.getStorage("xinxbaiyi_used").length >= 2) {
                     return false;
                 }
                 return target.countCards("hej") > 0 || target.countCards("xs") > 0;
             },
+            log:false,
             async content(event, trigger, player) {
                 const target = event.targets[0];
                 const name = get.translation(target.name);
                 const dialog = ["请选择一项", [[["draw", `将${name}区域内的一半牌置于其武将牌上`],
-                ["gain", `获得${name}武将牌上所有的牌`],], "textbutton",],
+                ["gain", `失去${get.poptip('xinxtaoyin')}并获得${name}武将牌上所有的牌`],], "textbutton",],
                 ];
-                const next = player.chooseButton(dialog, true);
+                const next = player.chooseButton(dialog);
                 next.set("targetx", target);
                 next.set("filterButton", function (button) {
                     const evt = _status.event;
                     const { targetx } = evt;
                     if (player.getStorage("xinxbaiyi_used").includes(button.link)) return false;
                     if (button.link == "gain") {
-                        return targetx.countCards("xs", card => !card._cardid) > 0; //&&!player.getStorage("xinxbaiyi_used").includes(button.link)
+                        return targetx.countCards("xs", card => !card._cardid) > 0 && player.hasSkill('xinxtaoyin');
                     }
                     if (button.link === "draw") {
                         return targetx.countCards("hej") > 0;
@@ -9463,21 +9466,24 @@ export let info = {
                     const evt = _status.event;
                     const { targetx } = evt;
                     const buttons = get.event().dialog.buttons.slice();
-                    if (buttons.includes('gain') && targetx.countCards("xs", card => !card._cardid) > 0) {
+                    /* if (buttons.includes('gain') && targetx.countCards("xs", card => !card._cardid) > 0&& player.hasSkill('xinxtaoyin')) {
                         return "gain";
-                    }
+                    } */
                     if (buttons.includes('draw') && targetx.countCards("xs", card => !card._cardid) < 0) {
                         return 'draw';
                     }
-                    return (!player.getStorage("xinxbaiyi_used").includes(button.link));
+                    return 0;//(!player.getStorage("xinxbaiyi_used").includes(button.link))
                 });
                 const result = await next.forResult();
                 if (result?.bool) {
                     switch (result.links[0]) {
                         case "gain":
+                            player.logSkill(event.name);
+                            player.removeSkills('xinxtaoyin');
                             await player.gain(target.getCards("xs", card => !card._cardid), "draw");
                             break;
                         case "draw":
+                            player.logSkill(event.name);
                             var num = Math.ceil(target.countCards("hej") / 2);
                             const {
                                 cards
@@ -9500,18 +9506,13 @@ export let info = {
                     target: -1,
                 },
             },
-            "_priority": 0,
             subSkill: {
                 used: {
                     charlotte: true,
                     onremove: true,
-                    sub: true,
-                    sourceSkill: "xinxbaiyi",
-                    "_priority": 0,
                 },
                 gain: {
                     trigger: {
-                        // global: "dying",
                         global: "phaseEnd",
                     },
                     forced: true,
@@ -9520,17 +9521,12 @@ export let info = {
                     filter(event, player) {
                         return event.player.getExpansions('xinxbaiyi_gain').length > 0;
                     },
-                    // async content(event, trigger, player) {
-                    content: function () {
-                        "step 0";
-
-                        var cards = trigger.player.getExpansions("xinxbaiyi_gain");
-                        player.chooseButton(["请选择获得的“白衣”", cards], 1);
-
-
-                        "step 1";
-                        if (result.bool) player.gain(result.links, "gain2");
-
+                    async content(event, trigger, player) {
+                        const cards = trigger.player.getExpansions("xinxbaiyi_gain");
+                        const result = await player.chooseButton(["请选择获得的“白衣”", cards], 1).forResult();
+                        if (result.bool && result.links?.length) {
+                            await player.gain(result.links[0], "gain2");
+                        }
                     },
                     intro: {
                         markcount: "expansion",
@@ -9540,9 +9536,6 @@ export let info = {
                             else return '共有' + get.cnNumber(cards.length) + '张牌';
                         },
                     },
-                    sub: true,
-                    sourceSkill: "xinxbaiyi",
-                    "_priority": 0,
                 },
 
             },

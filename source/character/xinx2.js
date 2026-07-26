@@ -248,11 +248,11 @@ export let info = {
 
         //技能翻译
         xinxqiusuo: '求索',
-        xinxqiusuo_info: `你累计使用或打出四张牌后，若这些牌的花色均不同，你重铸所有手牌并摸五张牌，否则获得其他角色场上三张牌，否则摸两张牌。`,
+        xinxqiusuo_info: `你累计使用或打出四张牌后，若这些牌花色均不同，你重铸所有手牌并摸五张牌，否则获得其他角色场上三张牌，否则摸两张牌。`,//重铸所有手牌并
         xinxcuijing: '萃精',
-        xinxcuijing_info: '你每回合第三次失去牌后，你视为未使用过牌。',//失去所有手牌后
+        xinxcuijing_info: '你每回合第三次失去牌后，视为未使用过牌。',
         xinxkanmie: '戡灭',
-        xinxkanmie_info: `每回合限一次，有牌被响应后，若此牌最短路径途径你，或你为此牌的使用者或响应者，你可以获得此牌及响应牌。然后响应者可以使用一张伤害牌，若造成伤害，你重置武将牌上的技能。`,//摸两张牌并
+        xinxkanmie_info: `每回合限一次，有牌被响应后，若此牌最短路径途径你，或你为此牌的使用者或响应者，你可以获得此牌及响应牌。然后响应者可以使用一张伤害牌，若造成伤害，你重置武将牌上的技能。`,
         xinxhejian: '赫剑',
         xinxhejian_info: `每回合限一次，你可以将场上一张牌当任意伤害牌使用。`,
         xinxxialang: '侠浪',
@@ -262,7 +262,7 @@ export let info = {
         xinxlinghang: '领航',
         xinxlinghang_info: `蓄力技（1/2）。一名角色的出牌阶段，其可以消耗1点蓄力点，选择弃置两张牌或本回合无法使用【杀】，然后指定一名角色，以令你摸两张牌并使用一张牌。若此牌目标包含其指定的角色，其执行选择项的相反效果。`,
         xinxtuoxing: '拓星',
-        xinxtuoxing_info: `锁定技，你因${get.poptip("xinxlinghang")}造成伤害后，令至多两名角色的蓄力点上限+1。准备阶段或当你受到伤害后，你分配X点蓄力点（X为2+floor(log₂(你蓄力点上限/6))，至少为2）。`,
+        xinxtuoxing_info: `锁定技，你因${get.poptip("xinxlinghang")}造成伤害后，令至多两名角色的蓄力点上限+1。准备阶段或当你受到伤害后，你分配X点蓄力点（X为2+floor(log₂(你的蓄力点上限/6))，至少为2）。`,
         xinxcuixin: '淬心',
         xinxcuixin_info: `游戏开始时，你获得一张${get.poptip("xinxcuixin_card")}。你无法整理手牌。当你失去${get.poptip("xinxcuixin_card")}时，你收回之并分配X点伤害（X为2-本回合本技能造成伤害次数）。`,
         xinxqianduan: '千锻',
@@ -483,7 +483,7 @@ export let info = {
         xinxxunji: "循寂",
         xinxxunji_info: `结束阶段，你可令一名其他角色失去X点体力（X为其本回合回复过的体力值），然后你选择获得任意张${get.poptip('xinx_central')}的牌（剩余花色须含有3种）。`,
         xinxchuangshi: "创世",
-        xinxchuangshi_info: `蓄力技（0/10）。你的蓄力点增加后，若不小于以下数值，你移出一名其他角色[1]张牌并执行当前最大值效果：<br>2.体力上限+1；<br>4.回复1点体力；<br>6.令可移出的牌数+1；<br>8.视为使用一张移出牌；<br>10.${get.poptip('xinx_ewaimopai')}+1，然后将此项替换为额定摸牌数+1，并清空蓄力点。`,
+        xinxchuangshi_info: `蓄力技（0/10）。你的蓄力点增加后，若不小于以下数值，你移出一名其他角色[1]张牌并执行当前最大值效果：<br>2.体力上限+1；<br>4.回复1点体力；<br>6.令可移出的牌数+1；<br>8.视为使用一张移出牌；<br>10.摸牌数+1，然后将此项替换为额定摸牌数+1，并清空蓄力点。`,
         xinxmingxin: "明心",
         xinxmingxin_info: `首轮开始时，你令所有其他角色依次将随机一张手牌及牌堆顶的一张牌置入其装备区。`,
         xinxmingxinx: "明心",
@@ -869,7 +869,6 @@ export let info = {
                                 "hidden"
                             );
                         const result1 = await player.chooseButton(dialog, 3, true)
-                            .set("filterButton", button => get.player().hasUseTarget(button.link))
                             .set("ai", button => {
                                 const player = get.player(),
                                     owner = get.owner(button.link);
@@ -1041,7 +1040,7 @@ export let info = {
                                         //await player.draw(2);
                                         //player.storage.counttrigger['xinxkanmie']--
                                         player.refreshSkill();
-                                        game.log(player, "重置了", "武将牌上的技能次数");
+                                        //game.log(player, "重置了", "武将牌上的技能次数");
 
                                     }
                                 })
@@ -1381,7 +1380,6 @@ export let info = {
                 };
             },
             async content(event, trigger, player) {
-                //let user = event.targets[0], target = event.targets[1];
                 const [from, to] = event.targets;
                 const result1 = await player
                     .choosePlayerCard("hej", true, from)
@@ -1416,25 +1414,26 @@ export let info = {
                     })
                     .set("from", from)
                     .set("to", to)
-                    .setContent(lib.skill.jlsgsy_chanxian.choosePlayerCard)
                     .forResult();
                 if (result1.bool && result1.links?.length) {
                     const link = result1.links[0];
-
                     if (get.position(link) != "h") {
-                        if (from.getVCards("e").includes(link)) {
-                            if (!link.cards?.length) {
-                                from.removeVirtualEquip(link);
+                        if (from.getCards("e").includes(link)) {
+                            const vcard = from.getVCards("e").find(v => v.cards?.includes(link));
+                            if (vcard && !vcard.cards?.length) {
+                                from.removeVirtualEquip(vcard);
                             }
-                            await to.equip(link);
-                        } else if (from.getVCards("j").includes(link)) {
-                            if (!link.cards?.length) {
-                                from.removeVirtualJudge(link);
+                            await to.equip(vcard || link);
+                        } else if (from.getCards("j").includes(link)) {
+                            const vcard = from.getVCards("j").find(v => v.cards?.includes(link));
+                            if (vcard && !vcard.cards?.length) {
+                                from.removeVirtualJudge(vcard);
                             }
-                            await to.addJudge(link, link?.cards);
+                            await to.addJudge(vcard || link, (vcard || link)?.cards);
                         }
-                        if (link.cards?.length) {
-                            from.$give(link.cards, to, false);
+                        const giveCards = link.cards?.length ? link.cards : [link];
+                        if (giveCards.length) {
+                            from.$give(giveCards, to, false);
                         }
                         game.log(from, "的", link, "被移动给了", to);
                     } else {
@@ -1518,11 +1517,7 @@ export let info = {
                         return game.hasPlayer(target => target.hasSkill("xinxlinghang")) && player.countCharge();
                     },
                     log: false,
-                    /* prompt: "消耗1点蓄力点，弃置两张牌并指定一名角色，以令拥有〖领航〗的角色摸两张牌并使用一张牌。若此牌目标包含其指定的角色，你摸两张牌。",
-                    filterTarget(card, player, target) {
-                        return true;
-                    }, 
-                    selectCard:2,
+                    /* 
                     filterCard: true,
                     lose: false,
                     discard: false,
@@ -9202,7 +9197,6 @@ export let info = {
                         .setHiddenSkill("xinxzhili")
                         .forResult();
                     if (result.bool) {
-                        // player.logSkill("xinxzhili", null, null, null, [get.rand(3, 4)]);
                         player.addTempSkill('xinxzhili_used', "phaseUseAfter");
                         await player.recast(result.cards);
                         player.loseHp();
@@ -9244,10 +9238,7 @@ export let info = {
             group: "xinxzhili_effect",
             subSkill: {
                 used: {
-                    sub: true,
                     charlotte: true,
-                    sourceSkill: "xinxzhili",
-                    "_priority": 0,
                 },
                 effect: {
                     audio: ["ext:永夜之境/audio/xinxzhili5.mp3", "ext:永夜之境/audio/xinxzhili6.mp3"],
@@ -9258,21 +9249,15 @@ export let info = {
                     forced: true,
                     logTarget: "player",
                     filter(event, player) {
-                        //if (event.name == "damage") return event.card;
                         return player.countMark('xinxzhili') > 0 && event.card;
                     },
                     async content(event, trigger, player) {
-                        // player.logSkill("xinxzhili", null, null, null, );
                         const num = player.countMark('xinxzhili');
                         trigger.num += num;
                     },
-
                     ai: {
                         damageBonus: true,
                     },
-                    sub: true,
-                    sourceSkill: "xinxzhili",
-                    "_priority": 0,
                 }
             },
         },
@@ -12029,8 +12014,11 @@ export let info = {
             ai: {
                 order: 7,
                 result: {
-                    target(player, target) {
-                        return 2;
+                    player(player, target) {
+                        if (game.hasPlayer2(current => current.isDead() && player.getFriends(true).includes(current))) {
+                            return 2;
+                        }
+                        return 0;
                     },
                 },
 
@@ -14201,34 +14189,22 @@ export let info = {
                     }
                 }
                 if (allCards.length === 0) return;
-                let usedNames = [];
+                player.addTempSkill('xinxjiegou_used');
+                player.setStorage('xinxjiegou_used', []);
+                let usedNames = player.getStorage('xinxjiegou_used');
                 while (allCards.length > 0) {
                     let vcards = get.inpileVCardList(info => {
                         const name = info[2];
                         if (usedNames.includes(name)) return false;
-                        return ['basic', 'trick'].includes(get.type(name))
-                    }).filter(info => player.hasUseTarget(new lib.element.VCard({ name: info[2], nature: info[3] }), false, true));
-
-                    // 自动结束检测逻辑
-                    // 1. 获取所有合法虚拟牌的字数集合 (例如: {1, 2, 3, 4})
-                    // // 2. 获取剩余所有实体牌的字数列表
-                    const validVCardLengths = new Set(vcards.map(v => get.cardNameLength(v[2])));
-                    const physicalLengths = allCards.map(c => get.cardNameLength(c.name));
-                    // 3. 计算实体牌能组合出的所有可能字数和 (Subset Sum)
-                    let possibleSums = new Set([0]);
-                    for (const len of physicalLengths) {
-                        // 遍历当前已有的和，加上新卡牌的长度
-                        const currentSums = Array.from(possibleSums);
-                        for (const s of currentSums) {
-                            possibleSums.add(s + len);
+                        if (!['basic', 'trick'].includes(get.type(name))) {
+                            return false;
                         }
-                    }
-                    possibleSums.delete(0);//排除0字
-                    // 检查“可能的组合和”中，是否有任何一个值存在于“虚拟牌字数集合”中
-                    const canMatch = Array.from(possibleSums).some(sum => validVCardLengths.has(sum));
-                    if (!canMatch) {
-                        break;
-                    }
+                        return allCards.some(card => {
+                            const cardx = get.autoViewAs({ name: info[2] }, [card]);
+                            return player.hasUseTarget(cardx, false, true);
+                        });
+                    })
+                    //.filter(info => player.hasUseTarget(new lib.element.VCard({ name: info[2], nature: info[3] }), false, true));
 
 
                     let next = await player.chooseButton(
@@ -14297,6 +14273,10 @@ export let info = {
             },
             group: ['xinxjiegou_count', 'xinxjiegou_effect'],
             subSkill: {
+                used: {
+                    onremove: true,
+                    charlotte: true,
+                },
                 count: {
                     onremove(player) {
                         delete player.storage.xinxjiegou;

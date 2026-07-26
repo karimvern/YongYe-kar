@@ -772,6 +772,13 @@ export let voices = {
      '#ext:永夜之境/audio/fyrhkenjian3': '天下分合，承运者舍君其谁。',
      '#ext:永夜之境/audio/fyrhkenjian4': '愿吾有生之年，得见卿君临天下。',
 
+     '#ext:永夜之境/audio/fyrhchanglie1': '今内忧外患，卿等何故无策施为？',
+     '#ext:永夜之境/audio/fyrhchanglie2': '尔等食君之禄，焉作无声之鹑。',
+     '#ext:永夜之境/audio/fyrhfuwang1': '尔等手中之刀俎，可饱民腹乎？',
+     '#ext:永夜之境/audio/fyrhfuwang2': '武夫可保境，亦有书生弼国。',
+     
+    
+
 
 
 

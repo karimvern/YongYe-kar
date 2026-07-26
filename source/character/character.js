@@ -226,6 +226,23 @@ export const xinx2Character = {
 
 //风雨如晦
 export const xinxfengyuCharacter = {
+    fyrhy_sunjun:{
+        sex: "male",
+        group: "wu",
+        hp: 4,
+        img: "image/character/jsrg_sunjun.jpg",
+        trashBin: ['legend'],
+        skills: ['fyrhzhedian'],
+        dieAudios: ["mb_sunjun"],
+    },
+    fyrh_liuxuan:{
+        sex: "male",
+        group: "shu",
+        hp: 4,
+        trashBin: ['legend'],
+        skills: ['fyrhchanglie','fyrhfuwang'],
+        dieAudios: ["guānning"],
+    },
     fyrhx_simayi:{
         sex: "male",
         group: "jin",
@@ -437,7 +454,7 @@ export const xinxfengyuCharacter = {
     fyrh_fazheng: {
         sex: "male",
         group: "shu",
-        hp: 4,
+        hp: 3,
         img: "extension/永夜之境/image/fyrh_fazheng.png",
         trashBin: ['epic'],
         skills: ['fyrhyazi', 'fyrhxuanmi'],
@@ -475,7 +492,7 @@ export const xinxfengyuCharacter = {
     fyrh_weijie: {
         sex: "male",
         group: "jin",
-        hp: 4,
+        hp: 3,
         img: "extension/永夜之境/image/fyrh_weijie.png",
         trashBin: ['legend'],
         skills: ['fyrhlunxuan', 'fyrhkansha'],
