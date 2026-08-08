@@ -405,6 +405,89 @@ export async function initExtraContent(config, pack) {
         }
     });
 
+    // ==========================================
+    //武将资料页：技能台词快速播放按钮（点击圆形按钮播放对应台词）
+    // ==========================================
+    const xinxHookVoiceQuickPlay = (dialog) => {
+        if (!dialog || dialog._xinxVoiceHooked) return;
+        dialog._xinxVoiceHooked = true;
+        const getAudioList = (type, skill) => {
+            const active = dialog.querySelector('.characterskill .active');
+            if (!active) return [];
+            const avatar = dialog.querySelector('.avatar');
+            const skinName = (avatar && avatar.tempSkin) || active.linkAudioName;
+            const player = { name: active.linkname, skin: { name: skinName }, tempname: [skinName] };
+            if (type == 'die') {
+                return get.Audio.die({ player }).audioList.filter(item => item.text != void 0);
+            }
+            return get.Audio.skill({ skill, player }).audioList.filter(item => item.text != void 0);
+        };
+        const injectVoiceButtons = () => {
+            const intro2 = dialog.querySelector('.intro2');
+            if (!intro2) return;
+            const active = dialog.querySelector('.characterskill .active');
+            const mainList = active && active.link != 'dieAudios' ? getAudioList('skill', active.link) : [];
+            const dieList = active ? getAudioList('die') : [];
+            const derivationMap = new Map();
+            if (active && active.link != 'dieAudios') {
+                const info = get.info(active.link);
+                const derivations = info && info.derivation ? (typeof info.derivation == 'string' ? [info.derivation] : info.derivation) : [];
+                for (const skill of derivations) {
+                    if (skill && skill.indexOf('_faq') == -1 && get.info(skill)) {
+                        derivationMap.set(get.translation(skill), getAudioList('skill', skill));
+                    }
+                }
+            }
+            let currentList = null;
+            for (const child of Array.from(intro2.children)) {
+                if (!child || child.dataset.xinxVoiceLine) continue;
+                const text = child.textContent || '';
+                const trimmed = text.trim();
+                if (/^\d+\.\s/.test(trimmed)) {
+                    if (currentList) {
+                        const index = parseInt(trimmed.match(/\d+/)[0], 10) - 1;
+                        const audioItem = currentList[index];
+                        if (audioItem && audioItem.file) {
+                            child.dataset.xinxVoiceLine = '1';
+                            const btn = document.createElement('span');
+                            btn.style.cssText = 'display:inline-block;width:16px;height:16px;border-radius:50%;background:rgba(255,107,107,0.9);color:#fff;font-size:10px;line-height:16px;text-align:center;cursor:pointer;user-select:none;vertical-align:middle;margin-right:5px;';
+                            btn.textContent = '▶';
+                            btn.onclick = (evt) => {
+                                evt.stopPropagation();
+                                game.playAudio(audioItem.file);
+                            };
+                            const br = child.querySelector('br');
+                            child.insertBefore(btn, br ? br.nextSibling : child.firstChild);
+                        }
+                    }
+                } else if (trimmed == '技能台词') {
+                    currentList = mainList;
+                } else if (trimmed == '阵亡台词') {
+                    currentList = dieList;
+                } else {
+                    const match = trimmed.match(/^(.+?)台词$/);
+                    if (match && derivationMap.has(match[1])) {
+                        currentList = derivationMap.get(match[1]);
+                    }
+                }
+            }
+        };
+        const observer = new MutationObserver(injectVoiceButtons);
+        observer.observe(dialog, { childList: true, subtree: true });
+        injectVoiceButtons();
+    };
+    const originCharactercard = ui.click.charactercard;
+    ui.click.charactercard = function (...args) {
+        const result = originCharactercard.apply(this, args);
+        if (lib.config.extension_永夜之境_voice_quick_play !== false) {
+            const dialogs = document.querySelectorAll('.menubg.charactercard');
+            if (dialogs.length) {
+                xinxHookVoiceQuickPlay(dialogs[dialogs.length - 1]);
+            }
+        }
+        return result;
+    };
+
 
 
     

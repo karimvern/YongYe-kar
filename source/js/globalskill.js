@@ -50,7 +50,7 @@ Object.assign(lib.skill, {
         charlotte: true,
         silent: true,
         lastDo: true,
-        trigger: { player: "phaseJieshuBegin" },
+        trigger: { player: "phaseEnd" },
         forced: true,
         filter(event, player) {
             const targetCards = ['xinxguiji', 'xinxmingxinzhiyue'];

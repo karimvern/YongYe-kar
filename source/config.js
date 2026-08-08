@@ -75,6 +75,14 @@ export default {
 			game.saveConfig('extension_永夜之境_custom_voice_switch', item);
 		}
 	},
+	voice_quick_play: {
+		name: "技能台词选择播放按钮",
+		init: true,
+		intro: "开启后，武将资料页的技能台词前会显示圆形播放按钮，点击可直接播放对应的台词。",
+		onclick: function(item) {
+			game.saveConfig('extension_永夜之境_voice_quick_play', item);
+		}
+	},
 	fgx0: {
 		name: "<font size='4'>---------武将测试工具---------</font>",
 		clear: true,

@@ -218,11 +218,8 @@ export async function precontent(config, pack) {
             showName: '袍',
         });
 
-
-
-
-
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', '乐', '华', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友', '雁翎'];
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', 
+            '乐', '华', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友', '雁翎','新杀|神','嗔'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`

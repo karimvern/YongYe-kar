@@ -647,6 +647,105 @@ export let voices = {
     '#ext:永夜之境/audio/xinxcuijing1': '征服这种力量吧！',
     '#ext:永夜之境/audio/xinxcuijing2': '真理，已尽在我手中。',
     '#ext:永夜之境/audio/xinxcuijing3': '信神谕，不如信我。',
+    //华流萤
+    '#ext:永夜之境/audio/xinxchongfeng6': '当再次邂逅的那天到来，我会假装我们素未谋面，再重新认识你一次，让一切都从头开始。',
+    '#ext:永夜之境/audio/xinxchongfeng1': '重逢就在眼前。我没有理由不尽力而为。',
+    '#ext:永夜之境/audio/xinxchongfeng2': '无论这个故事会如何结束，我都要让它…笑着开始。',
+    '#ext:永夜之境/audio/xinxchongfeng3': '希望那是一个有流星划过的美丽夜晚。',
+    '#ext:永夜之境/audio/xinxchongfeng4': '既然你出现在了这里，那就证明我们的道路还会交汇。',
+    '#ext:永夜之境/audio/xinxchongfeng5': '你还活着，我也会活下去。尚未到来的分别不会是永别。',
+    '#ext:永夜之境/audio/xinxnewxiangfu1': '不必说什么，你的眼睛已经给了我答案。',
+    '#ext:永夜之境/audio/xinxnewxiangfu2': '对，这个表情才是我熟悉的你。',
+    '#ext:永夜之境/audio/xinxnewxiangfu3': '我已经为「命运」添上了新的注脚呀。',
+    '#ext:永夜之境/audio/xinxnewxiangfu4': '我还要尽最大的努力向你直抒胸襟…',
+    '#ext:永夜之境/audio/xinxnewxiangfu5': '即使结局已经注定，但过程，我们还是可以自己决定。',
+    '#ext:永夜之境/audio/xinxnewxiangfu6': '为了反抗命运，这是我们愿意承受的代价。',
+    "#ext:永夜之境/audio/die/xinxnewmeng_liuying:die": "但相信你会在的…一定会……",
+
+    //停云
+    '#ext:永夜之境/audio/xinxxiangyun1': '事到如今，小女子必当全力以赴。',
+    '#ext:永夜之境/audio/xinxxiangyun2': '您上哪儿去？也捎小女子一程~',
+    '#ext:永夜之境/audio/xinxxiangyun3': '客人嘛，岂有不招待的道理。',
+    '#ext:永夜之境/audio/xinxxiangyun4': '要不，咱们还是以和为贵？',
+    '#ext:永夜之境/audio/xinxxiangyun5': '万事顺意~',
+    '#ext:永夜之境/audio/xinxxiangyun6': '诸邪回避~',
+    '#ext:永夜之境/audio/xinxxiangyun7': '消消火气。',
+    '#ext:永夜之境/audio/xinxxiangyun8': '顺风顺水~',
+    '#ext:永夜之境/audio/xinxzeying1': '就以奇珍万千，给各位鼓劲啦~',
+    '#ext:永夜之境/audio/xinxzeying2': '百事贞吉，一心同归。',
+    '#ext:永夜之境/audio/xinxzeying3': '各位还真是好身手。',
+
+    //逐流萤
+    '#ext:永夜之境/audio/xinxzhuqiong1': '即使结局已经注定，但过程，我们还是可以自己决定。',
+    '#ext:永夜之境/audio/xinxzhuqiong2': '为了反抗命运，这是我们愿意承受的代价。',
+    '#ext:永夜之境/audio/xinxzhuqiong3': '重逢就在眼前。我没有理由不尽力而为。',
+    '#ext:永夜之境/audio/xinxzhuqiong4': '但我可以决定，应该如何看待我的命运。',
+    '#ext:永夜之境/audio/xinxzhuqiong5': '如果你就是梦主的答案，那么，就请你代替他，倾听我的回答。',
+    '#ext:永夜之境/audio/xinxzhuqiong6': '我不会让你得逞。',
+    '#ext:永夜之境/audio/xinxzhuqiong7': '但你今天见到的，恰恰是改写过命运的人。',
+    '#ext:永夜之境/audio/xinxshiying1': '但我不会忘记。',
+    '#ext:永夜之境/audio/xinxshiying2': '别怕，一切都会尘埃落定的。',
+    '#ext:永夜之境/audio/xinxshiying3': '有你在我们身边，总是令人安心。',
+    '#ext:永夜之境/audio/xinxshiying4': '真是值得期待的一天。两个人——不再是共犯，只是在银河间漂泊的两个灵魂。',
+    '#ext:永夜之境/audio/xinxshiying5': '普普通通地相见，普普通通地相识………那就是我能够想象的，最大的奢侈。',
+    '#ext:永夜之境/audio/xinxshiying6': '我的目的…只关乎一次重逢，一次拯救，一场诀别。',
+    '#ext:永夜之境/audio/xinxshiying7': '所以，我不会再介意任何缺陷，不怕再添任何伤痕。',
+    '#ext:永夜之境/audio/xinxshiying8': '重要的不是他们变成什么样子，而是你仍然对他们抱有同一份真实的感情。',
+
+    //远坂凛
+    '#ext:永夜之境/audio/xinxxushi1': '优雅、从容，全力以赴！',
+    '#ext:永夜之境/audio/xinxxushi2': '喔…魔力涌上来了…！',
+    '#ext:永夜之境/audio/xinxxushi3': '秉持优雅，胜利是理所当然的。',
+    '#ext:永夜之境/audio/xinxxushi4': '约好了：我会比晨星更闪耀。',
+    '#ext:永夜之境/audio/xinxxushi5': '很好，突破的感觉来了',
+    '#ext:永夜之境/audio/xinxqinghui1': '为我所用吧——An Gal Ta Ki Gal Šè!',
+    '#ext:永夜之境/audio/xinxqinghui2': '镜对镜的光芒——穿透无限！',
+    '#ext:永夜之境/audio/xinxqinghui3': '无限之旅路——于此集结！',
+    '#ext:永夜之境/audio/xinxqinghui4': '宝石剑！',
+    '#ext:永夜之境/audio/xinxqinghui5': '闪耀吧！',
+    '#ext:永夜之境/audio/xinxqinghui6': '猛虎硬爬山！',
+    '#ext:永夜之境/audio/xinxqinghui7': '神话的Broken Phantasm！',
+    '#ext:永夜之境/audio/xinxqinghui8': '我还在耍帅啊…！',
+    '#ext:永夜之境/audio/xinxqinghui9': '这仇我记下了…！',
+
+    //Archer
+    '#ext:永夜之境/audio/xinxtouying1': 'Broken Phantasm！',
+    '#ext:永夜之境/audio/xinxtouying2': '穿山断水！',
+    '#ext:永夜之境/audio/xinxtouying3': '鹤翼三连！',
+    '#ext:永夜之境/audio/xinxtouying4': '别想跑。',
+    '#ext:永夜之境/audio/xinxtouying5': '任务还没结束，不能松懈啊。',
+    '#ext:永夜之境/audio/xinxtouying6': '到我了？真是够忙的。',
+    '#ext:永夜之境/audio/xinxtouying7': '嗯…，接下来准备怎么做？',
+    '#ext:永夜之境/audio/xinxtouying8': '好机会，该斩除祸患了！',
+    '#ext:永夜之境/audio/xinxtouying9': '守护者的未来，在此注定。',
+
+    '#ext:永夜之境/audio/xinxluoxuan1': 'Trace on！',
+    '#ext:永夜之境/audio/xinxluoxuan2': 'Caladbolg II！',
+    '#ext:永夜之境/audio/xinxluoxuan3': '你无处可躲！',
+    '#ext:永夜之境/audio/xinxluoxuan4': 'I am the bone of my sword.',
+    '#ext:永夜之境/audio/xinxluoxuan5': 'Unlimited Blade Works.',
+    
+
+
+
+    
+
+    
+
+    
+
+
+
+    
+   
+
+    
+
+    
+  
+
+
+
  
     
     

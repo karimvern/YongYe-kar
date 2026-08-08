@@ -186,7 +186,7 @@ export default {
                             }
                         }
                     }
-                    if (target.countCards("h") * Math.max(target.hp, 5) > 6) {
+                    if (target.countCards("h") * Math.max(target.hp, 5) > 10) {
                         return 0;
                     }
                 },
@@ -656,6 +656,12 @@ export default {
             modTarget: true,
             async content(event, trigger, player) {
                 const cards = event.cards;
+                cards.forEach(card => {
+                    card.fix();
+                    card.remove();
+                    card.destroyed = true;
+                    game.log(card, "被销毁了");
+                });
                 const target = event.target;
                 const list = [];
                 let victim = null;
@@ -756,13 +762,6 @@ export default {
                         }
                     }
                 }
-
-                cards.forEach(card => {
-                    card.fix();
-                    card.remove();
-                    card.destroyed = true;
-                    game.log(card, "被销毁了");
-                });
             },
             ai: {
                 basic: {
