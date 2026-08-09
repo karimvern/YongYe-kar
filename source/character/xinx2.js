@@ -1078,9 +1078,6 @@ export let info = {
                                                 ecards = target.getCards("xs");
                                             if (target.getCards("xs").length) {
                                                 list.push('<div class="text center">' + get.translation(target) + "的移出牌</div>");
-                                                ecards.forEach(card => {
-                                                    card._xinxluoxuan_owner = target;
-                                                });
                                                 list.push(ecards);
                                             }
                                             return list;
@@ -1088,29 +1085,13 @@ export let info = {
                                         .flat(),
                                     "hidden"
                                 );
-                            /* const score = (button) => {
-                            const card = button.link;
-                            if (get.itemtype(card) != "card") return 0;
-                            if (get.type(card) == "equip") {
-                                return -get.value(card);
-                            }
-                            return 1 + get.value(card);
-                        }; */
                             const score = (button) => {
                                 const card = button.link;
                                 if (get.itemtype(card) != "card") return 0;
-                                const base = get.type(card) == "equip" ? -get.value(card) : 1 + get.value(card);
-                                const owner = card._xinxluoxuan_owner || get.owner(card);
-                                let tier;
-                                if (!owner || owner == player) {
-                                    tier = -200;
-                                } else {
-                                    const att = get.attitude(player, owner);
-                                    if (att < 0) tier = 100;
-                                    else if (att > 0) tier = 50;
-                                    else tier = 75;
+                                if (get.type(card) == "equip") {
+                                    return -get.value(card);
                                 }
-                                return base + tier;
+                                return 1 + get.value(card);
                             };
                             const next = player.chooseButton(dialog, num)
                                 .set("ai", score);
