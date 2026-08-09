@@ -3966,7 +3966,7 @@ export let info = {
 						await game.asyncDraw([player, trigger.player].sortBySeat(), num);
 						//if (num == 2) {
 						let target = trigger.player;
-						target.addTempSkill("xinxhjfuman_effect");
+						player.addTempSkill("xinxhjfuman_effect");
 						const card = trigger.cards[0],
 							cardx = get.autoViewAs({
 								name: get.name(card, target),
@@ -3988,18 +3988,13 @@ export let info = {
 					},
 				},
 				effect: {
-					mod: {
-						cardUsable(card, player) {
-							if (card.storage?.xinxhjfumanx) return Infinity;
-						},
-					},
 					charlotte: true,
 					mark: true,
 					trigger: {
 						global: "dying",
 					},
 					filter(event, player) {
-						return event.reason?.card?.storage?.xinxhjfumanx && event.reason.getParent().player == player;
+						return event.reason?.card?.storage?.xinxhjfumanx;// && event.reason.getParent().player == player
 					},
 					forced: true,
 					popup: false,
@@ -4046,6 +4041,9 @@ export let info = {
 				);
 			},
 			mod: {
+				cardUsable(card, player) {
+					if (card.storage?.xinxhjfumanx) return Infinity;
+				},
 				aiOrder(player, card, num) {
 					if (get.itemtype(card) == "card" && card.hasGaintag("xinxhjfuman")) {
 						return num + 5;

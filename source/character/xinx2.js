@@ -20,7 +20,7 @@ export let info = {
             'heita': ['xinx_daheita', 'xinx_ruanmei'],
             'erxiangleyuan': ['xinx_huohua', 'xinx_yaoguang', 'xinx_feiying'],
             'beiluoboge': ['xinx_xier', 'xinx_buluoniya', 'xinx_luka'],
-            'yishilvren': ['xinx_sikeke', 'xinx_yeshunguang', 'xinx_laite', 'xinx_aimisi', 'xinx_yixuan', 'xinx_yuanbanlin','xinx_Archer'],
+            'yishilvren': ['xinx_sikeke', 'xinx_yeshunguang', 'xinx_laite', 'xinx_aimisi', 'xinx_yixuan', 'xinx_yuanbanlin', 'xinx_Archer'],
             'gongsi': ['xinx_tuopa'],
             'xinxxugou': ['xinx_xiao'],
 
@@ -87,7 +87,7 @@ export let info = {
         xinx_tingyun: '<font color=#EC7E60>镂月裁云</font>',
         xinxzhu_liuying: '<font color=#ACE7f5>迎穹光而赴</font>',
         xinx_yuanbanlin: '<font color=#FF6E6B>魔石赤染</font>',
-        xinx_Archer:'<font color=#FF6E6B>无限剑制</font>',
+        xinx_Archer: '<font color=#FF6E6B>无限剑制</font>',
 
         // 58A7A6
         //65B8B1
@@ -259,7 +259,7 @@ export let info = {
         //技能翻译
         xinxtouying: '投影',
         xinxtouying_info: '锁定技，你使用非转化的非延时牌时移出之；你使用牌后，获得结算期间进入弃牌堆的牌的复制牌。你拥有「投影」牌中的装备牌效果。',
-        xinxluoxuan:'螺旋',
+        xinxluoxuan: '螺旋',
         xinxluoxuan_info: '你可以将一名角色X张移出牌当无距离次数限制的【杀】使用（X为本轮此技能发动次数）。',
         xinxxushi: '蓄石',
         xinxxushi_info: `你使用非伤害牌后，移出至少一张牌并选择等量项：<br>1.下次摸牌数+1； <br>2.下次造成伤害+0；<br>3.摸一张牌；<br>4.失去1点体力，其余项下次选择时数值+1。`,
@@ -273,7 +273,7 @@ export let info = {
         xinxzhuqiong: '逐穹',
         xinxzhuqiong_info: `每回合各限一次。你可以视为使用［【杀】］。你使用［【杀】］后，可以令一名角色摸/弃置两张牌。`,
         xinxxiangyun: '祥韵',
-        xinxxiangyun_info: '每轮开始时，①你可以亮出牌堆顶三张牌并令一名角色获得其中一张，其下次使用的牌须为此牌。②此牌被使用时，你令之不计入次数、额外结算一次且你与使用者各摸一张牌。',
+        xinxxiangyun_info: '每轮开始时，①你可以亮出牌堆顶三张牌并令一名角色获得其中一张，其下次使用的牌须为此牌。②此牌被使用时，你令之额外结算一次且你与使用者各摸一张牌。',
         xinxzeying: '泽盈',
         xinxzeying_info: `一名角色的弃牌阶段结束时，若其本回合未使用过【杀】，你可以分配其本阶段弃置的牌，且这些牌附带${get.poptip("xinxxiangyun")}②的效果。`,
         xinxxiangyun_tag: '祥韵',
@@ -878,7 +878,7 @@ export let info = {
                     const next = player.addToExpansion(cards, "gain2");
                     next.gaintag.add("xinxtouying");
                     await next;
-                   
+
                     player.addAdditionalSkill("xinxtouying", get.skillsFromEquips(player.getExpansions("xinxtouying")));
                     game.log(player, "移出了", cards);
                     return;
@@ -910,7 +910,7 @@ export let info = {
                 }
                 if (copies.length) {
                     game.trySkillAudio("xinxtouying", player, true, null, null, [copies]);
-                    await player.gain(copies, "gain2");
+                    await player.gain(copies);
                     game.log(player, "获得了", copies, "的复制牌");
                 }
             },
@@ -1047,9 +1047,6 @@ export let info = {
                     if (_status.event.getParent().type != "phase") {
                         return 1;
                     }
-                    if (button.link[2] !== "sha") {
-                        return 10;
-                    }
                     return player.getUseValue({ name: button.link[2], nature: button.link[3] });
                 },
                 backup(links, player) {
@@ -1074,13 +1071,16 @@ export let info = {
                             const targets = game.filterPlayer(target => target.countCards("xs"));
                             const dialog =
                                 ui.create.dialog(
-                                    `螺旋：将${num}张牌移出当作${get.translation(links[0][3]) || ""}【${get.translation(links[0][2])}】使用`,
+                                    `螺旋：将${num}张移出牌当作${get.translation(links[0][3]) || ""}【${get.translation(links[0][2])}】使用`,
                                     ...targets
                                         .map(target => {
                                             let list = [],
                                                 ecards = target.getCards("xs");
                                             if (target.getCards("xs").length) {
                                                 list.push('<div class="text center">' + get.translation(target) + "的移出牌</div>");
+                                                ecards.forEach(card => {
+                                                    card._xinxluoxuan_owner = target;
+                                                });
                                                 list.push(ecards);
                                             }
                                             return list;
@@ -1088,19 +1088,60 @@ export let info = {
                                         .flat(),
                                     "hidden"
                                 );
-                            const result1 = await player.chooseButton(dialog,num)
-                                .set("ai", button => {
-                                    const card = button.link;
-                                    if (get.itemtype(card) != "card") return 0;
-                                    if (get.type(card) == "equip") {
-                                        return -get.value(card);
+                            /* const score = (button) => {
+                            const card = button.link;
+                            if (get.itemtype(card) != "card") return 0;
+                            if (get.type(card) == "equip") {
+                                return -get.value(card);
+                            }
+                            return 1 + get.value(card);
+                        }; */
+                            const score = (button) => {
+                                const card = button.link;
+                                if (get.itemtype(card) != "card") return 0;
+                                const base = get.type(card) == "equip" ? -get.value(card) : 1 + get.value(card);
+                                const owner = card._xinxluoxuan_owner || get.owner(card);
+                                let tier;
+                                if (!owner || owner == player) {
+                                    tier = -200;
+                                } else {
+                                    const att = get.attitude(player, owner);
+                                    if (att < 0) tier = 100;
+                                    else if (att > 0) tier = 50;
+                                    else tier = 75;
+                                }
+                                return base + tier;
+                            };
+                            const next = player.chooseButton(dialog, num)
+                                .set("ai", score);
+                            //“AI代选”按钮
+                            let autoBtn = null;
+                            if (player.isUnderControl(true)) {
+                                autoBtn = ui.create.control("AI代选", () => {
+                                    const evt = get.event();
+                                    if (evt !== next) return;
+                                    const buttons = (next.dialog && next.dialog.buttons) || [];
+                                    const sorted = buttons.slice().sort((a, b) => score(b) - score(a));
+                                    const pick = sorted.slice(0, num);
+                                    //清除已有选择
+                                    for (const button of ui.selected.buttons.slice()) {
+                                        button.classList.remove("selected");
                                     }
-                                    return 1 + get.value(card);
-                                })
-                                .forResult();
+                                    ui.selected.buttons.length = 0;
+                                    //选中对应按钮
+                                    for (const button of pick) {
+                                        button.classList.add("selected");
+                                        ui.selected.buttons.push(button);
+                                    }
+                                    game.check();
+                                });
+                            }
+                            const result1 = await next.forResult();
+                            if (autoBtn) autoBtn.close();
                             if (result1.bool && result1.links?.length) {
                                 player.logSkill("xinxluoxuan", null, null, null, [num]);
                                 event.result.cards = result1.links;
+                                player.addAdditionalSkill("xinxtouying", get.skillsFromEquips(player.getExpansions("xinxtouying")))
                             } else {
                                 event.getParent().goto(0);
                                 return;
@@ -1128,12 +1169,12 @@ export let info = {
             ai: {
                 order(item, player) {
                     let num = player.getHistory("useSkill", evt => evt.skill == 'xinxluoxuan').length + 1;
-                    let count = get.info("xinxluoxuan").getCards(player),length;
-                    if (count - num < 2){
+                    let count = get.info("xinxluoxuan").getCards(player), length;
+                    if (count - num < 2) {
                         return 0;
                     }
                     if (num)
-                    return 8;
+                        return 8;
                 },
                 respondSha: true,
                 skillTagFilter(player) {
@@ -1229,14 +1270,14 @@ export let info = {
                             const { player } = get.event();
                             switch (button.link) {
                                 case "effect":
-                                    return get.effect(target, { name: "draw" }, player, player) * player.countMark('xinxxushi_effect_add');
+                                    return get.effect(player, { name: "draw" }, player, player) * player.countMark('xinxxushi_effect_add');
                                 case "damage":
                                     return player.countMark('xinxxushi_damage_add') * 2;
                                 case "draw":
-                                    return get.effect(target, { name: "draw" }, player, player) * player.countMark('xinxxushi_draw_add');
+                                    return get.effect(player, { name: "draw" }, player, player) * player.countMark('xinxxushi_draw_add');
                                 case "lose":
                                     if (player.isHealthy()) {
-                                      return 12;
+                                        return 12;
                                     }
                                     if (player.hp >= 2 ||
                                         player.hasCard(i => {
@@ -1365,7 +1406,6 @@ export let info = {
         xinxqinghui: {
             audio: "ext:永夜之境/audio:9",
             logAudio: index => (typeof index === "number" ? `ext:永夜之境/audio/xinxqinghui${index}.mp3` : 2),
-            //logAudio: () => "ext:永夜之境/audio/xinxqinghui1.mp3",
             trigger: {
                 global: ["roundEnd"],
             },
@@ -1969,12 +2009,12 @@ export let info = {
                         );
                     },
                     async content(event, trigger, player) {
-                        trigger.addCount = false;
+                        /* trigger.addCount = false;
                         const stat = player.getStat().card, name = trigger.card.name;
                         if (typeof stat[name] == "number") {
                             stat[name]--;
                         }
-                        game.log(trigger.card, "不计入次数");
+                        game.log(trigger.card, "不计入次数"); */
                         const useCard = trigger.getParent("useCard", true, true) || trigger;
                         let tagList = [];
                         trigger.player.getHistory("lose", evt => {
@@ -3076,15 +3116,15 @@ export let info = {
                                             return 10 + get.value(card, owner);
                                         }
                                         if (owner === player) {
-                                            return 2; 
+                                            return 2;
                                         }
-                                        return 4; 
+                                        return 4;
                                     }
                                     if (position === "j") {
                                         if (attitude > 0 || owner === player) {
                                             return 8;
                                         }
-                                        return 1; 
+                                        return 1;
                                     }
                                     return 0;
                                 })

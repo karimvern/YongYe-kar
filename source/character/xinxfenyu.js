@@ -22,7 +22,7 @@ export let info = {
                 'fyrh_fengxizhangnan', 'fyrh_qinwuyang', 'fyrh_zhangxiu', 'fyrh_chendao', 'fyrh_zhugejun', 'fyrh_dailaidongzhu', 'fyrh_maxiumatie'],
             'xinx_xiulisheji': ['fyrh_leisai', 'fyrh_dianci', 'fyrh_zaochuanqiu', 'fyrh_jiye', 'fyrh_anbian', 'fyrh_liumin', 'fyrh_qiangzhiemo', 'fyrh_jiaerjiali',
                 'fyrhxiu_zhaoyun', 'fyrhxiu_jiangwei'],
-            'xinx_tingyusheji': ['fyrht_wolong','fyrh_duyu', 'fyrh_caocao', 'fyrh_jiangwei', 'fyrh_zhaoyun', 'fyrh_xuyou', 'fyrh_chenqun', 'fyrh_guanyu', 'fyrh_wangping',
+            'xinx_tingyusheji': ['fyrht_fazheng','fyrhot_fazheng','fyrht_wolong', 'fyrh_duyu', 'fyrh_caocao', 'fyrh_jiangwei', 'fyrh_zhaoyun', 'fyrh_xuyou', 'fyrh_chenqun', 'fyrh_guanyu', 'fyrh_wangping',
                 'fyrh_zhangfei', 'fyrh_jiachong', 'fyrh_xujing', 'fyrh_yanyan', 'fyrh_caozhi', 'fyrh_wangling', 'fyrh_qinhui', 'fyrh_liuyan', 'xinxhj_fyrh_liuyan',
                 'fyrh_zhangjiao', 'fyrh_simayi', 'fyrh_liyuanba', 'fyrht_zhangliao', 'fyrh_zhoubangyan'],
             'xinx_xiahuaxuanlan': ['fyrh_daheita', 'fyrh_changyeyue', 'fyrh_xilian', 'fyrh_fuxuan', 'fyrh_huahuo', 'fyrhold_huahuo', 'fyrh_zhuangfangyi', 'fyrh_kelvdela'],
@@ -80,8 +80,10 @@ export let info = {
     },
     //翻译
     translate: {
-        fyrht_fazheng:'廷法正',
-        fyrht_fazheng_prefix: '廷',
+        fyrhot_fazheng: '廷法正',
+        fyrhot_fazheng_prefix: '廷',
+        fyrht_fazheng: '改廷法正',
+        fyrht_fazheng_prefix: '改廷',
         fyrht_wolong: '廷卧龙',
         fyrht_wolong_prefix: '廷',
         fyrh_zhoubangyan: '廷周邦彦',
@@ -328,6 +330,12 @@ export let info = {
 
 
         //技能翻译
+        fyrhxuanhuo:'眩惑',
+        fyrhxuanhuo_info: `摸牌阶段，你可以改为令一名角色获得一个每回合限一次，视为使用【无中生有】的技能（可独立存在）。`,
+        fyrhnewxuanhuo:'眩惑',
+        fyrhnewxuanhuo_info: `摸牌阶段，你可以改为令一名角色获得一个每轮限一次，视为使用【无中生有】的技能。`,
+        fyrhyanli: '炎历',
+        fyrhyanli_info: '技能数与你相同的角色的弃牌阶段，你观看其手牌并选择弃置牌，获得其中的红桃牌。',
         fyrhxiaomie: '笑灭',
         fyrhxiaomie_info: `限定技，当【闪】进入弃牌堆后，你可以分配1点火焰伤害，发动${get.poptip('fyrhtanzhi')}后，重置。`,
         fyrhtanzhi: '弹指',
@@ -544,7 +552,7 @@ export let info = {
         fyrhluoying: '落英',
         fyrhluoying_info: `锁定技，出牌阶段开始时，你使用至多七张牌，然后上限更改为此使用牌数。`,
         fyrhbianshi: '变势',
-        fyrhbianshi_info: `目标含你的牌结算后，你可弃置一名角色两张牌并令另一名角色摸两张牌。若两者手牌数大小关系改变，因此弃牌者可对摸牌者使用一张【杀】；若未改变，此技能本回合失效。`,
+        fyrhbianshi_info: `目标含你的牌结算后，你可弃置一名角色一张牌并令另一名角色摸两张牌。若两者手牌数大小关系改变，因此弃牌者可对摸牌者使用一张【杀】；若未改变，此技能本回合失效。`,
         fyrhege: '扼戈',
         fyrhege_info: `出牌阶段限一次，你可选择场上至多X张装备牌并令装备这些牌的角色将之收回（X为本回合失去过牌的角色数）。`,
         fyrhjuzhan: '拒战',
@@ -1131,10 +1139,195 @@ export let info = {
                 end = "若使用者不为你，你获得其一张手牌，或摸三张牌将目标定为你。";
             return `${start}你手牌中的【杀】无视次数限制和防具，但使用时使用者须改为①${yang}；②${yin}。${end}`;
         },
+        fyrhshenhui(player) {
+            let num = 2 + player.countMark('fyrhshenhui_add');
+            return `结束阶段，你可以摸${get.cnNumber(num)}张牌，然后以本回合你使用牌花色的倒序使用任意张牌；若使用至对标第一张牌，此法摸牌数+1。`;
+        },
 
     },
     //技能
     skill: {
+        //法正
+        fyrhxuanhuo: {
+            audio: "fyrhxuanmi",
+            trigger: {
+                player: "phaseDrawBegin1",
+            },
+            async cost(event, trigger, player) {
+                event.result = await player
+                    .chooseTarget(get.prompt2('fyrhxuanhuo'), (card, player, target) => {
+                        return true;
+                    })
+                    .set("ai", target => {
+                        const player = get.event().player;
+                        return get.attitude(player, target);
+                    })
+                    .forResult();
+            },
+            async content(event, trigger, player) {
+                trigger.changeToZero();
+                const name = 'wuzhong';
+                const suffix = get.id();
+                const skill = `fyrhxuanhuo_${name}_${suffix}`;
+                const skillName = `眩无`;
+                const skillContent = {
+                    nobracket: true,
+                    enable: 'chooseToUse',
+                    audio: "fyrhxuanmi",
+                    usable: 1,
+                    viewAs: {
+                        name: name,
+                        isCard: true,
+                    },
+                    filterCard: () => false,
+                    selectCard: -1,
+                    prompt: `视为使用【${get.translation(name)}】`,
+                };
+                const skillInfo = `每回合限一次，你可以视为使用一张【${get.translation(name)}】。`;
+                game.broadcastAll((skill, skillName, skillInfo, skillContent) => {
+                    lib.translate[skill] = skillName;
+                    lib.translate[`${skill}_info`] = skillInfo;
+                    lib.skill[skill] = skillContent;
+                    game.finishSkill(skill);
+                }, skill, skillName, skillInfo, skillContent);
+                event.targets[0].popup(skill);
+                await event.targets[0].addSkills(skill);
+            }
+        },
+        fyrhnewxuanhuo: {
+            audio: "fyrhxuanmi",
+            inherit: 'fyrhxingjiang',
+            async cost(event, trigger, player) {
+                event.result = await player
+                    .chooseTarget(get.prompt2('fyrhxuanhuo'), (card, player, target) => {
+                        return !target.hasSkill('fyrhxuanhuo_wuzhong');
+                    })
+                    .set("ai", target => {
+                        const player = get.event().player;
+                        return get.attitude(player, target);
+                    })
+                    .forResult();
+            },
+            async content(event, trigger, player) {
+                trigger.changeToZero();
+                const name = 'wuzhong';
+                const skill = `fyrhxuanhuo_${name}`;
+                const skillName = `眩无`;
+                const skillContent = {
+                    nobracket: true,
+                    enable: 'chooseToUse',
+                    audio: "fyrhxuanmi",
+                    round: 1,
+                    viewAs: {
+                        name: name,
+                        isCard: true,
+                    },
+                    filterCard: () => false,
+                    selectCard: -1,
+                    prompt: `视为使用【${get.translation(name)}】`,
+                };
+                const skillInfo = `每轮限一次，你可以视为使用一张【${get.translation(name)}】。`;
+                game.broadcastAll((skill, skillName, skillInfo, skillContent) => {
+                    lib.translate[skill] = skillName;
+                    lib.translate[`${skill}_info`] = skillInfo;
+                    lib.skill[skill] = skillContent;
+                    game.finishSkill(skill);
+                }, skill, skillName, skillInfo, skillContent);
+                event.targets[0].popup(skill);
+                await event.targets[0].addSkills(skill);
+            }
+
+        },
+        fyrhyanli:{
+            audio: "fyrhyazi",
+            trigger: {
+                global: "phaseDiscardBegin",
+            },
+            forced: true,
+            popup:false,
+            countSkill(player) {
+                return player.getSkills(null, false, false).filter((skill) => {
+                    const info = get.info(skill);
+                    return info && !info.charlotte && get.skillInfoTranslation(skill, player).length;
+                }).length;
+            },
+            filter(event, player) {
+                //if (event.player == player) return false;
+                const count = lib.skill.fyrhyanli.countSkill;
+                return count(event.player) == count(player);
+            },
+            async content(event, trigger, player) {
+                trigger.fyrhyanli_owner = player;
+                trigger.setContent(lib.skill.fyrhyanli.phaseDiscard);
+            },
+            phaseDiscard: [
+                async (event2, trigger2, player2) => {
+                    const owner = event2.fyrhyanli_owner;
+                    const hs = player2.getCards("h");
+                    if (!hs.length) {
+                        event2.finish();
+                        return;
+                    }
+                    const num = Math.max(0, player2.countCards("h") - player2.getHandcardLimit());
+                    if (num === 0){
+                        event2.finish();
+                        return;
+                    }
+                    owner.logSkill('fyrhyanli');
+                    const next = owner.chooseCardButton(
+                        `###炎历###<div class="text center">观看${get.translation(player2)}的手牌并选择${num}张其将弃置的牌，你获得其中的红桃牌</div>`,
+                        hs,
+                        [num, num]
+                    )
+                        .set("filterButton", () => true)
+                        .set("ai", button => {
+                            const card = button.link;
+                            return get.value(card) + (get.suit(card, false) == "heart" ? 5 : 0);
+                        });
+                    //“自动选择”按钮：红桃优先，其余选价值低的牌，凑满 num 张
+                    let autoBtn = null;
+                    if (owner.isUnderControl(true)) {
+                        autoBtn = ui.create.control("AI代选", () => {
+                            const evt = get.event();
+                            if (evt !== next) return;
+                            const sorted = hs.slice().sort((a, b) => {
+                                const av = get.suit(a, false) == "heart" ? -1000 : get.value(a);
+                                const bv = get.suit(b, false) == "heart" ? -1000 : get.value(b);
+                                return av - bv;
+                            });
+                            const pick = sorted.slice(0, num);
+                            //清除已有选择
+                            for (const button of ui.selected.buttons.slice()) {
+                                button.classList.remove("selected");
+                            }
+                            ui.selected.buttons.length = 0;
+                            //选中对应按钮
+                            const buttons = (next.dialog && next.dialog.buttons) || [];
+                            for (const button of buttons) {
+                                if (pick.includes(button.link)) {
+                                    button.classList.add("selected");
+                                    ui.selected.buttons.push(button);
+                                }
+                            }
+                            game.check();
+                        });
+                    }
+                    const result = await next.forResult();
+                    if (autoBtn) autoBtn.close();
+                    if (!result.bool || !result.links?.length) {
+                        event2.finish();
+                        return;
+                    }
+                    const discard = result.links;
+                    const hearts = discard.filter(card => get.suit(card, false) == "heart");
+                    await player2.loseToDiscardpile(discard);
+                    if (hearts.length) {
+                        await owner.gain(hearts, "gain2");
+                    }
+                    event2.finish();
+                }
+            ]
+        },
         //卧龙
         fyrhxiaomie: {
             audio: 'xinxlihuo',
@@ -1149,7 +1342,7 @@ export let info = {
             skillAnimation: false,
             async cost(event, trigger, player) {
                 event.result = await player
-                    .chooseTarget(get.prompt('fyrhxiaomie'),`<div class="text center">对一名角色造成1点火焰伤害并重置${get.poptip('fyrhtanzhi')}</div>`,(card, player, target) => {
+                    .chooseTarget(get.prompt('fyrhxiaomie'), `<div class="text center">对一名角色造成1点火焰伤害并重置${get.poptip('fyrhtanzhi')}</div>`, (card, player, target) => {
                         return true;
                     })
                     .set("ai", target => {
@@ -1340,7 +1533,6 @@ export let info = {
             },
             intro: {
                 name: "神回",
-                //content: `${get.poptip('fyrhshenhui')}摸牌数+$`,
                 markcount(storage, player) {
                     let num = player.countMark('fyrhshenhui_add');
                     if (num == 0) {
@@ -12155,7 +12347,7 @@ export let info = {
                 }
                 const result = await player.chooseTarget(
                     "是否发动【变势】：选择两名角色",
-                    "弃置前者两张牌，令后者摸两张牌",
+                    "弃置前者一张牌，令后者摸两张牌",
                     2,
                     (card, player2, target2) => {
                         if (ui.selected.targets.length) {
@@ -12209,7 +12401,7 @@ export let info = {
                 }; */
                 let relationBefore = getRelation();
                 if (user.countDiscardableCards(player, "he")) {
-                    await player.discardPlayerCard(2, user, "he", true);
+                    await player.discardPlayerCard(1, user, "he", true);
                 }
                 await target.draw(2);
                 let relationAfter = getRelation();

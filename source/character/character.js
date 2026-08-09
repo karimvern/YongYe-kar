@@ -264,12 +264,21 @@ export const xinx2Character = {
 
 //风雨如晦
 export const xinxfengyuCharacter = {
+    fyrhot_fazheng:{
+        sex: "male",
+        group: "shu",
+        hp: 3,
+        trashBin: ['legend'],
+        img: "extension/永夜之境/image/fyrht_fazheng.png",
+        skills: ['fyrhnewxuanhuo','fyrhyanli'],
+        dieAudios: ["fyrh_fazheng"],
+    },
     fyrht_fazheng: {
         sex: "male",
         group: "shu",
         hp: 3,
         trashBin: ['legend'],
-        skills: [],
+        skills: ['fyrhxuanhuo','fyrhyanli'],
         dieAudios: ["fyrh_fazheng"],
     },
     fyrht_wolong: {
