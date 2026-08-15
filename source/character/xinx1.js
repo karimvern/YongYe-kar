@@ -231,7 +231,7 @@ export let info = {
         hyyzuobao: '作保',
         hyyzuobao_info: `每回合限一次，你受伤时，若你的手牌数与体力值相等，你可摸一张牌并防止此伤害。`,
         xinxyufu: '迂覆',
-        xinxyufu_info: `连招技（黑色牌+指向性${get.poptip('xinx_jishipai')}）。你选择一名目标角色，将你与其至多X张牌替换为【影】（X为本回合本技能发动次数）。【影】无法被弃置，进入弃牌堆时不会被销毁。`,
+        xinxyufu_info: `连招技（黑色牌+${get.poptip('xinx_jishipai')}）。你选择一名目标角色，将你与其至多X张牌替换为【影】（X为本回合本技能发动次数）。【影】无法被弃置，进入弃牌堆时不会被销毁。`,
         xinxliangye: '良夜',
         xinxliangye_info: `每回合每种牌名限一次，你可以将1/2张【影】当任意普通锦囊牌/基本牌使用，然后失去并获得${get.poptip('xinxyinghuanren')}/获得并发动${get.poptip('xinxyinghuanren')}①。`,
         xinxyinghuanren: '焕刃',
@@ -624,7 +624,7 @@ export let info = {
         xinxjieshuo: '截槊',
         xinxjieshuo_info: "锁定技。每回合限一次。当你成为其他角色使用伤害牌的目标后，你选择其非手牌区的4-X张牌，否则改为观看牌堆顶4-X张牌，选择其中任意张牌，然后你将之当作一张名字数与选择牌数相同的基本牌或普通锦囊牌使用（无距离限制）。若你选择了牌堆顶的牌，你获得剩余与使用牌名字数不同的牌（X为此技能本轮的发动次数）。",
         xinxhuolu: '镬戮',
-        xinxhuolu_info: "锁定技。①其他角色使用伤害牌结算后，若其区域的牌数于结算过程发生过变化，你将此牌置于你的武将牌上，称为“镬”。②当你使用伤害牌结算后，若此牌未造成伤害，你可以选择一项：1.使用武将牌上的一张牌；2.弃置武将牌上的任意张牌，然后摸等量的牌。",
+        xinxhuolu_info: "锁定技。①其他角色使用伤害牌结算后，若期间其失去过非手牌区的牌，你将此伤害牌置于你的武将牌上，称为“镬”。②当你使用伤害牌结算后，若此牌未造成伤害，你可以选择一项：1.使用武将牌上的一张牌；2.弃置武将牌上的任意张牌，然后摸等量的牌。",
         xinxkejing: '恪旌',
         xinxkejing_info: "每轮开始时，你记录一名角色A直到下轮开始。其他角色的出牌阶段结束后，若A本回合未受到伤害，当前回合角色需交给你两张牌，然后你交给其等量的牌，若这些牌中有伤害牌，你将其中的伤害牌交给A，令A对其使用手牌中所有的非装备牌。若A未使用牌，你视为对A使用一张伤害牌。",
         xinxjuyi: '举义',
@@ -3791,7 +3791,7 @@ export let info = {
                     if (cards.some(i => get.type2(i) == 'basic')) {
                         await player.gain(cards.slice().filter(i => get.type2(i) == 'basic'), 'gain2');
                     }
-                    if (cards.some(i => get.type2(i) == 'trick')) {
+                    if (cards.some(i => get.type2(i) == 'trick' && player.hasUseTarget(card))) {
                         const result = await player.chooseButton(['是否使用其中的牌？', cards.slice().filter(i => get.type2(i) == 'trick')]).set('filterButton', button => {
                             return get.event().player.hasUseTarget(button.link);
                         }).set('ai', button => {
@@ -3847,18 +3847,12 @@ export let info = {
             logTarget: "player",
             async content(event, trigger, player) {
                 player.$fullscreenpop("找到你了", "thunder");
-                /*  const skill = event.cost_data;
-                 await player.addSkills(skill);
-                await trigger.player.removeSkills(skill); */
                 const skill = event.cost_data;
-                if (!player.hasSkill(skill)) {
-                    await player.addSkills(skill)
-                };
-                await trigger.player.removeSkills(skill);
-                if (!trigger.player.storage.xxxzhenxi) trigger.player.storage.xxxzhenxi = [];
-                trigger.player.storage.xxxzhenxi.push(skill);
-                trigger.player.storage.skill = player.name;
-                trigger.player.addSkill("xxxzhenxi_mark");
+                await player.addSkills(skill);
+                const target = trigger.player;
+                await target.removeSkills(skill);
+                await target.markAuto('xxxzhenxi', { player, skill });
+                target.addSkill("xxxzhenxi_mark");
             },
             group: 'xxxzhenxi_re',
             subSkill: {
@@ -3870,15 +3864,23 @@ export let info = {
                     },
                     forced: true,
                     filter(event, player) {
-                        return event.source && event.source.storage.skillDisabledBy === player.name && event.source.hasSkill("xxxzhenxi_mark");
+                        const source = event.source;
+                        if (!source || !source.isIn() || !source.hasSkill("xxxzhenxi_mark")) {
+                            return false;
+                        }
+                        const records = source.getStorage('xxxzhenxi').filter(record => record?.player == player && record.skill);
+                        return records.some(record => !source.hasSkill(record.skill));
                     },
                     async content(event, trigger, player) {
-                        const target = trigger.source;
-                        if (!target || !target.storage.xxxzhenxi || target.storage.xxxzhenxi.length === 0) { return; }
-                        const disabledSkills = target.storage.xxxzhenxi.filter(skill => !!skill);
-                        if (disabledSkills.length === 0) return;
+                        const source = trigger.source;
+                        if (!source || !source.isIn()) {
+                            return;
+                        }
+                        const records = source.getStorage('xxxzhenxi').filter(record => record?.player == player && record.skill && !source.hasSkill(record.skill));
+                        if (records.length === 0) return;
+                        const disabledSkills = records.map(record => record.skill);
                         const result = await player.chooseControl(...disabledSkills, true)
-                            .set('prompt', '选择要为' + get.translation(target) + '恢复的技能：')
+                            .set('prompt', '选择要为' + get.translation(source) + '恢复的技能：')
                             .set('choiceList', disabledSkills.map(i => {
                                 return '<div class="skill">【' + get.translation(lib.translate[i + '_ab'] || get.translation(i).slice(0, 2)) + '】</div><div>' + get.skillInfoTranslation(i, player) + '</div>';
                             })).set('displayIndex', false)
@@ -3887,38 +3889,37 @@ export let info = {
                             }).forResult();
                         const chosenSkill = result.control === 'cancel2' ? null : result.control;
                         if (chosenSkill) {
-                            target.addSkill(chosenSkill);
+                            source.addSkills(chosenSkill);
                             await game.delayx();
-                            game.log(target, "恢复了技能【", chosenSkill, "】");
-                            const index = target.storage.xxxzhenxi.indexOf(chosenSkill);
+                            game.log(source, "恢复了技能【", chosenSkill, "】");
+                            const storage = source.getStorage('xxxzhenxi');
+                            const index = storage.findIndex(record => record && record.player == player && record.skill == chosenSkill);
                             if (index !== -1) {
-                                target.storage.xxxzhenxi.splice(index, 1);
+                                storage.splice(index, 1);
                             }
                             // 检查禁用技能是否全部恢复
-                            if (target.storage.xxxzhenxi.length === 0) {
-                                target.removeSkill("xxxzhenxi_mark");
+                            if (storage.length === 0) {
+                                source.removeSkill("xxxzhenxi_mark");
                             }
                         }
-                        target.update();
+                        source.update();
                     }
                 },
                 mark: {
                     init(player, skill) {
-                        if (player.getStorage('skillDisabledBy') === game.me.name) {
-                            const disabledSkills = player.storage.xxxzhenxi || [];
-                            for (const s of disabledSkills) {
-                                player.storage.disabledSkills = player.storage.disabledSkills || {};
-                                player.storage.disabledSkills[s] = true;
-                            }
+                        const records = player.getStorage('xxxzhenxi') || [];
+                        for (const record of records) {
+                            if (!record || !record.skill) continue;
+                            const s = record.skill;
+                            player.storage.disabledSkills = player.storage.disabledSkills || {};
+                            player.storage.disabledSkills[s] = true;
                         }
                     },
                     onremove(player, skill) {
-                        //player.enableSkill(skill);
-                        // 恢复被禁用的技能
-                        if (player.getStorage('skillDisabledBy') === game.me.name) {
-                            const disabledSkills = player.storage.xxxzhenxi || [];
-                            for (const s of disabledSkills) {
-                                player.addSkill(s);
+                        const records = player.getStorage('xxxzhenxi') || [];
+                        for (const record of records) {
+                            if (record && record.skill && !player.hasSkill(record.skill)) {
+                                player.addSkills(record.skill);
                             }
                         }
                     },
@@ -3927,7 +3928,8 @@ export let info = {
                     marktext: "焕",
                     intro: {
                         content(storage, player, skill) {
-                            const disabledSkills = player.storage.xxxzhenxi || [];
+                            const records = player.getStorage('xxxzhenxi') || [];
+                            const disabledSkills = records.map(record => record?.skill ? record.skill : record).filter(s => !!s);
                             if (disabledSkills.length === 0) return;
                             let str = "已失去技能：";
                             for (let i = 0; i < disabledSkills.length; i++) {
@@ -9464,7 +9466,7 @@ export let info = {
                     /* if (buttons.includes('gain') && targetx.countCards("xs", card => !card._cardid) > 0&& player.hasSkill('xinxtaoyin')) {
                         return "gain";
                     } */
-                    if (button.link == 'draw' &&!player.getStorage("xinxbaiyi_used").includes("draw")){
+                    if (button.link == 'draw' && !player.getStorage("xinxbaiyi_used").includes("draw")) {
                         return 5;
                     }
                     return -1;//(!player.getStorage("xinxbaiyi_used").includes(button.link))
@@ -9499,7 +9501,7 @@ export let info = {
                 expose: 0.2,
                 result: {
                     target(player, target) {
-                        if (target.countCards("h")> 3 && !player.getStorage("xinxbaiyi_used").includes("draw")) {
+                        if (target.countCards("h") > 3 && !player.getStorage("xinxbaiyi_used").includes("draw")) {
                             return -3;
                         }
                         if (player.getStorage("xinxbaiyi_used").includes("draw") && player.hasSkill('xinxtaoying')) {
@@ -11712,7 +11714,7 @@ export let info = {
                     player.markSkill(event.name + '_use');
 
                     const phase = map[result.links[0]];
-                    target.skip(phase); 
+                    target.skip(phase);
                     target.storage.xinxyingqi_skip_phase = phase;
                     target.addTempSkill('xinxyingqi_skip', { player: 'phaseEnd' });
 
@@ -14975,7 +14977,9 @@ export let info = {
             },
             onremove(player, skill) {
                 let cards = player.getExpansions(skill);
-                if (cards.length) { player.loseToDiscardpile(cards); }
+                if (cards.length) {
+                    player.loseToDiscardpile(cards);
+                }
             },
             trigger: {
                 global: "useCardAfter",
@@ -14987,34 +14991,44 @@ export let info = {
                 if (!get.is.damageCard(event.card)) {
                     return false;
                 }
-                /* const hasChanged = game.hasGlobalHistory("everything", evt => {
-                    const cardMoveEvents = ["gain", "lose", "loseAsync", "draw", "discard", "equip", "addJudge", 'addToExpansion'];
-                    if (!cardMoveEvents.includes(evt.name)) return false;
-                    if (evt.player !== event.player) return false;
-                    if (evt.getParent().name !== 'useCard') return false;
-                    if (['lose', 'loseAsync', 'discard'].includes(evt.name)) {
-                        const cardsInvolved = evt.cards || [];
-                        const realLostCards = cardsInvolved.filter(c => !event.cards.includes(c));
-                        if (realLostCards.length === 0) {
-                            return false;
+                if (event.player === player || !event.cards || !event.cards.filterInD().length) {
+                    return false;
+                }
+                return event.player.hasMark("xinxhuolu_marked");
+                /* const user = event.player;
+                const usedCards = event.cards || [];
+                let found = false;
+                const walk = (evt) => {
+                    if (found || !evt) return;
+                    if (typeof evt.getl == "function") {
+                        const lost = evt.getl(user);
+                        const cards = lost && Array.isArray(lost.cards) ? lost.cards : null;
+                        if (cards && cards.length) {
+                            const inD = cards.filterInD();
+                            if (inD.some(card => !usedCards.includes(card))) {
+                                found = true;
+                                return;
+                            }
                         }
                     }
-                    return true;
-                }); */
-                const hasChanged = event.player.hasMark("xinxhuolu_marked");
-                return hasChanged && event.player !== player && event.cards && event.cards.filterInD().length;
+                    for (const child of evt.childEvents || []) {
+                        walk(child);
+                    }
+                };
+                walk(event);
+                return found; */
             },
             async content(event, trigger, player) {
                 const target = trigger.player;
                 target.removeSkill("xinxhuolu_marked");
                 player.logSkill("xinxhuolu", [target], null, null, [get.rand(1, 2)]);
-                player.addToExpansion(trigger.cards.filterInD(), "gain2").gaintag.add("xinxhuolu");
+                await player.addToExpansion(trigger.cards.filterInD(), "gain2").gaintag.add("xinxhuolu");
             },
-            group: ["xinxhuolu_use", 'xinxhuolu_mark'],
+            group: ["xinxhuolu_use","xinxhuolu_mark"],
             subSkill: {
                 mark: {
                     trigger: {
-                        global: "useCard",
+                        global: "useCard1",
                     },
                     charlotte: true,
                     silent: true,
@@ -15028,9 +15042,10 @@ export let info = {
                 },
                 marked: {
                     trigger: {
-                        global: ["drawAfter", "gainAfter", "equipAfter", "addJudgeAfter", "loseAfter", "loseAsyncAfter", "addToExpansionAfter"],
+                        //global: ["drawAfter", "gainAfter", "equipAfter", "addJudgeAfter", "loseAfter", "loseAsyncAfter", "addToExpansionAfter"],
+                        global: ["loseAfter","equipAfter","addJudgeAfter","gainAfter","loseAsyncAfter","addToExpansionAfter"],
                     },
-                    getIndex(event, player) {
+                    /* getIndex(event, player) {
                         return game.filterPlayer(target => event.getl?.(target)?.cards?.length).sortBySeat();
                     },
                     filter(event, player, name, target) {
@@ -15038,13 +15053,26 @@ export let info = {
                     },
                     logTarget(event, player, name, target) {
                         return target;
+                    }, */
+                    filter(event, player, name, target) {
+                        const evt = event.getl(target);
+                        return evt && ((evt.es && evt.es.length) || (evt.xs && evt.xs.length) || (evt.js && evt.js.length));
+                        //return event.getl?.(target)?.cards?.length;
                     },
+                    getIndex(event, player) {
+                        return game.filterPlayer(target => {
+                            const evt = event.getl(target);
+                            return evt && ((evt.es && evt.es.length) || (evt.xs && evt.xs.length) || (evt.js && evt.js.length));
+                            //return event.getl?.(target)?.cards?.length;
+                        });
+                    },
+                    logTarget: (_1, _2, _3, target) => target,
                     charlotte: true,
                     silent: true,
                     onremove: true,
                     async content(event, trigger, player) {
                         const target = event.indexedData;
-                        target.addMark("xinxhuolu_marked", 1, false);
+                        await target.addMark("xinxhuolu_marked", 1, false);
                     }
                 },
                 use: {

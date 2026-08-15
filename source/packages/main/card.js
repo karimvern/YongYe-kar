@@ -1101,10 +1101,8 @@ export default {
                             if (vCardName !== 'sha' && currentLen !== vCardLen) return false; // 字数不符则不可选
                             // 检查是否有合法目标
                             const vCardObj = get.autoViewAs({ name: vCardName, nature: button.link[3] }, selectedReal.map(b => b.link));
-                            return _status.event.player.hasUseTarget(vCardObj, true, true);
+                            return _status.event.player.hasUseTarget(vCardObj);
                         } else {
-                            // --- 点击实体牌逻辑 ---
-                            // 如果已经选了转化牌，锁死实体牌选择，防止字数变动
                             if (selectedVCard.length > 0) return false;
                             return true;
                         }
@@ -1115,7 +1113,7 @@ export default {
                             return Math.random();
                         }
                         const cardx = get.autoViewAs({ name: button.link[2] });
-                        return get.player().getUseValue(cardx, true, true);
+                        return get.player().getUseValue(cardx);
                     })
                     .forResult();
                 if (next.bool) {
@@ -1123,7 +1121,7 @@ export default {
                     let vCardInfo = next.links.find(l => Array.isArray(l));
                     allCards.removeArray(realCards);
                     let cardToUse = get.autoViewAs({ name: vCardInfo[2], nature: vCardInfo[3] }, realCards);
-                    if (player.hasUseTarget(cardToUse, true, true)) {
+                    if (player.hasUseTarget(cardToUse)) {
                         game.playAudio("../extension/永夜之境/audio/", 'xinxjiegou' + [get.rand(5, 6)] + '.mp3');
                         await player.chooseUseTarget(cardToUse, true, realCards);
                     }

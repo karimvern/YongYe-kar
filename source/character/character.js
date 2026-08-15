@@ -101,6 +101,25 @@ export const xinx1Character = {
 
 //永夜之始
 export const xinx2Character = {
+    xinxnew_xinyanlvzhe:{
+        sex: "female",
+        group: "qun",
+        groupBorder: "xinx",
+        hp: 4,
+        img: "extension/永夜之境/image/xinx_xinyanlvzhe.png",
+        skinPath: "extension/永夜之境/skin/xinx_xinyanlvzhe/",
+        trashBin: ['legend'],
+        skills: ['xinxnewzhuoshuo','xinxnewpoxiao'],
+        dieAudios: ['xinx_xinyanlvzhe'],
+    },
+    xinx_xinyanlvzhe:{
+        sex: "female",
+        group: "qun",
+        groupBorder: "xinx",
+        hp: 4,
+        trashBin: ['legend'],
+        skills: ['xinxzhuoshuo','xinxpoxiao'],
+    },
     xinx_Archer:{
         sex: "male",
         group: "xinx",
@@ -264,13 +283,39 @@ export const xinx2Character = {
 
 //风雨如晦
 export const xinxfengyuCharacter = {
+    fyrht_re_xuzhu: {
+        sex: "male",
+        group: "wei",
+        hp: 4,
+        img: "extension/永夜之境/image/fyrhtang_xuzhu.png",
+        trashBin: ['epic'],
+        skills: ['fyrhreluoyi'],
+        dieAudios: ["shen_xuzhu"],
+    },
+    fyrht_xuzhu: {
+        sex: "male",
+        group: "wei",
+        hp: 4,
+        img: "extension/永夜之境/image/fyrhtang_xuzhu.png",
+        trashBin: ['epic'],
+        skills: ['fyrhluoyi'],
+        dieAudios: ["shen_xuzhu"],
+    },
+    fyrh_huzhangyouren:{
+        sex: "male",
+        group: "qun",
+        groupBorder: "xinx",
+        hp: 4,
+        trashBin: ['legend'],
+        skills: ['fyrhjingtingquan'],
+    },
     fyrhot_fazheng:{
         sex: "male",
         group: "shu",
         hp: 3,
         trashBin: ['legend'],
         img: "extension/永夜之境/image/fyrht_fazheng.png",
-        skills: ['fyrhnewxuanhuo','fyrhyanli'],
+        skills: ['fyrhnewxuanhuo','fyrhxiongya'],
         dieAudios: ["fyrh_fazheng"],
     },
     fyrht_fazheng: {
@@ -278,7 +323,7 @@ export const xinxfengyuCharacter = {
         group: "shu",
         hp: 3,
         trashBin: ['legend'],
-        skills: ['fyrhxuanhuo','fyrhyanli'],
+        skills: ['fyrhxuanhuo','fyrhxiongya'],
         dieAudios: ["fyrh_fazheng"],
     },
     fyrht_wolong: {
@@ -1034,6 +1079,16 @@ export const xinxfengyuCharacter = {
 
 //武将修改
 export const xinxhuaijiuCharacter = {
+    xinxhj_pot_xiaoqiao: {
+		sex: "female",
+		group: "wu",
+		hp: 3,
+        img: "image/character/pot_xiaoqiao.jpg",
+		skills: ["xinxhjpotheyun", "xinxhjpotyinhui"],
+		names: "桥|null",
+        trashBin: ['rare'],
+        dieAudios: ["pot_xiaoqiao"],
+	},
     /* xinxhj_caoxi: {
 		sex: "male",
 		group: "wei",
@@ -1155,7 +1210,7 @@ export const xinxhuaijiuCharacter = {
     xinxhj_zhenghun: {
 		sex: "male",
 		group: "wei",
-		hp: 4,
+		hp: 3,
         trashBin: ['epic'],
 		skills: ["xinxhjqiangzhi", "xinxhjpitian"],
         dieAudios: ["zhenghun"],

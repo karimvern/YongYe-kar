@@ -724,6 +724,30 @@ export let voices = {
     '#ext:永夜之境/audio/xinxluoxuan3': '你无处可躲！',
     '#ext:永夜之境/audio/xinxluoxuan4': 'I am the bone of my sword.',
     '#ext:永夜之境/audio/xinxluoxuan5': 'Unlimited Blade Works.',
+    //薪炎
+    '#ext:永夜之境/audio/xinxzhuoshuo1': '轮到我了，没意见吧！',
+    '#ext:永夜之境/audio/xinxzhuoshuo2': '现在是琪亚娜时间。',
+    '#ext:永夜之境/audio/xinxzhuoshuo3': '准备好了么，要升温了。',
+    '#ext:永夜之境/audio/xinxzhuoshuo4': '我的温度，要试试么？',
+    '#ext:永夜之境/audio/xinxzhuoshuo5': '烈焰，焚尽！',
+    '#ext:永夜之境/audio/xinxzhuoshuo6': '薪炎，拔剑！',
+    '#ext:永夜之境/audio/xinxzhuoshuo7': '以此烈火，斩无不断！',
+
+    '#ext:永夜之境/audio/xinxpoxiao1': '我会为世界上所有的美好而战。',
+    '#ext:永夜之境/audio/xinxpoxiao2': '我会带着大家的祝福，继续前行。',
+    '#ext:永夜之境/audio/xinxpoxiao3': '我会战斗下去，直至最后一刻。',
+    '#ext:永夜之境/audio/xinxpoxiao4': '我会把这个不完美的故事，变成我们期望的样子。',
+    '#ext:永夜之境/audio/xinxpoxiao5': '我会烧尽这片黑夜，让光芒照向远方。',
+    '#ext:永夜之境/audio/xinxpoxiao6': '我的火焰会与你们同行。',
+    '#ext:永夜之境/audio/xinxpoxiao7': '预备，点火！',
+    '#ext:永夜之境/audio/xinxpoxiao8': '负煌，蹈刃！',
+
+    
+
+
+
+
+
     
 
 
