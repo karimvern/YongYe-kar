@@ -1264,7 +1264,7 @@ export let info = {
                             player.unmarkAuto("xinxnewpoxiao", result.links[0]);
                             game.log(player, "恢复了","#g【破晓】","的选项：", textMap[result.links[0]]);
                             if (!player.storage?.xinxnewpoxiaos) {
-                                ui.backgroundMusic.src = `${lib.assetURL}extension/永夜之境/audio/music/茶理理理子&TetraCalyx&hanser&HOYO-MiX-Moon Halo (伴奏).mp3`;
+                                ui.backgroundMusic.src = `${lib.assetURL}extension/永夜之境/audio/music/MoonHalo (伴奏).mp3`;
                                 player.storage.xinxnewpoxiaos = true;
                             }
                         }
@@ -1386,7 +1386,7 @@ export let info = {
                 if (list.length <= 1 && !player.storage.xinxzhuoshuox == true) {
                     player.setStorage('xinxzhuoshuox', true, true);
                     if (!player.storage?.xinxzhuoshuos) {
-                        ui.backgroundMusic.src = `${lib.assetURL}extension/永夜之境/audio/music/茶理理理子&TetraCalyx&hanser&HOYO-MiX-Moon Halo (伴奏).mp3`;
+                        ui.backgroundMusic.src = `${lib.assetURL}extension/永夜之境/audio/music/MoonHalo (伴奏).mp3`;
                         player.storage.xinxzhuoshuos = true;
                     }
                 }
