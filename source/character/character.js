@@ -283,6 +283,23 @@ export const xinx2Character = {
 
 //风雨如晦
 export const xinxfengyuCharacter = {
+    fyrht_dengai: {
+        sex: "male",
+        group: "wei",
+        hp: 4,
+        trashBin: ['epic'],
+        skills: ['fyrhyangpi','fyrhyicu'],
+        dieAudios: ["dc_sb_dengai"],
+    },
+    fyrht_lvmeng: {
+        sex: "male",
+        group: "wu",
+        hp: 4,
+        trashBin: ['epic'],
+        skills: ['fyrhxiaozhuan','fyrhfengxing'],
+        img: "extension/永夜之境/image/xinxhj_dc_sb_lvmeng_shadow.png",
+        dieAudios: ["dc_sb_lvmeng"],
+    },
     fyrht_re_xuzhu: {
         sex: "male",
         group: "wei",

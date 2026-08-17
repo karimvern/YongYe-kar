@@ -260,6 +260,96 @@ export async function precontent(config, pack) {
 
     //lib.config.all.cards.push("永夜之境");
 
+    //十周年UI手杀（移动版）样式专属兜底：group为空/未知/不在有效列表时，手杀UI默认用 name2_qun.png
+    if (lib.config.extension_十周年UI_newDecadeStyle !== "off") {
+        // 非手杀样式：直接跳过
+    } else if (lib.config.extensions && !lib.config.extensions.includes("十周年UI")) {
+        // 十周年UI未启用：直接跳过
+    } else {
+        try {
+            const validGroups = ["wei", "shu", "wu", "qun", "ye", "jin", "daqin", "western", "shen", "key", "Han", "qin",'xinx','xing'];
+            //自定义势力框图（永夜之境），key为势力名，value为图片路径
+            const customGroupImages = {
+                xinx: lib.assetURL + "extension/永夜之境/image/UI/name2_xinx.png",
+                xing: lib.assetURL + "extension/永夜之境/image/UI/name2_xing.png",
+            };
+            let pluginPatched = false;
+            let setterPatched = false;
+            const timer = setInterval(() => {
+                if (pluginPatched && setterPatched) {
+                    clearInterval(timer);
+                    return;
+                }
+                //等待十周年UI就绪：window.app 在其precontent创建，window.decadeUI与group setter在其content创建
+                if (!window.app || !Array.isArray(window.app.plugins)) return;
+                if (window.decadeUI?.config?.newDecadeStyle !== "off") return;
+
+                //character 皮肤插件：详情弹窗/露头面板的势力框
+                if (!pluginPatched) {
+                    const plugin = window.app.plugins.find(p => p && typeof p.getGroupBackgroundImage == "function");
+                    if (plugin) {
+                        const orig = plugin.getGroupBackgroundImage;
+                        plugin.getGroupBackgroundImage = function (group) {
+                            //自定义势力（xinx/xing）：使用永夜之境自定义势力框图
+                            const customImage = customGroupImages[group];
+                            if (customImage) {
+                                return customImage;
+                            }
+                            if (!group || group === "unknown" || !validGroups.includes(group)) {
+                                group = "qun";
+                            }
+                            return orig.call(this, group);
+                        };
+                        pluginPatched = true;
+                    }
+                }
+
+                //玩家头像旁的势力框：覆写 player.group 的 setter（内部走 handleGroupStyleV2）
+                if (!setterPatched) {
+                    const desc = Object.getOwnPropertyDescriptor(lib.element.player, "group");
+                    if (desc && typeof desc.set == "function") {
+                        const origSet = desc.set;
+                        Object.defineProperty(lib.element.player, "group", {
+                            configurable: true,
+                            enumerable: desc.enumerable,
+                            get() {
+                                return this._group;
+                            },
+                            set(group) {
+                                const real = group;
+                                //自定义势力（如xinx/xing）：直接用永夜之境自定义势力框图，不走十周年UI默认路径
+                                const customImage = customGroupImages[real];
+                                if (customImage) {
+                                    this._group = real;
+                                    this.node.campWrap.dataset.camp = get.character(this.name)?.groupBorder || real;
+                                    const campName = this.node.campWrap?.node?.campName;
+                                    if (campName) {
+                                        campName.innerHTML = "";
+                                        campName.style.backgroundImage = `url("${customImage}")`;
+                                    }
+                                    return;
+                                }
+                                //手杀样式：非法势力渲染兜底qun图，但不改真实势力
+                                if (group && !validGroups.includes(group)) {
+                                    group = "qun";
+                                }
+                                origSet.call(this, group);
+                                //恢复真实势力（防止内部把 _group / dataset.camp 改成qun）
+                                if (real && real !== group) {
+                                    this._group = real;
+                                    this.node.campWrap.dataset.camp = get.character(this.name)?.groupBorder || real;
+                                }
+                            },
+                        });
+                        setterPatched = true;
+                    }
+                }
+            }, 1000);
+            setTimeout(() => clearInterval(timer), 10000);
+        } catch (e) {
+            console.warn("十周年UI势力框兜底补丁失败：", e);
+        }
+    }
 
 
     //装备区无副类别，by《名将杀》暴暴龙

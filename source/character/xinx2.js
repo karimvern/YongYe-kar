@@ -20,7 +20,7 @@ export let info = {
             'heita': ['xinx_daheita', 'xinx_ruanmei'],
             'erxiangleyuan': ['xinx_huohua', 'xinx_yaoguang', 'xinx_feiying'],
             'beiluoboge': ['xinx_xier', 'xinx_buluoniya', 'xinx_luka'],
-            'yishilvren': ['xinxnew_xinyanlvzhe','xinx_sikeke', 'xinx_yeshunguang', 'xinx_laite', 'xinx_aimisi', 'xinx_yixuan', 'xinx_yuanbanlin', 'xinx_Archer', 'xinx_xinyanlvzhe'],
+            'yishilvren': ['xinxnew_xinyanlvzhe', 'xinx_sikeke', 'xinx_yeshunguang', 'xinx_laite', 'xinx_aimisi', 'xinx_yixuan', 'xinx_yuanbanlin', 'xinx_Archer', 'xinx_xinyanlvzhe'],
             'gongsi': ['xinx_tuopa'],
             'xinxxugou': ['xinx_xiao'],
 
@@ -263,10 +263,10 @@ export let info = {
 
 
         //技能翻译
-        xinxnewzhuoshuo:'灼烁',
+        xinxnewzhuoshuo: '灼烁',
         xinxnewzhuoshuo_info: `结束阶段，你可以重铸两张点数差大于3的牌，若其中含装备牌、【杀】、锦囊牌，你便视为使用一张抵消牌数/展示牌数为满足条件数的火【杀】/【火攻】。`,
-        xinxnewpoxiao:'破晓',
-        xinxnewpoxiao_info: `你使用伤害牌时选择执行一项并删除之：<br>1.获得${get.poptip('xinx_central')}两张牌；<br>2.本局造成属性伤害+1；<br>3.额定摸牌数+1 <br>4.手牌上限+2；<br>你造成伤害后，若上次造成伤害的角色为你，你恢复一个选项。`,
+        xinxnewpoxiao: '破晓',
+        xinxnewpoxiao_info: `你使用伤害牌时选择一项并删除之：<br>1.获得${get.poptip('xinx_central')}两张牌；<br>2.本局造成属性伤害+1；<br>3.额定摸牌数+1 <br>4.手牌上限+2；<br>你造成伤害后，若上次造成伤害的角色为你，你恢复一个选项。`,
         xinxzhuoshuo: '灼烁',
         xinxzhuoshuo_info: `每回合限一次，你可以视为使用一张【杀】或【闪】，并进行两次拼点，若你均赢，你对一名角色造成拼点次数点火焰伤害，否则你废除一个区域，否则修改本技能。`,
         xinxzhuoshuox: '灼烁·改',
@@ -809,7 +809,7 @@ export let info = {
                 ["draw", "额定摸牌数+1"],
                 ["hand", "手牌上限+2"],
             ];
-            let str = "你使用伤害牌时选择执行一项并删除之：<br>";
+            let str = "你使用伤害牌时选择一项并删除之：<br>";
             options.forEach((opt, i) => {
                 const [key, text] = opt;
                 if (storage.includes(key)) {
@@ -926,7 +926,7 @@ export let info = {
             },
             async cost(event, trigger, player) {
                 event.result = await player
-                    .chooseCard(get.prompt2('xinxnewzhuoshuo'), "he", 2, true, (card, player) => {//
+                    .chooseCard(get.prompt2('xinxnewzhuoshuo'), "he", 2, (card, player) => {
                         if (!player.canRecast(card)) {
                             return false;
                         }
@@ -953,7 +953,7 @@ export let info = {
                         if (get.type(card) == "equip" && !satisfied.equip) bonus += 10;
                         if (get.name(card, false) == "sha" && !satisfied.sha) bonus += 10;
                         if (get.type2(card) == "trick" && !satisfied.trick) bonus += 10;
-                        return  bonus;
+                        return bonus;
                     })
                     .forResult();
             },
@@ -968,7 +968,7 @@ export let info = {
                 if (num <= 0) {
                     return;
                 }
-                
+
                 const list = [];
                 if (player.hasUseTarget({ name: "sha", nature: "fire" })) {
                     list.push(["基本", "", "sha", "fire"]);
@@ -984,7 +984,7 @@ export let info = {
                 if (!result?.links?.length) return;
                 const cardName = result.links[0][2];
                 const nature = result.links[0][3];
-                
+
                 player.setStorage("xinxnewzhuoshuo_num", num);
                 //设置backup的viewAs
                 game.broadcastAll((name, nature) => {
@@ -995,7 +995,7 @@ export let info = {
                         storage: { xinxnewzhuoshuo: true },
                     };
                 }, cardName, nature);
-              
+
                 if (cardName === "huogong") {
                     player.addTempSkill("xinxnewzhuoshuo_huogong");
                 }
@@ -1117,7 +1117,7 @@ export let info = {
                 return "ext:永夜之境/audio/xinxpoxiao" + (get.rand(1, 4)) + ".mp3";
             },
             filter(event, player) {
-                if (!get.is.damageCard(event.card)){
+                if (!get.is.damageCard(event.card)) {
                     return false;
                 }
                 const cards = get.discarded().filterInD("d");
@@ -1158,7 +1158,7 @@ export let info = {
                             case "effect":
                                 return get.effect(player, { name: "draw" }, player, player) * 3;
                             case "damage":
-                                return  2.5;
+                                return 2.5;
                             case "draw":
                                 return 2;
                             case "hand":
@@ -1201,7 +1201,7 @@ export let info = {
             mark: true,
             marktext: "晓",
             intro: {
-                name:'增加的值',
+                name: '增加的值',
                 content(storage, player) {
                     const skill = 'xinxnewpoxiao';
                     let damage = player.countMark(skill + "_damage"),
@@ -1222,7 +1222,7 @@ export let info = {
                     },
                     charlotte: true,
                     forced: true,
-                    locked:false,
+                    locked: false,
                     filter(event, player) {
                         if (player.getStorage("xinxnewpoxiao").length == 0) return false;
                         //判断上次造成伤害的角色是否为本玩家（本次为当前伤害）
@@ -1262,7 +1262,7 @@ export let info = {
                             .forResult();
                         if (result?.bool && result.links?.length) {
                             player.unmarkAuto("xinxnewpoxiao", result.links[0]);
-                            game.log(player, "恢复了","#g【破晓】","的选项：", textMap[result.links[0]]);
+                            game.log(player, "恢复了", "#g【破晓】", "的选项：", textMap[result.links[0]]);
                             if (!player.storage?.xinxnewpoxiaos) {
                                 ui.backgroundMusic.src = `${lib.assetURL}extension/永夜之境/audio/music/MoonHalo.mp3`;
                                 player.storage.xinxnewpoxiaos = true;
@@ -1514,11 +1514,11 @@ export let info = {
                     locked: false,
                     async content(event, trigger, player) {
                         const firedamage = async (player) => {
-                             if (player.storage.xinxzhuoshuox == true) {
+                            if (player.storage.xinxzhuoshuox == true) {
                                 num = 1;
-                             }
+                            }
                             const result2 = await player
-                                .chooseTarget(get.prompt('xinxzhuoshuo'),`<div class="text center">对一名角色造成${num}点火焰伤害</div>`, (card, player, target) => {
+                                .chooseTarget(get.prompt('xinxzhuoshuo'), `<div class="text center">对一名角色造成${num}点火焰伤害</div>`, (card, player, target) => {
                                     return true;
                                 })
                                 .set("ai", target => {
@@ -13184,7 +13184,6 @@ export let info = {
                 return target != player;
             },
             logTarget: "target",
-            //popup: false,
             async cost(event, trigger, player) {
                 event.result = await player
                     .chooseTarget(get.prompt2("xinxpojie"), lib.filter.notMe)
@@ -13198,7 +13197,9 @@ export let info = {
             },
             async content(event, trigger, player) {
                 const target = event.targets[0];
-                if (event.getParent(2).name == "phaseEnd") { player.line(target); }
+                if (event.triggername == "phaseEnd") { 
+                    player.line(target); 
+                }
                 //await target.chooseToDiscard(true, "he");
                 await target.showHandcards();
                 await game.delay();
@@ -13212,7 +13213,7 @@ export let info = {
                     const num = suits.length;
                     if (num > 0) {
                         const list = ['xinxpojie_huo', 'xinxpojie_lei', 'xinxpojie_feng', 'xinxpojie_bing', 'xinxpojie_wuli'];
-                        const list2 = target.skills || []; // 获取目标玩家已拥有的技能列表
+                        const list2 = target.skills || []; 
                         // 筛选出目标玩家尚未拥有的技能
                         const alllist = list.filter(skill => !list2.includes(skill));
                         if (alllist.length) {
@@ -13234,15 +13235,12 @@ export let info = {
                         target.addMark('xinxpojie_liangzi', 1, false);
                     }
                 }
-
-
             },
             ai: {
                 order: 10,
                 result: {
                     target: -1.5,
                 },
-
             },
             subSkill: {
                 huo: {
@@ -13356,8 +13354,6 @@ export let info = {
                             }
                         }
                     },
-
-
                 },
                 bing: {
                     nopop: true,
@@ -13385,7 +13381,6 @@ export let info = {
                         player.addTempSkill("xinxpojie_debuff");
                         const num = player.maxHp;
                         player.addMark("xinxpojie_debuff", num, false);
-
                     },
                 },
                 debuff: {
@@ -13499,7 +13494,7 @@ export let info = {
                             if (!result?.bool || !result?.cards?.length) {
                                 const result = await player
                                     .chooseButton([
-                                        '选择一项', [
+                                        '破解：选择一项', [
                                             [["lose", "失去1点体力"], ["skill", "失去一个技能"]],
                                             "textbutton",
                                         ],
@@ -13602,7 +13597,6 @@ export let info = {
                         }
                     }
                 },
-
             },
         },
         xinxhairu: {

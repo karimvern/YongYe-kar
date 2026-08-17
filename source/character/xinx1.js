@@ -249,7 +249,7 @@ export let info = {
         xinxnigong: '逆弓',
         xinxnigong_info: `你不因本技能使用牌指定其他角色为唯一目标时，或成为其他角色使用牌的目标时，你可以将你/其装备区的一张牌当【无中生有】/火【杀】使用（无距离限制）。`,
         dz_xing_yinxi: "吟兮",
-        dz_xing_yinxi_info: "锁定技。准备阶段，你可以令一名其他角色获得一枚“吟”标记。有“吟”的角色使用牌时，你可令此牌无效或无法被响应，然后你获得此牌对应的实体牌，其移去一枚“吟”。",
+        dz_xing_yinxi_info: "锁定技。准备阶段，你可以令一名其他角色获得一枚“吟”标记。有“吟”的角色使用牌时，你可令此牌无效或无法被响应，然后你获得此牌对应的实体牌，其移去所有“吟”并令你摸等量张牌。",
         dz_xing_jiangchun: "绛唇",
         dz_xing_jiangchun_info: "锁定技，当你受到其他角色造成的伤害后，你令伤害来源获得一枚“吟”标记。然后场上有“吟”的角色选择一项：1.交给你一张牌。2.获得一枚“吟”标记。",
         dz_xing_duanmou: "断谋",
@@ -3252,7 +3252,9 @@ export let info = {
                                 trigger.directHit.addArray(game.filterPlayer2());
                             }
                             if (cards.length) player.gain(cards, "gain2");
-                            trigger.player.removeMark("dz_xing_yinxi");
+                            let num = trigger.player.countMark('dz_xing_yinxi');
+                            trigger.player.clearMark("dz_xing_yinxi");
+                            await player.draw(num);
                         }
                     },
                 },
@@ -7617,6 +7619,7 @@ export let info = {
                 });
                 return cards;
             },
+            mark:true,
             marktext: '🏹',
             intro: {
                 mark(dialog, storage, player) {
@@ -7658,13 +7661,16 @@ export let info = {
                         break;
                     }
                 } */
-                const cardsx = game.createFakeCards(cards);
-                player.directgains(cardsx, null, "xinxluexin");
-                while (true && player.countCards('hs', card => card.hasGaintag('xinxluexin'))) {
+                while (cards.length) {
+                    // 每次使用前重新生成假牌
+                    const cardsx = game.createFakeCards(cards);
+                    player.directgains(cardsx, null, "xinxluexin");
                     const result = await player
                         .chooseToUse({
                             filterCard(card) {
-                                if (!card?.hasGaintag?.("xinxluexin")) { return false; }
+                                if (!card?.hasGaintag?.("xinxluexin")) {
+                                    return false;
+                                }
                                 //return lib.filter.filterCard.apply(this, arguments);
                                 return true;
                             },
@@ -7676,7 +7682,7 @@ export let info = {
                         let hasSwapped = false;
                         for (let i = 0; i < result.cards.length; i++) {
                             const chosenCard = result.cards[i];
-                            if (chosenCard.hasGaintag("xinxluexin")) {
+                            if (chosenCard.hasGaintag && chosenCard.hasGaintag("xinxluexin")) {
                                 const realCard = cards.find(c => c.cardid === chosenCard._cardid);
                                 if (realCard) {
                                     cards.remove(realCard);
@@ -7693,24 +7699,30 @@ export let info = {
                                 }
                             }
                         }
-                        if (hasSwapped) { ui.updatehl(); }
+                        // 清理剩余假牌，防止在useResult过程中被用于响应其他事件
+                        const fakeCards = player.getCards("hs", card => card.hasGaintag("xinxluexin"));
+                        if (fakeCards.length) {
+                            game.deleteFakeCards(fakeCards);
+                        }
+                        if (hasSwapped) { 
+                            ui.updatehl(); 
+                        }
                         //await player.useResult(result);
                         const useEvt = player.useResult(result);
                         useEvt.set("from_xinxluexin", true);
                         await useEvt;
                     } else {
+                        // 玩家未选择使用，清理假牌后退出
+                        const fakeCards = player.getCards("hs", card => card.hasGaintag("xinxluexin"));
+                        if (fakeCards.length) {
+                            game.deleteFakeCards(fakeCards);
+                        }
                         break;
                     }
                 }
-                const fakeCards = player.getCards("hs", card => card.hasGaintag("xinxluexin"));
-                if (fakeCards.length) {
-                    game.deleteFakeCards(fakeCards);
-                }
-                player.storage.xinxluexin = [];
-                player.syncStorage('xinxluexin');
-                player.updateMarks();
+                player.setStorage('xinxluexin',[],true);
             },
-            group: ['xinxluexin_when', "xinxluexin_catch"],
+            group: ['xinxluexin_when'],
             subSkill: {
                 when: {
                     trigger: {
@@ -7730,56 +7742,6 @@ export let info = {
                         const usableCards = cards.filter(card => player.hasUseTarget(card));
                         player.setStorage('xinxluexin', usableCards, true);
                     }
-                },
-                catch: {
-                    mod: {
-                        cardSavable(card, player) {
-                            for (let i of card.cards) {
-                                if (i.hasGaintag("xinxluexin")) {
-                                    return false;
-                                }
-                            }
-                        },
-                        cardRespondable(card) {
-                            for (let i of card.cards) {
-                                if (i.hasGaintag("xinxluexin")) {
-                                    return false;
-                                }
-                            }
-                        },
-                    },
-                    trigger: {
-                        player: ["useCardBefore", "respondBefore"],
-                    },
-                    forced: true,
-                    popup: false,
-                    charlotte: true,
-                    filter(event, player) {
-                        return event.cards && event.cards.some(c => c.hasGaintag("xinxluexin"));
-                    },
-                    async content(event, trigger, player) {
-                        const cards = player.getExpansions("xinxluexin");
-                        let hasSwapped = false;
-                        for (let i = 0; i < trigger.cards.length; i++) {
-                            const fakeCard = trigger.cards[i];
-                            if (fakeCard.hasGaintag("xinxluexin")) {
-                                const realCard = cards.find(c => c.cardid === fakeCard._cardid);
-                                if (realCard) {
-                                    cards.remove(realCard);
-                                    trigger.cards[i] = realCard;
-                                    if (trigger.card === fakeCard) {
-                                        trigger.card = realCard;
-                                    } else if (trigger.card && trigger.card.cards) {
-                                        const idx = trigger.card.cards.indexOf(fakeCard);
-                                        if (idx !== -1) trigger.card.cards[idx] = realCard;
-                                    }
-                                    fakeCard.delete();
-                                    hasSwapped = true;
-                                }
-                            }
-                        }
-                        if (hasSwapped) ui.updatehl();
-                    },
                 },
             }
         },
@@ -13233,7 +13195,7 @@ export let info = {
                                 for (let i = 0; i < result.cards.length; i++) {
                                     const chosenCard = result.cards[i];
                                     // 如果选择的牌是假牌，则替换成真牌
-                                    if (chosenCard.hasGaintag("xinxchengshu")) {
+                                    if (chosenCard.hasGaintag && chosenCard.hasGaintag("xinxchengshu")) {
                                         const realCard = cards.find(c => c.cardid === chosenCard._cardid);
                                         if (realCard) {
                                             cards.remove(realCard);
@@ -13249,6 +13211,11 @@ export let info = {
                                             }
                                         }
                                     }
+                                }
+                                // 清理剩余假牌，防止在useResult过程中被用于响应其他事件
+                                const fakeCards = player.getCards("hs", card => card.hasGaintag("xinxchengshu"));
+                                if (fakeCards.length) {
+                                    game.deleteFakeCards(fakeCards);
                                 }
                                 if (hasSwapped) { ui.updatehl(); }
                                 await player.useResult(result);
@@ -13270,7 +13237,7 @@ export let info = {
                     }
                 }
             },
-            group: ["xinxchengshu_catch"],
+            //group: ["xinxchengshu_catch"],
             subSkill: {
                 catch: {
                     mod: {
