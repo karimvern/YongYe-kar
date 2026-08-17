@@ -3793,7 +3793,7 @@ export let info = {
                     if (cards.some(i => get.type2(i) == 'basic')) {
                         await player.gain(cards.slice().filter(i => get.type2(i) == 'basic'), 'gain2');
                     }
-                    if (cards.some(i => get.type2(i) == 'trick' && player.hasUseTarget(card))) {
+                    if (cards.some(i => get.type2(i) == 'trick' && player.hasUseTarget(i))) {
                         const result = await player.chooseButton(['是否使用其中的牌？', cards.slice().filter(i => get.type2(i) == 'trick')]).set('filterButton', button => {
                             return get.event().player.hasUseTarget(button.link);
                         }).set('ai', button => {
