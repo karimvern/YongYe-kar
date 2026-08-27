@@ -101,6 +101,33 @@ export const xinx1Character = {
 
 //永夜之始
 export const xinx2Character = {
+    xinxnew_changyeyue:{
+        hasHiddenSkill: true,
+        sex: "female",
+        group: "xinx",
+        hp: 4,
+        trashBin: ['epic'],
+        skinPath: "extension/永夜之境/skin/xinx_changyeyue/",
+        skills: ['xinxyingbie', 'xinxmenghui'],
+        dieAudios: ['fyrh_changyeyue'],
+    },
+    xinx_yunmodanxin:{
+        sex: "female",
+        group: "qun",
+        groupBorder: "xinx",
+        hp: 3,
+        names: "符华",
+        trashBin: ['legend'],
+        skills: ['xinxnewjishi','xinxliangyi'],
+    },
+    xinx_ruanmei:{
+        isUnseen: true,
+        sex: "female",
+        group: "xinx",
+        hp: 3,
+        trashBin: ['legend'],
+        skills: [],
+    },
     xinxnew_xinyanlvzhe:{
         sex: "female",
         group: "qun",
@@ -109,6 +136,7 @@ export const xinx2Character = {
         img: "extension/永夜之境/image/xinx_xinyanlvzhe.png",
         skinPath: "extension/永夜之境/skin/xinx_xinyanlvzhe/",
         trashBin: ['legend'],
+        names: "琪亚娜",
         skills: ['xinxnewzhuoshuo','xinxnewpoxiao'],
         dieAudios: ['xinx_xinyanlvzhe'],
     },
@@ -116,7 +144,8 @@ export const xinx2Character = {
         sex: "female",
         group: "qun",
         groupBorder: "xinx",
-        hp: 4,
+        hp: 3,
+        names: "琪亚娜",
         trashBin: ['legend'],
         skills: ['xinxzhuoshuo','xinxpoxiao'],
     },
@@ -137,7 +166,7 @@ export const xinx2Character = {
     xinxzhu_liuying:{
         sex: "female",
         group: "xinx",
-        hp: 4,
+        hp: 3,
         trashBin: ['legend'],
         skinPath: "extension/永夜之境/skin/xinxnew_liuying/",
         skills: ['xinxzhuqiong', 'xinxshiying'],
@@ -185,16 +214,6 @@ export const xinx2Character = {
         hp: 4,
         trashBin: ['legend'],
         skills: ['xinxcuixin','xinxqianduan'],
-    },
-    xinxnew_changyeyue:{
-        isUnseen: true,
-        sex: "female",
-        group: "xinx",
-        hp: 4,
-        trashBin: ['epic'],
-        skinPath: "extension/永夜之境/skin/xinx_changyeyue/",
-        skills: ['xinxnewbuli'],
-        dieAudios: ['fyrh_changyeyue'],
     },
     xinxhy_qiong: {
         sex: "male",
@@ -250,7 +269,6 @@ export const xinx2Character = {
     xinx_huahuo: ["female", "xinx", 3, ['xinxhuaqianyi'], ['epic']],
     xinx_xilian: ["female", "xinx", 3, ['xinxyilian'], ['legend']],
     // xinx_luanpo: ["female", "xinx", 3, [], ['epic']],
-    // xinx_ruanmei: ["female", "xinx", 3, [], ['epic']],
     xinx_xingqiri: ["male", "xinx", 3, ['xinxangang', 'xinxxunji'], ['epic']],
     xinx_xier: ["female", "xinx", 4, ['xinxguiren', 'xinxzaixian'], ['epic']],
     xinx_buluoniya: ["female", "xinx", 4, ['xinxxianji', 'xinxkejie'], ['epic']],
@@ -274,7 +292,7 @@ export const xinx2Character = {
     xinx_haiseyin: ["female", "xinx", 4, ['xinxanliu', 'xinxjiange'], ['epic']],//, 'smyyingshi'
     xinx_luka: ["male", "xinx", 4, ['xinxangyang', 'xinxbuxiu'], ['epic']],
     xinx_yinlang999: ["female", "xinx", 4, ['xinxcaidan', 'xinxzunlin'], ['legend']],
-    xinx_huohua: ["female", "xinx", 4, ['xinxkuanghuan', 'xinxzhumu'], ['epic']],
+    xinx_huohua: ["female", "xinx", 3, ['xinxkuanghuan', 'xinxzhumu'], ['epic']],
     xinx_feiying: ["female", "xinx", 4, ['xinxliaopan', 'xinxwushe'], ['legend']],
     xinx_yaoguang: ["female", "xinx", 3, ['xinxhongji', 'xinxpoju'], ['epic']],
     xinxzhu_sanyueqi: ["female", "xinx", 4, ['xinxxialang','xinxlinglong'], ['epic']],
@@ -283,6 +301,22 @@ export const xinx2Character = {
 
 //风雨如晦
 export const xinxfengyuCharacter = {
+    fyrhka_caoren: {
+        sex: "male",
+        group: "wei",
+        hp: 4,
+        trashBin: ['epic'],
+        skills: ['fyrhdishu'],
+        dieAudios: ["sb_caoren"],
+    },
+    fyrht_simayi: {
+        sex: "male",
+        group: "wei",
+        hp: 4,
+        trashBin: ['epic'],
+        skills: ['fyrhjianshi','fyrhtuda'],
+        dieAudios: ["jin_simayi"],
+    },
     fyrht_dengai: {
         sex: "male",
         group: "wei",
@@ -466,7 +500,7 @@ export const xinxfengyuCharacter = {
         hp: 4,
         trashBin: ['legend'],
         skills: ['fyrhjuntuan', 'fyrhkuozhang'],
-        dieAudios: ['sb_huangyueying'],
+        dieAudios: ['ol_sb_yuanshao'],
     },
     fyrhtang_xuzhu: {
         sex: "male",
@@ -750,7 +784,7 @@ export const xinxfengyuCharacter = {
         hp: 4,
         img: "extension/永夜之境/image/fyrh_liuyan.png",
         trashBin: ['epic'],
-        skills: ['fyrhlietu', 'fyrhkuizong'],
+        skills: ['fyrhnewlietu', 'fyrhkuizong'],
         dieAudios: ["liuyan"],
     },
     xinxhj_fyrh_liuyan: {
@@ -1096,6 +1130,46 @@ export const xinxfengyuCharacter = {
 
 //武将修改
 export const xinxhuaijiuCharacter = {
+    xinxhj_pot_sunchen: {
+		sex: "male",
+		group: "wu",
+		hp: 4,
+        img: "image/character/pot_sunchen.jpg",
+		skills: ["xinxhjpotnigu", "xinxhjpotlulian"],
+        trashBin: ['legend'],
+        dieAudios: ["pot_sunchen"],
+	},
+    xinxhj_wu_zhugeliang: {
+		sex: "male",
+		group: "shu",
+		hp: 4,
+		maxHp: 7,
+        img: "image/character/wu_zhugeliang.jpg",
+		skills: ["dcjincui", "dcqingshi", "dczhizhe"],
+		names: "诸葛|亮",
+		clans: ["琅琊诸葛氏"],
+        trashBin: ['legend'],
+        isUnseen: true,
+        dieAudios: ["wu_zhugeliang"],
+	},
+    xinxhj_guozhao: {
+		sex: "female",
+		group: "wei",
+		hp: 3,
+        img: "image/character/guozhao.jpg",
+		skills: ["xinxhjpianchong", "xinxhjzunwei"],
+        trashBin: ['legend'],
+        dieAudios: ["guozhao"],
+	},
+    xinxhj_dc_zhangyì: {
+		sex: "male",
+		group: "shu",
+		hp: 4,
+        img: "image/character/dc_zhangyì.jpg",
+		skills: ["xinxhjdcmurui", "xinxhjdcaoren"],
+        trashBin: ['rare'],
+        dieAudios: ["dc_zhangyì"],
+	},
     xinxhj_pot_xiaoqiao: {
 		sex: "female",
 		group: "wu",

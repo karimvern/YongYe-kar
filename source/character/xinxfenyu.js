@@ -22,7 +22,7 @@ export let info = {
                 'fyrh_fengxizhangnan', 'fyrh_qinwuyang', 'fyrh_zhangxiu', 'fyrh_chendao', 'fyrh_zhugejun', 'fyrh_dailaidongzhu', 'fyrh_maxiumatie'],
             'xinx_xiulisheji': ['fyrh_leisai', 'fyrh_dianci', 'fyrh_zaochuanqiu', 'fyrh_jiye', 'fyrh_anbian', 'fyrh_liumin', 'fyrh_qiangzhiemo', 'fyrh_jiaerjiali',
                 'fyrhxiu_zhaoyun', 'fyrhxiu_jiangwei', 'fyrh_huzhangyouren'],
-            'xinx_tingyusheji': ['fyrht_dengai','fyrht_lvmeng', 'fyrht_re_xuzhu', 'fyrht_xuzhu', 'fyrht_fazheng', 'fyrhot_fazheng', 'fyrht_wolong', 'fyrh_duyu', 'fyrh_caocao', 'fyrh_jiangwei', 'fyrh_zhaoyun', 'fyrh_xuyou', 'fyrh_chenqun', 'fyrh_guanyu', 'fyrh_wangping',
+            'xinx_tingyusheji': ['fyrht_simayi','fyrht_dengai', 'fyrht_lvmeng', 'fyrht_re_xuzhu', 'fyrht_xuzhu', 'fyrht_fazheng', 'fyrhot_fazheng', 'fyrht_wolong', 'fyrh_duyu', 'fyrh_caocao', 'fyrh_jiangwei', 'fyrh_zhaoyun', 'fyrh_xuyou', 'fyrh_chenqun', 'fyrh_guanyu', 'fyrh_wangping',
                 'fyrh_zhangfei', 'fyrh_jiachong', 'fyrh_xujing', 'fyrh_yanyan', 'fyrh_caozhi', 'fyrh_wangling', 'fyrh_qinhui', 'fyrh_liuyan', 'xinxhj_fyrh_liuyan',
                 'fyrh_zhangjiao', 'fyrh_simayi', 'fyrh_liyuanba', 'fyrht_zhangliao', 'fyrh_zhoubangyan'],
             'xinx_xiahuaxuanlan': ['fyrh_daheita', 'fyrh_changyeyue', 'fyrh_xilian', 'fyrh_fuxuan', 'fyrh_huahuo', 'fyrhold_huahuo', 'fyrh_zhuangfangyi', 'fyrh_kelvdela'],
@@ -30,7 +30,7 @@ export let info = {
             'xinx_y': ['fyrh_caozhao', 'fyrh_haopu', 'fyrh_zhuyi', 'fyrhy_fugu', 'fyrh_huanggai', 'fyrhy_simayi', 'fyrhy_ningsui', 'fyrhy_sunjun'],
             'xinx_bengxiang': ['fyrhp_changyeyue', 'fyrhtang_huangyueying', 'fyrhtang_zhugeliang', 'fyrhtang_xuzhu', 'fyrhtang_yuanshao', 'fyrh_gongsunli'],
             'xinx_xie': ['fyrhx_simayi', 'fyrh_xusheng', 'fyrh_luxun', 'fyrh_liuxuan'],
-            'xinx_qitasheji': ['fyrh_guyu', 'fyrhbl_zhouyu', 'fyrh_xieqi', 'fyrh_fazheng', 'fyrh_zhenfu', 'fyrh_huaxiong', 'fyrh_zhengxiaotong',
+            'xinx_qitasheji': ['fyrhka_caoren','fyrh_guyu', 'fyrhbl_zhouyu', 'fyrh_xieqi', 'fyrh_fazheng', 'fyrh_zhenfu', 'fyrh_huaxiong', 'fyrh_zhengxiaotong',
                 'fyrh_dengai', 'fyrh_weijie', 'fyrh_zhangliao', 'fyrh_wangcheng', 'fyrh_weiyi', 'fyrh_gouxi', 'fyrh_simashao', 'fyrh_liuying',
                 'fyrh_sunchen', 'fyrh_wanglang', 'fyrh_chenggongying', 'fyrh_ruanji'],
         }
@@ -67,6 +67,7 @@ export let info = {
         fyrhtang_zhugeliang: "<font color=#FAFAFA>一吨白糖</font>",
         fyrh_chenggongying: "<font color=#FAFAFA>拉普拉斯</font>",
         fyrh_ruanji: "<font color=#FAFAFA>不能更改</font>",
+        fyrhka_caoren: "<font color=#97C3ED>kami</font>",
 
 
     },
@@ -80,7 +81,9 @@ export let info = {
     },
     //翻译
     translate: {
-        fyrht_dengai:'廷邓艾',
+        fyrht_simayi: '谋廷司马懿',
+        fyrht_simayi_prefix: '谋廷',
+        fyrht_dengai: '廷邓艾',
         fyrht_dengai_prefix: '廷',
         fyrht_lvmeng: '廷吕蒙',
         fyrht_lvmeng_prefix: '廷',
@@ -121,7 +124,7 @@ export let info = {
         fyrh_huanggai_prefix: 'Y',
         fyrhp_changyeyue: '袍长夜月',
         fyrhp_changyeyue_prefix: '袍',
-        fyrhtang_xuzhu: '糖许褚',
+        fyrhtang_xuzhu: '糖许诸',
         fyrhtang_xuzhu_prefix: '糖',
         fyrhtang_yuanshao: '糖袁绍',
         fyrhtang_yuanshao_prefix: '糖',
@@ -334,15 +337,25 @@ export let info = {
         fyrh_pengyue_prefix: '玄蝶',
         fyrh_chentang: '玄蝶陈汤',
         fyrh_chentang_prefix: '玄蝶',
+        fyrhka_caoren:'ka曹仁',
+        fyrhka_caoren_prefix: 'ka',
+
 
 
 
 
 
         //技能翻译
-        fyrhyangpi:'养疲',
+        fyrhdishu:'砥戍',
+        fyrhdishu_info: `每轮开始时，或你以明置牌响应牌后，你可以摸并明置两张牌。`,
+        visible_fyrhdishu:'明置',
+        fyrhjianshi:'见势',
+        fyrhjianshi_info: `你受到伤害后，可以翻面并摸三张牌。你被连续使用牌后，可以翻面并回复1点体力。`,
+        fyrhtuda:'图大',
+        fyrhtuda_info: `一号位的回合开始时，你可以令其选择对你或其造成1点伤害，则受伤角色在本轮失去装备牌后，将之当做【出其不意】对另一者使用。`,
+        fyrhyangpi: '养疲',
         fyrhyangpi_info: `出牌阶段开始时，你可以弃置任意张牌，你下次使用牌后，摸等量张牌。若使用装备牌，下次弃置牌改为重铸。 `,
-        fyrhyicu:'一蹴',
+        fyrhyicu: '一蹴',
         fyrhyicu_info: `限定技，你使用武器牌后，可以与手牌最多的角色交换手牌，然后使用手中的【杀】，最后换回。`,
         fyrhxiaozhuan: '笑赚',
         fyrhxiaozhuan_info: `偶数轮开始时，你可以用此技能交换一名其他角色的其他技能。`,
@@ -355,9 +368,9 @@ export let info = {
         fyrhjingtingquan: '径庭拳',
         fyrhjingtingquan_info: `锁定技，你视为拥有交换技能描述中的【杀】与【闪】的${get.poptip('juesi')}与${get.poptip('releiji')}。`,
         fyrhjingtingquan_juesi: "决死",
-        fyrhjingtingquan_juesi_info: "出牌阶段，你可以弃置一张【闪】并选择攻击范围内的一名有牌的其他角色，该角色弃置一张牌，然后若弃置的牌不是【闪】且你的体力值不大于该角色，你视为对其使用【决斗】。",
+        fyrhjingtingquan_juesi_info: "出牌阶段，你可以弃置一张【闪】并选择攻击范围内的一名有牌的其他角色，该角色弃置一张牌，然后若弃置的牌不是【闪】，你视为对其使用【决斗】。",
         fyrhjingtingquan_leiji: `雷击`,
-        fyrhjingtingquan_leiji_info: "当你使用或打出一张【杀】时，你可令一名其他角色进行一次判定：若结果为梅花，你回复1点体力，并对其造成1点雷电伤害；若结果为黑桃，你对其造成2点雷电伤害。",
+        fyrhjingtingquan_leiji_info: "当你使用或打出一张【杀】时，你可令一名其他角色进行一次判定并获得判定牌：若结果为梅花，你回复1点体力，并对其造成1点雷电伤害；若结果为黑桃，你对其造成2点雷电伤害。",
         fyrhxuanhuo: '眩惑',
         fyrhxuanhuo_info: `摸牌阶段，你可以改为令一名角色获得一个每回合限一次，视为使用【无中生有】的技能（可独立存在）。`,
         fyrhnewxuanhuo: '眩惑',
@@ -442,11 +455,11 @@ export let info = {
         fyrhranzhong: '燃忠',
         fyrhranzhong_info: `出牌阶段，若你出【杀】次数未耗尽，你可重铸任意张牌并失去1点体力；耗尽时，你可展示没有【杀】的手牌，回复1点体力并摸牌至体力值。`,
         fyrhhyygushe: '鼓舌',
-        fyrhhyygushe_info: `出牌阶段，你可以拼点且目标增加牌堆顶的牌和最后进入${get.poptip('xinx_central')}的牌，若你拼点牌点数排名第：1.获得一张拼点牌并使用剩余一张拼点牌。2.弃置所有手牌并摸两张牌。3.受到2点伤害。4.分配本次拼点牌给你和拼点目标。`,
+        fyrhhyygushe_info: `出牌阶段，你可以拼点且目标增加牌堆顶的牌和最后进入本回合弃牌堆的牌，若你拼点牌点数排名第：1.获得一张拼点牌并使用剩余一张拼点牌。2.弃置所有手牌并摸两张牌。3.受到2点伤害。4.分配本次拼点牌给你和拼点目标。`,
         fyrhhyyzuobao: '作保',
         fyrhhyyzuobao_info: `每回合限一次，你受伤时，若你的手牌数与体力值相等，你可摸一张牌并防止此伤害。`,
         fyrhpaoleidi: '泪笛',
-        fyrhpaoleidi_info: `每回合限一次，你可于以下时机摸${get.poptip('xinx_central')}花色数张牌并将中央区的牌洗入牌堆：造成/受到伤害时；不因使用而失去牌后。`,
+        fyrhpaoleidi_info: `每回合限一次，你可于以下时机摸本回合弃牌堆花色数张牌并将本回合弃牌堆的牌洗入牌堆：造成/受到伤害时；不因使用而失去牌后。`,
         fyrhpaohuanhun: '涣魂',
         fyrhpaohuanhun_info: `转换技，你一次性获得至少三张牌后，可将本回合下一阶段替换为你的阳/阴：摸牌阶段/出牌阶段；然后重置${get.poptip('fyrhpaoleidi')}。若获得的牌数大于三，你可将你的阶段重新排序。`,//若首阶段与上次排序的首阶段不同，你额外执行之。
         fyrhxixi: '犀嬉',
@@ -523,7 +536,7 @@ export let info = {
         fyrhshunyi: '顺意',
         fyrhshunyi_info: `每回合限一次，当你需要使用【杀】时，你可进行两次判定，若判定牌中有伤害牌或【酒】，则你视为使用之再将手牌数摸至6，若均没有，你卜算你的所有判定牌。`,
         fyrhliecheng: '裂城',
-        fyrhliecheng_info: `每三张【杀】结算完成或你失去所有手牌后，你可将手牌数调整为4并展示手牌，使用其中的【杀】，重铸其中第二次因此展示的牌。`,
+        fyrhliecheng_info: `每四张【杀】结算完成或你失去所有手牌后，你可将手牌数调整为4并展示手牌，使用其中的【杀】，重铸其中第二次因此展示的牌。`,
         fyrhquxian: '驱险',
         fyrhquxian_info: `你指定或成为伤害牌唯一目标时，你可令此牌多结算一次，此牌被响应后你获得使用者一张牌。`,
         fyrhjiaoshi: '角势',
@@ -534,8 +547,10 @@ export let info = {
         fyrhhuangsheng_info: `摸牌阶段，你额外摸X张牌（X为手牌数最小的角色数）。你的手牌数首次达到九后，杀死一名从来没计入过「蝗生」的角色。`,
         fyrhcanjue: '蚕觉',
         fyrhcanjue_info: `限定技，洗牌时，你可以令所有角色弃置所有牌，下次【桃】被摸取后，所有角色摸四张牌。`,
+        fyrhnewlietu: '裂土',
+        fyrhnewlietu_info: `你累计使用三张牌后，若结算中只有你失去过牌，你可以摸三张牌。`,
         fyrhlietu: '裂土',
-        fyrhlietu_info: `你累计使用三张牌后，若结算中只有你失去过牌，你可以摸三张牌。`,
+        fyrhlietu_info: `你使用一张牌后，若结算中只有你失去过牌，你获得1个“裂土”标记。当标记数达到3时，你清空之并摸三张牌。`,
         fyrhkuizong: '睽宗',
         fyrhkuizong_info: `限定技，出牌阶段，你可以令一名其他角色获得基本牌各一张，其失去一张后你摸两张牌。其均失去前，你使用牌没有次数限制。`,
         fyrhjiaxie: '假挟',
@@ -641,7 +656,7 @@ export let info = {
         fyrhbingfa: '兵发',
         fyrhbingfa_info: `限定技，准备阶段，你可以收回装备区内所有牌并摸X张牌，令本回合${get.poptip('fyrhyingzi')}中的所有牌名改为【火攻】（X为收回牌数的平方）。`,
         fyrhyizhen: '壹阵',
-        fyrhyizhen_info: `锁定技，每个回合结束时，你弃置保留在你手牌中三个回合的牌并摸四张牌。累计弃置所有花色后，你清空记录并进行一个额外回合。`,
+        fyrhyizhen_info: `锁定技，每个回合结束时，你弃置保留在你手牌中三个回合的牌并摸三张牌。累计弃置所有花色后，你清空记录并进行一个额外回合。`,
         fyrhzhibing: '制兵',
         fyrhzhibing_info: `你可以移动场上至多X张装备牌并视为使用一张${get.poptip('suijiyingbian')}，结算后结束当前回合。（X为${get.poptip('fyrhyizhen')}未记录的花色数）。`,
         fyrhyafeng: '压风',
@@ -651,7 +666,7 @@ export let info = {
         fyrhtuilang: '推浪',
         fyrhtuilang_info: `当你失去过的总牌数变为3的整数倍时，你可以摸两张牌，然后可以弃置任意张牌。`,
         fyrhshitang: '失膛',
-        fyrhshitang_info: `锁定技，你的弃牌阶段改为轮流将你的手牌和牌堆顶的牌与其他角色拼点，你重复此流程直到你拼点赢和没赢均有过；有角色于此阶段失去最后一张手牌时，你须移出${get.poptip('xinx_central')}的一张${get.poptip('xinx_jishipai')}视为使用之，你优先选择其中【杀】。`,
+        fyrhshitang_info: `锁定技，你的弃牌阶段改为轮流将你的手牌和牌堆顶的牌与其他角色拼点，你重复此流程直到你拼点赢和没赢均有过；有角色于此阶段失去最后一张手牌时，你须移出本回合弃牌堆的一张${get.poptip('xinx_jishipai')}视为使用之，你优先选择其中【杀】。`,
         fyrhyizuo: '翼佐',
         fyrhyizuo_info: "出牌阶段限一次，你可以令一名角色观看你的手牌，你与其同时选择其中一张牌，然后你可以将被选择的所有牌当【无中生有】或【桃】令你或其使用。你造成伤害后，对自己发动一次本技能。",
         fyrhlianzhi: '连帜',
@@ -737,13 +752,13 @@ export let info = {
         fyrhfenjue: '焚玦',
         fyrhfenjue_info: `限定技，出牌阶段，若你没有手牌，你可以对自己造成1点火焰伤害，然后获得所有本回合进入弃牌堆的牌。`,
         fyrhlihua: '礼花',
-        fyrhlihua_info: `出牌阶段限一次，你可以重铸一张牌，然后你可以将手牌区和${get.poptip('xinx_central')}合计三张类别各不同或花色均相同的牌移出游戏直到本回合结束。若如此做，你对一名角色造成1点火焰伤害。`,
+        fyrhlihua_info: `出牌阶段限一次，你可以重铸一张牌，然后你可以将手牌区和本回合弃牌堆合计三张类别各不同或花色均相同的牌移出游戏直到本回合结束。若如此做，你对一名角色造成1点火焰伤害。`,
         fyrhhuohuan: '火环',
         fyrhhuohuan_info: `出牌阶段限一次，你可以与一名角色拼点: 若你赢，重置${get.poptip('fyrhlihua')}；若你没赢，重置${get.poptip('fyrhhuohuan')}。`,
         fyrhzaoju: '躁锯',
-        fyrhzaoju_info: `出牌阶段，你可以重铸两张牌，然后将因此法获得的一张牌当一张不计入次数且无距离限制的雷【杀】使用，结算后，若${get.poptip('xinx_central')}含有四种花色，本回合本技能失效，然后你失去一点体力。`,
+        fyrhzaoju_info: `出牌阶段，你可以重铸两张牌，然后将因此法获得的一张牌当一张不计入次数且无距离限制的雷【杀】使用，结算后，若本回合弃牌堆含有四种花色，本回合本技能失效，然后你失去一点体力。`,
         fyrhchongsheng: '重生',
-        fyrhchongsheng_info: `每回合限一次，你使用牌仅指定自己为目标后，可以回复1点体力或将${get.poptip('xinx_central')}两张牌洗入牌堆。`,
+        fyrhchongsheng_info: `每回合限一次，你使用牌仅指定自己为目标后，可以回复1点体力或将本回合弃牌堆两张牌洗入牌堆。`,
         fyrhkeng: '吭',
         fyrhkeng_info: `出牌阶段限一次，你可以亮出牌堆顶三张牌，然后你可以将其中一张牌发起拼点：若你赢，你可以将另外一张亮出牌当【杀】使用，否则你恢复一个装备栏。若造成伤害，你获得仅剩的亮出牌并从牌堆随机使用一张装备牌。结束阶段，你可以废除一个有牌的装备栏发动本技能。`,
         fyrhzhansui: '战随',
@@ -760,7 +775,7 @@ export let info = {
         fyrhpozhu_info: `每回合限一次，你造成或受到伤害后，可以令受伤角色翻面你三张手牌，然后你依次使用明置牌（无距离限制、不可响应且于使用后摸一张牌）。`,
         visible_fyrhzhenzhan: '明置',
         fyrhyulie: '欲烈',
-        fyrhyulie_info: `转换技，你可以：<br>①使用【杀】后，视为使用一张【火攻】；<br>②弃牌后，视为使用一张明牌【洞烛先机】；<br>③出牌阶段，获得${get.poptip('xinx_central')}任意张【杀】并摸等量张牌。<br>上述流程出现【闪】后，你移除该项。`,
+        fyrhyulie_info: `转换技，你可以：<br>①使用【杀】后，视为使用一张【火攻】；<br>②弃牌后，视为使用一张明牌【洞烛先机】；<br>③出牌阶段，获得本回合弃牌堆任意张【杀】并摸等量张牌。<br>上述流程出现【闪】后，你移除该项。`,
         fyrhyuliex: '欲烈',
         fyrhyuliex_info: `转换技，你可以：<br>①使用【杀】后，${get.poptip('yulieqice')}；<br>②弃牌后，${get.poptip('yuliezaiqi')}；<br>③出牌阶段，${get.poptip('yuliezhiheng')}。`,
         yulieqice: '奇策',
@@ -977,7 +992,7 @@ export let info = {
             ] : [
                 "① 使用【杀】后，视为使用一张【火攻】",
                 "② 弃牌后，视为使用一张明牌【洞烛先机】",
-                `③ 出牌阶段，获得${get.poptip('xinx_central')}任意张【杀】并摸等量张牌`
+                `③ 出牌阶段，获得本回合弃牌堆任意张【杀】并摸等量张牌`
             ];
             let res = '转换技，你可以：<br>';
             for (let i = 0; i < 3; i++) {
@@ -1174,10 +1189,170 @@ export let info = {
 
     },
     //技能
-    skill: {
+    skill: {//group: ["xinxnewjishi_refresh"],
+        //曹仁
+        fyrhdishu:{
+            audio: "sbjushou",
+            trigger: {
+                global: "roundStart",
+                player: "loseAfter",
+            },
+            filter(event, player) {
+                if (event.name == "lose") {
+                    const tags = Object.values(event.gaintag_map || {}).flat();
+                    //明置标记在失去瞬间已写入lose事件的gaintag_map（原牌上的gaintag已被清除）
+                    if (!tags.some(tag => tag.startsWith("visible_") || tag.startsWith("eternal_visible_"))) {
+                        return false;
+                    }
+                    //必须是因为响应而失去牌：沿父事件链找携带respondTo的事件（闪作为响应牌使用时挂在useCard下）
+                    let evt = event.relatedEvent || event.getParent?.();
+                    for (let i = 0; evt && i < 3; i++) {
+                        if (Array.isArray(evt.respondTo) && evt.respondTo[0] != player) {
+                            return true;
+                        }
+                        evt = evt.getParent?.();
+                    }
+                    return false;
+                }
+                return true;
+            },
+            frequent: true,
+            locked:false,
+            async content(event, trigger, player) {
+                await player.draw(2);
+                const result = await player.chooseCard('h', true)
+                    .set('filterCard', card => !get.is.shownCard(card))
+                    .set('prompt', '请选择明置一张手牌')
+                    .set("ai", card => {
+                        if (['shan', 'wuxie'].includes(card.name)) {
+                            return 10;
+                        }
+                        return 6 - get.value(card)
+                    })
+                    .forResult();
+                if (result.bool && result.cards?.length) {
+                    await player.addShownCards(result.cards, "visible_fyrhdishu");
+                }
+            },
+            mod: {
+                aiOrder(player, card, num) {
+                    if (get.is.shownCard(card)) {
+                        return num + 3;
+                    }
+                },
+            },
+        },
+        //廷司马懿
+        fyrhjianshi: {
+            audio: "ext:永夜之境/audio:4",
+            trigger: {
+                target: "useCardToPlayered",
+                player: 'damageEnd',
+            },
+            logAudio: (event, player, name) => {
+                if (name == "useCardToPlayered") {
+                    return "ext:永夜之境/audio/fyrhjianshi" + (get.rand(3, 4)) + ".mp3";
+                }
+                return "ext:永夜之境/audio/fyrhjianshi" + (get.rand(1, 2)) + ".mp3";
+            },
+            filter(event, player, name) {
+                if (name == 'useCardToPlayered') {
+                    const history = game.getGlobalHistory("useCard");
+                    const index = history.indexOf(event.getParent()) - 1;
+                    if (index < 0) {
+                        return false;
+                    }
+                    const evt = history[index];
+                    if (!evt || !evt.targets || !evt.targets.length) {
+                        return false;
+                    }
+                    return evt.targets.includes(event.target);
+                }
+                return true;
+            },
+            prompt2(event, player, name) {
+                if (name == 'useCardToPlayered') {
+                    return `翻面并回复1点体力`;
+                }
+                return `翻面并摸三张牌`;
+            },
+            async content(event, trigger, player) {
+                if (event.triggername == 'useCardToPlayered') {
+                    await player.turnOver();
+                    await player.recover();
+                } else {
+                    await player.turnOver();
+                    await player.draw(3);
+                }
+            },
+        },
+        fyrhtuda: {
+            audio: "ext:永夜之境/audio:3",
+            logAudio: () => "ext:永夜之境/audio/fyrhtuda1.mp3",
+            trigger: {
+                global: 'phaseBegin',
+            },
+            filter(event, player) {
+                return event.player.getSeatNum() == 1;
+            },
+            logTarget: "player",
+            check(event, player) {
+                return player.hp >= 2 && get.attitude(player, event.player) < 0;
+            },
+            async content(event, trigger, player) {
+                const target = trigger.player;
+                const targets = [player, target].unique();
+                const result2 = await target
+                    .chooseTarget(get.prompt('fyrhtuda'), `<div class="text center">对其中一名角色造成1点伤害</div>`, true, (card, player, target) => {
+                        return targets.includes(target);
+                    })
+                    .set("ai", target => {
+                        const player = get.event().player;
+                        return get.damageEffect(target, player, player);
+                    })
+                    .forResult();
+                if (result2.bool && result2.targets?.length) {
+                    const target2 = result2.targets[0];
+                    target.line(target2);
+                    await target2.damage();
+                    target2.addTempSkill('fyrhtuda_effect', 'roundEnd');
+                    target2.setStorage('fyrhtuda_effect', target);
+                    target2.markSkillCharacter("fyrhtuda_effect", target, "图大", `本轮失去装备牌后，将之当做【出其不意】对${get.translation(target)}使用`);
+                }
+            },
+            subSkill: {
+                effect: {
+                    onremove: true,
+                    charlotte: true,
+                    forced:true,
+                    audio: "fyrhtuda",
+                    logAudio: () => "ext:永夜之境/audio/fyrhtuda" + get.rand(2,3) + ".mp3",
+                    trigger: {
+                        player: "loseAfter",
+                        global: ["equipAfter", "addJudgeAfter", "gainAfter", "loseAsyncAfter", "addToExpansionAfter"],
+                    },
+                    filter(event, player) {
+                        const target = player.storage.fyrhtuda_effect;
+                        if (!target || !target.isIn()){
+                            return false;
+                        }
+                        const evt = event.getl(player);
+                        return evt?.es?.length;
+                    },
+                    async content(event, trigger, player) {
+                        const hs = trigger.getl?.(player).cards;
+                        const target = player.storage.fyrhtuda_effect;
+                        if (target){
+                            const vcard = get.autoViewAs({ name: "chuqibuyi" });
+                            await player.useCard(target, vcard,hs);
+                        }
+                    }
+                }
+            }
+        },
         //廷邓艾
         fyrhyangpi: {
-            audio:'dcsbzhouxi',
+            audio: 'dcsbzhouxi',
             trigger: {
                 player: 'phaseUseBegin',
             },
@@ -1186,25 +1361,25 @@ export let info = {
             },
             async cost(event, trigger, player) {
                 event.result = !player.countMark('fyrhyangpi') ? await player
-                    .chooseToDiscard(get.prompt('fyrhyangpi'),`弃置任意张牌`, "he", [1,Infinity])
+                    .chooseToDiscard(get.prompt('fyrhyangpi'), `弃置任意张牌`, "he", [1, Infinity])
                     .set("ai", card => {
-                        if (get.type(card)=='equip' && get.position(card) === "h"){
+                        if (get.type(card) == 'equip' && get.position(card) === "h") {
                             return 0;
                         }
                         return 6 - get.value(card);
                     })
                     .forResult() : await player
-                    .chooseCard(get.prompt('fyrhyangpi'), `重铸任意张牌`,"he", 2, [1,Infinity], (card, player) => {
-                        return player.canRecast(card);
-                    })
-                    .set("ai", card => {
-                        return 6 - get.value(card);
-                    })
-                    .forResult();
+                        .chooseCard(get.prompt('fyrhyangpi'), `重铸任意张牌`, "he", 2, [1, Infinity], (card, player) => {
+                            return player.canRecast(card);
+                        })
+                        .set("ai", card => {
+                            return 6 - get.value(card);
+                        })
+                        .forResult();
             },
             async content(event, trigger, player) {
-                if (player.countMark('fyrhyangpi')){
-                    player.clearMark('fyrhyangpi',false);
+                if (player.countMark('fyrhyangpi')) {
+                    player.clearMark('fyrhyangpi', false);
                     await player.recast(event.cards);
                 }
                 const num = event.cards.length;
@@ -1216,33 +1391,33 @@ export let info = {
                     intro: {
                         content: "下次使用牌后摸#张牌",
                     },
-                    marktext:'养疲',
+                    marktext: '养疲',
                     trigger: {
                         player: 'useCardAfter',
                     },
-                    forced:true,
-                    charlotte:true,
-                    onremove:true,
+                    forced: true,
+                    charlotte: true,
+                    onremove: true,
                     async content(event, trigger, player) {
                         let num = player.getStorage(event.name);
                         player.removeSkill(event.name);
                         await player.draw(num);
-                        if (get.type(trigger.card) == 'equip'){
-                            player.addMark('fyrhyangpi',1,false);
+                        if (get.type(trigger.card) == 'equip') {
+                            player.addMark('fyrhyangpi', 1, false);
                         }
                     },
                 }
             }
         },
-        fyrhyicu:{
-            audio:'dcsbshijin',
+        fyrhyicu: {
+            audio: 'dcsbshijin',
             trigger: {
                 player: 'useCardAfter',
             },
             filter(event, player) {
                 return get.subtype(event.card) == 'equip1' && game.hasPlayer(current => current.isMaxHandcard() && current !== player);
             },
-            limited:true,
+            limited: true,
             async cost(event, trigger, player) {
                 event.result = await player
                     .chooseTarget(get.prompt2('fyrhyicu'), (card, player, target) => {
@@ -1250,7 +1425,7 @@ export let info = {
                     })
                     .set("ai", target => {
                         const player = get.event().player;
-                        if (target.countCards('h') - player.countCards('h') < 3){
+                        if (target.countCards('h') - player.countCards('h') < 3) {
                             return false;
                         }
                         return -get.attitude(player, target) * target.countCards('h');
@@ -1277,7 +1452,7 @@ export let info = {
                             return lib.filter.targetEnabled.apply(this, arguments);
                         }, */
                         prompt: "一蹴：使用一张【杀】",
-                        forced:true,
+                        forced: true,
                         addCount: false,
                     }).forResult();
                     if (result.bool && result?.card) {
@@ -1290,7 +1465,7 @@ export let info = {
                     }
                 }
                 await player.swapHandcards(target);
-             }
+            }
         },
         //廷吕蒙
         fyrhxiaozhuan: {
@@ -1495,6 +1670,7 @@ export let info = {
             trigger: {
                 player: "phaseDrawBegin1",
             },
+            frequent: true,
             filter(event, player) {
                 return !event.numFixed;
             },
@@ -1706,7 +1882,10 @@ export let info = {
                         next.judge2 = function (result) {
                             return result.bool == false;
                         };
-                        const { suit } = await next.forResult();
+                        const { suit, card } = await next.forResult();
+                        if (card) {
+                            await player.gain(card, "gain2");
+                        }
                         if (suit == "club") {
                             await player.recover();
                             await target.damage("thunder");
@@ -1734,7 +1913,7 @@ export let info = {
                             return;
                         }
                         const result = await target.chooseToDiscard("he", true).forResult();
-                        if (target.hp >= player.hp && result?.cards?.length && result.cards[0].name != "shan" && player.canUse(juedou, target)) {
+                        if ( result?.cards?.length && result.cards[0].name != "shan" && player.canUse(juedou, target)) {//target.hp >= player.hp &&
                             await player.useCard(juedou, target);
                         }
                     },
@@ -5798,7 +5977,7 @@ export let info = {
                     .map(card2 => get.suit(card2))
                     .unique()
                     .remove('none').length;
-                return `摸${num}张牌，然后将中央区的牌洗入牌堆`;
+                return `摸${num}张牌，然后将本回合弃牌堆的牌洗入牌堆`;
             },
             async content(event, trigger, player) {
                 player.addTempSkill("fyrhpaoleidi_used")
@@ -5843,7 +6022,7 @@ export let info = {
                                 dialog.classList.add("fullheight");
                             }
                             const centerCards = get.discarded().filterInD("d");
-                            dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">📔中央区</div>');
+                            dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">📔本回合弃牌堆</div>');
 
                             if (centerCards.length) {
                                 dialog.addAuto(centerCards);
@@ -10265,7 +10444,7 @@ export let info = {
                     used = true;
                 } else {
                     await player.addMark('fyrhliecheng', 1, false);
-                    if (player.countMark('fyrhliecheng') > 2) {
+                    if (player.countMark('fyrhliecheng') > 3) {
                         used = true;
                         player.clearMark('fyrhliecheng', false);
                     }
@@ -10754,9 +10933,7 @@ export let info = {
                     charlotte: true,
                     silent: true,
                     filter(event, player) {
-                        const gainedCards = event.getg(event.player);
-                        if (!gainedCards.length) return false;
-                        return gainedCards.some(card => card.name === 'tao');
+                        return event.result?.cards?.some(card => get.name(card) === 'tao');
                     },
                     async content(event, trigger, player) {
                         const targets = game.players;
@@ -10767,6 +10944,22 @@ export let info = {
             }
         },
         //刘焉
+        fyrhnewlietu: {
+            inherit: 'fyrhlietu',
+            async content(event, trigger, player) {
+                if (player.hasMark('fyrhlietu_draw')) {
+                    player.clearMark('fyrhlietu', false);
+                } else {
+                    player.addMark('fyrhlietu', 1, false);
+                }
+                await player.removeSkill('fyrhlietu_draw');
+                if (player.countMark('fyrhlietu') >= 3) {
+                    player.clearMark('fyrhlietu', false);
+                    player.logSkill('fyrhlietu');
+                    await player.draw(3);
+                }
+            },
+        },
         fyrhlietu: {
             audio: "ext:永夜之境/audio:2",
             trigger: {
@@ -10780,17 +10973,9 @@ export let info = {
                 /* if (!player.hasMark('fyrhlietu_draw')) {
                     player.addMark('fyrhlietu', 1, false);
                 } */
-                if (player.name == 'xinxhj_fyrh_liuyan') {
-                    if (!player.hasMark('fyrhlietu_draw')) {
-                        player.addMark('fyrhlietu', 1, false);
-                    }
-                }
-                else {
-                    if (player.hasMark('fyrhlietu_draw')) {
-                        player.clearMark('fyrhlietu', false);
-                    } else {
-                        player.addMark('fyrhlietu', 1, false);
-                    }
+
+                if (!player.hasMark('fyrhlietu_draw')) {
+                    player.addMark('fyrhlietu', 1, false);
                 }
                 await player.removeSkill('fyrhlietu_draw');
                 if (player.countMark('fyrhlietu') >= 3) {
@@ -15929,7 +16114,7 @@ export let info = {
                                     return false;
                                 }
                                 //return lib.filter.filterCard.apply(this, arguments);
-                                return true;
+                                return lib.filter.filterCard.apply(this, arguments);
                             },
                             //prompt: `是否使用一张手牌（还可使用${usecount}张）`,
                             prompt: `是否使用一张手牌`,
@@ -16086,7 +16271,7 @@ export let info = {
                 const toDiscard = hs.filter(card => dict[player.playerid + "_h_" + card.cardid] >= 3);
                 if (toDiscard.length > 0) {
                     await player.discard(toDiscard);
-                    await player.draw(4);
+                    await player.draw(3);
                     let suits = player.getStorage("fyrhyizhen") || [];
                     let newSuits = [];
                     for (let card of toDiscard) {
@@ -16426,7 +16611,7 @@ export let info = {
                         let usecards = disCards.slice().filter(c => ['basic', 'trick'].includes(get.type(c)) && player.hasUseTarget(c))
                         if (!usecards.length) { return; }
                         const hasSha = usecards.some(c => c.name === 'sha');
-                        const result = await player.chooseButton(['失膛：移出中央区的一张牌并视为使用之', usecards], 1, true)
+                        const result = await player.chooseButton(['失膛：移出本回合弃牌堆的一张牌并视为使用之', usecards], 1, true)
                             .set('filterButton', button => {
                                 if (hasSha) {
                                     return button.link.name === 'sha';
@@ -19532,7 +19717,7 @@ export let info = {
                 if (alllength >= 3 && checkHasValidCombo()) {
                     const result = await player.chooseButton([
                         `###${get.prompt("fyrhlihua")}###<div class="text center">将三张类别各不同或花色均相同的牌移出游戏，对一名角色造成一点火焰伤害</div>`,
-                        `###<div class="text center">中央区</div>###`,
+                        `###<div class="text center">本回合弃牌堆</div>###`,
                         [cecards],
                         `###<div class="text center">手牌区</div>###`,
                         [hscards]
@@ -19574,7 +19759,7 @@ export let info = {
                                 for (const s in suits) {
                                     if (suits[s].length >= 3) {
                                         // 按"代价"从小到大排序
-                                        // 因为中央区代价是负数，所以中央区牌会排在最前面
+                                        // 因为本回合弃牌堆代价是负数，所以本回合弃牌堆牌会排在最前面
                                         suits[s].sort((a, b) => getDiscardCost(a) - getDiscardCost(b));
                                         const pick = suits[s].slice(0, 3);
                                         const cost = pick.reduce((sum, c) => sum + getDiscardCost(c), 0);
@@ -19671,9 +19856,9 @@ export let info = {
                         dialog.addText('<div class="text center" style="opacity:0.6">暂无卡牌</div>');
                     }
 
-                    // === 中央区 (中) ===
+                    // === 本回合弃牌堆 (中) ===
                     // 添加标题，margin-top 用于拉开与上面卡牌的距离
-                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄中央区</div>');
+                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄本回合弃牌堆</div>');
 
                     if (centerCards.length) {
                         dialog.addAuto(centerCards);
@@ -19850,7 +20035,7 @@ export let info = {
                         dialog.classList.add("fullheight");
                     }
                     const centerCards = get.discarded().filterInD("d");
-                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄中央区</div>');
+                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄本回合弃牌堆</div>');
 
                     if (centerCards.length) {
                         dialog.addAuto(centerCards);
@@ -19883,7 +20068,7 @@ export let info = {
                  }
                  if (cards.length >= 2) {
                      list.push('洗入');
-                     choiceList.push(`将${get.poptip('xinx_central')}两张牌洗入牌堆`);
+                     choiceList.push(`将本回合弃牌堆两张牌洗入牌堆`);
                  }
                  list.push("cancel2");
                  const { control } = await player.chooseControl(list)
@@ -19912,7 +20097,7 @@ export let info = {
                  } else if (control === '洗入') {
                      let discards = get.discarded().filterInD("d");
                      const result = await player.chooseButton(
-                         ["是否将中央区两张牌洗入牌堆", discards], 2
+                         ["是否将本回合弃牌堆两张牌洗入牌堆", discards], 2
                      ).set("ai", button => {
                          return 6 - get.value(button.link);
                      }).forResult();
@@ -19934,7 +20119,7 @@ export let info = {
                     textBtns.push(['recover', '回复1点体力']);
                 }
                 if (cards.length >= 2) {
-                    textBtns.push(['shuffle', `将${get.poptip('xinx_central')}两张牌洗入牌堆`]);
+                    textBtns.push(['shuffle', `将本回合弃牌堆两张牌洗入牌堆`]);
                 }
 
                 let dialogArgs = [
@@ -19942,7 +20127,7 @@ export let info = {
                     [textBtns, "textbutton"]
                 ];
                 if (cards.length > 0) {
-                    dialogArgs.push('<div class="text center">中央区的牌</div>');
+                    dialogArgs.push('<div class="text center">本回合弃牌堆的牌</div>');
                     dialogArgs.push([cards]);
                 }
                 const result = await player.chooseButton(dialogArgs, [1, 3])
@@ -20893,7 +21078,7 @@ export let info = {
                 if (!isWenjue) {
                     const discards = get.discarded().filterInD("d").filter(card => get.name(card, false) == "sha");
                     const result = await player.chooseButton(
-                        ["是否获得中央区任意张【杀】，并摸等量张牌", discards], [1, Infinity]
+                        ["是否获得本回合弃牌堆任意张【杀】，并摸等量张牌", discards], [1, Infinity]
                     ).set("ai", button => {
                         return get.value(button.link);
                     }).forResult();

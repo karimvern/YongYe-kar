@@ -217,9 +217,14 @@ export async function precontent(config, pack) {
             nature: 'soilmm',
             showName: '袍',
         });
+        lib.namePrefix.set('ka', {
+            color: '#97C3ED',
+            nature: 'watermm',
+            showName: 'ka',
+        });
 
         const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', 
-            '乐', '华', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友', '雁翎','新杀|神','嗔'];
+            '乐', '华', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友', '雁翎','新杀|神','嗔','武'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`
@@ -229,6 +234,9 @@ export async function precontent(config, pack) {
             })
             lib.namePrefix.set(`U${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('U')}${get.prefixSpan(n)}`
+            })
+            lib.namePrefix.set(`谋${n}`, {
+                getSpan: (prefix, name) => `${get.prefixSpan('谋')}${get.prefixSpan(n)}`
             })
         };
 
@@ -345,7 +353,7 @@ export async function precontent(config, pack) {
                     }
                 }
             }, 1000);
-            setTimeout(() => clearInterval(timer), 10000);
+            setTimeout(() => clearInterval(timer), 30000);
         } catch (e) {
             console.warn("十周年UI势力框兜底补丁失败：", e);
         }

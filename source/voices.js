@@ -742,6 +742,23 @@ export let voices = {
     '#ext:永夜之境/audio/xinxpoxiao7': '预备，点火！',
     '#ext:永夜之境/audio/xinxpoxiao8': '负煌，蹈刃！',
 
+    //云墨丹心
+    '#ext:永夜之境/audio/xinxnewjishi1': '阴阳化生，清浊自分。',
+    '#ext:永夜之境/audio/xinxnewjishi2': '为了这片土地，我需要力量。',
+    '#ext:永夜之境/audio/xinxnewjishi3': '已经没事了。',
+    '#ext:永夜之境/audio/xinxnewjishi4': '不过如此。',
+    '#ext:永夜之境/audio/xinxnewjishi5': '是时候了。',
+    '#ext:永夜之境/audio/xinxnewjishi6': '伺机而动。',
+    '#ext:永夜之境/audio/xinxliangyi1': '对付你们，一招足矣。',
+    '#ext:永夜之境/audio/xinxliangyi2': '我来送你一程吧。',
+    '#ext:永夜之境/audio/xinxliangyi3': '肃清妖兽，以救神州苍生。',
+    
+
+
+
+    
+    
+
     
 
 
@@ -1318,6 +1335,18 @@ export let voices = {
     '#ext:永夜之境/audio/fyrhxingjiang1': '生已辜七尺之形，死又岂能再负此一棺之土！',
     '#ext:永夜之境/audio/fyrhxingjiang2': '汝若怀尽忠之心，生死又有何论？',
 
+    '#ext:永夜之境/audio/fyrhjianshi1': '谋大事者，必察常人所不察。',
+    '#ext:永夜之境/audio/fyrhjianshi2': '吾为人，清俊而鹰视！',
+    '#ext:永夜之境/audio/fyrhjianshi3': '圣人者，应时权变，见形施宜。',
+    '#ext:永夜之境/audio/fyrhjianshi4': '吾为权变之事，此况应付自如。',
+    '#ext:永夜之境/audio/fyrhtuda1': '魏室摇摇欲坠，何不取而代之？',
+    '#ext:永夜之境/audio/fyrhtuda2': '蛰伏多载，今朝雄志可展！',
+    '#ext:永夜之境/audio/fyrhtuda3': '率土之滨，尽归我司马一族！',
+
+    
+
+
+
 
 
 
@@ -1427,6 +1456,8 @@ export let voices = {
     '#ext:永夜之境/audio/xinxnewwugui3': '中原精锐尽在我手，若不速反恐天殛之。',
     '#ext:永夜之境/audio/xinxnewwugui4': '复三分中原问鼎，数英雄唯我独尊！',
     '#ext:永夜之境/audio/xinxnewwugui5': '灭国一统之功，非吾谁堪此任？',
+
+
 
 
     //武将修改
