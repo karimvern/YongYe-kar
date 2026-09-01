@@ -1,6 +1,30 @@
 
 //杏雅三国
 export const xinx1Character = {
+    xinx_zhugezhan: {
+        sex: "male",
+        group: "shu",
+        hp: 4,
+        trashBin: ['legend'],
+        skills: ['xinxhuangzhan','xinxfuwang'],
+        dieAudios: ['zhugezhan'],
+    },
+    xinx_shamoke: {
+        sex: "male",
+        group: "shu",
+        hp: 4,
+        trashBin: ['legend'],
+        skills: ['xinxjili'],
+        dieAudios: ['shamoke'],
+    },
+    xinxzhu_lvbu: {
+        sex: "male",
+        group: "qun",
+        hp: 5,
+        trashBin: ['legend'],
+        skills: ['xinxnewshiji','xinxnewwushuang'],
+        dieAudios: ['xinx_lvbu'],
+    },
     xinxying_zhangliao: {
         sex: "male",
         group: "xing",
@@ -1130,6 +1154,43 @@ export const xinxfengyuCharacter = {
 
 //武将修改
 export const xinxhuaijiuCharacter = {
+    xinxhj_zhugezhan: {
+        isUnseen: true,
+		sex: "male",
+		group: "shu",
+		hp: 4,
+		skills: [],
+		names: "诸葛|瞻",
+		clans: ["琅琊诸葛氏"],
+        trashBin: ['rare'],
+        dieAudios: ["zhugezhan"],
+	},
+    xinxhj_xin_zhonghui: {
+		sex: "male",
+		group: "wei",
+		hp: 4,
+        trashBin: ['legend'],
+        img: "extension/永夜之境/image/fyrhu_zhonghui.png",
+		skills: ["xinxhjxinquanji", "xinxhjxinzili"],
+		clans: ["颍川钟氏"],
+        dieAudios: ["xin_zhonghui"],
+	},
+    xinxhj_zhouchu: {
+		sex: "male",
+		group: "wu",
+		hp: 4,
+        trashBin: ['rare'],
+		skills: ["xinxhjxianghai", "xinxhjrechuhai"],
+        dieAudios: ["zhouchu"],
+	},
+    xinxhj_sp_zhaoyun: {
+		sex: "male",
+		group: "qun",
+		hp: 4,
+        trashBin: ['rare'],
+		skills: ["xinxhjollongdan", "xinxhjchongzhen"],
+        dieAudios: ["sp_zhaoyun"],
+	},
     xinxhj_pot_sunchen: {
 		sex: "male",
 		group: "wu",

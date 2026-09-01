@@ -14825,6 +14825,9 @@ export let info = {
             forced: true,
             popup: false,
             filter(event, player) {
+                if (!event.card) {
+                    return false;
+                }
                 if (get.name(event.card) !== "juedou") {
                     return false;
                 }

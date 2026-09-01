@@ -45,6 +45,9 @@ export async function precontent(config, pack) {
         //"xinx_liuying": "",
     };
 
+    //皮肤多形态兜底用：形态名 -> 原皮形态图路径（extension/...）
+    const skinOriginMap = {};
+
     for (let packName in charPack) {
         let result = await import(`./character/${packName}.js`).catch(e => alert(`在导入武将包“${charPack[packName] && charPack[packName].translate || packName}”时出现错误:\n${e.stack}`));
         let info = result.info;
@@ -109,6 +112,11 @@ export async function precontent(config, pack) {
                     let hasDieAudio = form[1].some(str => typeof str === 'string' && str.startsWith('die:'));
                     if (!hasDieAudio) {
                         form[1].push('die:ext:永夜之境/audio/die/' + baseName);
+                    }
+                    //收集形态名→原皮形态图路径，供皮肤多形态兜底使用
+                    const originSrc = form[1]?.[0];
+                    if (typeof form[0] == "string" && typeof originSrc == "string" && originSrc.startsWith("ext:")) {
+                        skinOriginMap[form[0]] = originSrc.replace(/^ext:/, "extension/");
                     }
                 }
             }
@@ -223,7 +231,7 @@ export async function precontent(config, pack) {
             showName: 'ka',
         });
 
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', 
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', 'SP', '界',
             '乐', '华', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友', '雁翎','新杀|神','嗔','武'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
@@ -842,8 +850,66 @@ export async function precontent(config, pack) {
 
 
 
-    
-
+    //皮肤多形态渲染兜底：凡是渲染"skin/武将/皮肤名/形态名.png"这类路径（预览按钮或头像数组），
+    //缺文件时改为显示原皮形态图；存在性检查按路径缓存，首次检查后即为同步
+    try {
+        const _skinFileCache = {};
+        const _resolveSkinPath = path => {
+            if (typeof path != "string" || !path.includes("/skin/")) return null;
+            const formName = path.slice(path.lastIndexOf("/") + 1).replace(/\.[^.]+$/, "");
+            const origin = skinOriginMap[formName];
+            if (!origin || path === origin) return null;
+            return { path, origin };
+        };
+        const _origSetBackgroundImage = HTMLDivElement.prototype.setBackgroundImage;
+        HTMLDivElement.prototype.setBackgroundImage = function (img) {
+            const node = this;
+            const fixPath = path => {
+                const r = _resolveSkinPath(path);
+                if (!r) return { fixed: false, path };
+                const cached = _skinFileCache[r.path];
+                if (cached !== undefined) return { fixed: true, path: cached === 1 ? r.path : r.origin };
+                return { fixed: false, needCheck: r };
+            };
+            if (Array.isArray(img)) {
+                const result = img.map(fixPath);
+                const pending = result.filter(item => item.needCheck);
+                if (!pending.length) {
+                    return _origSetBackgroundImage.call(node, result.map(item => item.path));
+                }
+                if (!game.promises?.checkFile) {
+                    return _origSetBackgroundImage.call(node, img);
+                }
+                Promise.all(pending.map(item => {
+                    return game.promises?.checkFile?.(item.needCheck.path).then(exists => {
+                        _skinFileCache[item.needCheck.path] = exists;
+                    }).catch(() => {
+                        _skinFileCache[item.needCheck.path] = -1;
+                    });
+                })).then(() => {
+                    _origSetBackgroundImage.call(node, img.map(item => fixPath(item).path));
+                });
+                return node;
+            }
+            const single = fixPath(img);
+            if (!single.needCheck) {
+                return _origSetBackgroundImage.call(node, single.fixed ? single.path : img);
+            }
+            if (!game.promises?.checkFile) {
+                return _origSetBackgroundImage.call(node, img);
+            }
+            game.promises?.checkFile?.(single.needCheck.path).then(exists => {
+                _skinFileCache[single.needCheck.path] = exists;
+                _origSetBackgroundImage.call(node, exists === 1 ? single.needCheck.path : single.needCheck.origin);
+            }).catch(() => {
+                _skinFileCache[single.needCheck.path] = -1;
+                _origSetBackgroundImage.call(node, single.needCheck.origin);
+            });
+            return node;
+        };
+    } catch (e) {
+        console.warn("皮肤多形态渲染兜底补丁失败：", e);
+    }
 
 
     //来自《奇思妙想》，检测处理区

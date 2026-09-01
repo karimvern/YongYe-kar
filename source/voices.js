@@ -1518,6 +1518,26 @@ export let voices = {
     "#ext:永夜之境/audio/xinxhjlongsong1": "臣宁碎玉笏于阶前，亦不守绒默于宦佞！",
     "#ext:永夜之境/audio/xinxhjlongsong2": "颈血润墨，铸雷霆律令，续千秋之未竟！",
 
+    "#ext:永夜之境/audio/xinxjili1": "蛮王驭犀惊五蠹，一箭穿云毙锦衣！",
+    "#ext:永夜之境/audio/xinxjili2": "蒺藜骨硬夷万敌，五溪水恶困千军！",
+    "#ext:永夜之境/audio/xinxjili3": "狭路微径，张铁蒺藜。",
+    "#ext:永夜之境/audio/xinxjili4": "蒺藜密布，痛无定处。",
+    "#ext:永夜之境/audio/xinxjili5": "就让你试试，我的铁蒺藜骨朵。",
+    "#ext:永夜之境/audio/xinxjili6": "金锦爵赏，助将军一战。",
+
+    "#ext:永夜之境/audio/xinxhuangzhan1": "绵竹之地今于我，恰如武帝悔轮台。",
+    "#ext:永夜之境/audio/xinxhuangzhan2": "恨在军无功于国，悲在朝无辅于政。",
+    "#ext:永夜之境/audio/xinxhuangzhan3": "观军士死伤离散，为将者岂无悲痛之心。",
+    "#ext:永夜之境/audio/xinxhuangzhan4": "承先父之名，破敌锐气。",
+    "#ext:永夜之境/audio/xinxhuangzhan5": "效先父行险，阻敌先锋。",
+    "#ext:永夜之境/audio/xinxhuangzhan6": "未据险地，以致错失战机。",
+    "#ext:永夜之境/audio/xinxhuangzhan7": "坐失兵机，其罪在我。",
+    "#ext:永夜之境/audio/xinxhuangzhan8": "先父所谋天衣无缝，必能救一时之急！",
+    "#ext:永夜之境/audio/xinxhuangzhan9": "定使魏军虚实难辨，真假不分！",
+
+    "#ext:永夜之境/audio/xinxfuwang1": "邓艾匹夫，吾岂是受降之辈！",
+    "#ext:永夜之境/audio/xinxfuwang2": "亲上沙场，与敌决一死战。",
+
 
 
 
