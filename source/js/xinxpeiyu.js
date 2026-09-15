@@ -181,8 +181,8 @@ export let xinxpeiyuSkill = {
                 "###培育###请选择要组合的时机",
                 //两列卡片皮肤（见 pyHandle / extension.css 的 .xinx-peiyu）
                 [timings.map(timing => [timing.key, timing.name]), "tdnodes"],
-                [pyHandle(info.timingPool), "handle"],
-                //[gridHandle, "handle"],
+                //[pyHandle(info.timingPool), "handle"],
+                [gridHandle, "handle"],
             ])
             .set("ai", () => Math.random())
             .forResult();
@@ -199,8 +199,8 @@ export let xinxpeiyuSkill = {
                     `###培育###请为「${timing.name}」组合选择一个效果，并令一名角色获得该技能`,
                     //两列卡片皮肤（见 pyHandle / extension.css 的 .xinx-peiyu）
                     [effects.map(effect => [effect.key, effect.name]), "tdnodes"],
-                    [pyHandle(info.effectPool), "handle"],
-                    //[gridHandle, "handle"],
+                    //[pyHandle(info.effectPool), "handle"],
+                    [gridHandle, "handle"],
                 ],
                 filterTarget(card, player, target) {
                     return target.isIn();
@@ -1175,7 +1175,7 @@ export let xinxpeiyuSkill = {
         },
         {
             key: "viewSha",
-            name: "你可以视为使用一张【杀】",
+            name: "你可以视为使用一张任意属性的【杀】",
             match: ["视为使用一张【杀】", "视为使用一张杀", "视为使用或打出一张【杀】", "视为使用或打出一张杀", "视为对其使用一张【杀】", '使用一张【杀】',],
             //槽位正则容纳插入语："视为使用一张无距离限制的【杀】""视为使用【杀】""视为使用一张普通【杀】"等
             //（"杀"不带括号可同时命中【杀】——【杀】以杀结尾）；"当……杀……使用"覆盖"将一张牌当【杀】使用"倒装句式
