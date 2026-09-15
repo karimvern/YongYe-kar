@@ -4,6 +4,10 @@ import { lib, game, ui, get, ai, _status } from "noname";
 //本体技能AI修正
 
 
+/* lib.skill.dcsbtaozhou = {
+    inherit: "dcsbtaozhou",
+} */
+
 lib.skill.olzongluan = {
     audio: 2,
     trigger: { player: "phaseZhunbeiBegin" },
@@ -284,7 +288,7 @@ lib.skill.starliangyan = {
 }
 
 
-lib.translate._guohe_info = "出牌阶段，对区域里有牌的一名其他角色使用。你弃置其区域里的一张牌。",
+lib.translate.guohe_info = "出牌阶段，对区域里有牌的一名其他角色使用。你弃置其区域里的一张牌。",
     lib.skill.guohe = {
         inherit: "guohe",
         ai: {
@@ -461,148 +465,111 @@ lib.translate._guohe_info = "出牌阶段，对区域里有牌的一名其他角
             },
         },
     }
-    lib.skill.shunshou = {
-        inherit: "shunshou",
-        ai: {
-            wuxie(target, card, player, viewer) {
-                if (!target.countCards("hej") || get.attitude(viewer, player._trueMe || player) > 0) {
-                    return 0;
+lib.skill.shunshou = {
+    inherit: "shunshou",
+    ai: {
+        wuxie(target, card, player, viewer) {
+            if (!target.countCards("hej") || get.attitude(viewer, player._trueMe || player) > 0) {
+                return 0;
+            }
+        },
+        basic: {
+            order: 7.5,
+            useful: (card, i) => 8 / (3 + i),
+            value: (card, player) => {
+                let max = 0;
+                game.countPlayer(cur => {
+                    max = Math.max(max, lib.card.shunshou.ai.result.target(player, cur) * get.attitude(player, cur));
+                });
+                if (max <= 0) {
+                    return 2;
                 }
+                return 0.53 * max;
             },
-            basic: {
-                order: 7.5,
-                useful: (card, i) => 8 / (3 + i),
-                value: (card, player) => {
-                    let max = 0;
-                    game.countPlayer(cur => {
-                        max = Math.max(max, lib.card.shunshou.ai.result.target(player, cur) * get.attitude(player, cur));
-                    });
-                    if (max <= 0) {
-                        return 2;
-                    }
-                    return 0.53 * max;
-                },
-            },
-            button: button => {
-                let player = _status.event.player,
-                    target = _status.event.target;
-                if (!lib.filter.canBeGained(button.link, player, target)) {
-                    return 0;
+        },
+        button: button => {
+            let player = _status.event.player,
+                target = _status.event.target;
+            if (!lib.filter.canBeGained(button.link, player, target)) {
+                return 0;
+            }
+            let att = get.attitude(player, target),
+                val = get.value(button.link, player) / 60,
+                btv = get.buttonValue(button),
+                pos = get.position(button.link),
+                viewAs = button.link.viewAs,
+                name = get.name(button.link);
+            if (att > 0 && pos === "j") {
+                if (viewAs === "lebu" || name === "lebu") {
+                    return 100 + btv;
                 }
-                let att = get.attitude(player, target),
-                    val = get.value(button.link, player) / 60,
-                    btv = get.buttonValue(button),
-                    pos = get.position(button.link),
-                    viewAs = button.link.viewAs,
-                    name = get.name(button.link);
-                if (att > 0 && pos === "j") {
-                    if (viewAs === "lebu" || name === "lebu") {
-                        return 100 + btv;
-                    }
-                    if (viewAs === "bingliang" || name === "bingliang") {
-                        return 50 + btv;
-                    }
+                if (viewAs === "bingliang" || name === "bingliang") {
+                    return 50 + btv;
                 }
-                if (pos === "j") {
-                    let viewAs = button.link.viewAs;
-                    if (viewAs === "lebu") {
-                        let needs = target.needsToDiscard(2);
-                        btv *= 1.08 + 0.2 * needs;
-                    } else if (viewAs === "shandian" || viewAs === "fulei") {
-                        btv /= 2;
-                    }
+            }
+            if (pos === "j") {
+                let viewAs = button.link.viewAs;
+                if (viewAs === "lebu") {
+                    let needs = target.needsToDiscard(2);
+                    btv *= 1.08 + 0.2 * needs;
+                } else if (viewAs === "shandian" || viewAs === "fulei") {
+                    btv /= 2;
                 }
-                if (att > 0) {
-                    btv = -btv;
-                }
-                if (pos !== "e") {
-                    if (pos === "h" && !player.hasSkillTag("viewHandcard", null, target, true)) {
-                        return btv + 0.1;
-                    }
-                    return btv + val;
-                }
-                let sub = get.subtype(button.link);
-                if (sub === "equip1") {
-                    return (btv * Math.min(3.6, target.hp)) / 3;
-                }
-                if (sub === "equip2") {
-                    if (name === "baiyin" && pos === "e" && target.isDamaged()) {
-                        let by = 3 - 0.6 * Math.min(5, target.hp);
-                        return get.sgn(get.recoverEffect(target, player, player)) * by;
-                    }
-                    return 1.57 * btv + val;
-                }
-                if (att <= 0 && (sub === "equip3" || sub === "equip4") && (player.hasSkill("shouli") || player.hasSkill("psshouli"))) {
-                    return 0;
-                }
-                if (sub === "equip3" && !game.hasPlayer(cur => !cur.inRange(target) && get.attitude(cur, target) < 0)) {
-                    return 0.4 * btv + val;
-                }
-                if (sub === "equip4") {
-                    return btv / 2 + val;
+            }
+            if (att > 0) {
+                btv = -btv;
+            }
+            if (pos !== "e") {
+                if (pos === "h" && !player.hasSkillTag("viewHandcard", null, target, true)) {
+                    return btv + 0.1;
                 }
                 return btv + val;
-            },
-            result: {
-                player(player, target) {
-                    const hs = target.getGainableCards(player, "h");
-                    const es = target.getGainableCards(player, "e");
-                    const js = target.getGainableCards(player, "j");
-                    const att = get.attitude(player, target);
-                    if (att < 0) {
-                        if (
-                            !hs.length &&
-                            !es.some(card => {
-                                return get.value(card, target) > 0 && card !== target.getEquip("jinhe");
-                            }) &&
-                            !js.some(card => {
-                                var cardj = card.viewAs ? { name: card.viewAs } : card;
-                                if (cardj.name === "xumou_jsrg") {
-                                    return true;
-                                }
-                                return get.effect(target, cardj, target, player) < 0;
-                            })
-                        ) {
-                            return 0;
-                        }
-                    } else if (att > 1) {
-                        return es.some(card => {
-                            return get.value(card, target) <= 0;
-                        }) ||
-                            js.some(card => {
-                                var cardj = card.viewAs ? { name: card.viewAs } : card;
-                                if (cardj.name === "xumou_jsrg") {
-                                    return false;
-                                }
-                                return get.effect(target, cardj, target, player) < 0;
-                            })
-                            ? 1.5
-                            : 0;
-                    }
-                    return 1;
-                },
-                target(player, target) {
-                    const hs = target.getGainableCards(player, "h");
-                    const es = target.getGainableCards(player, "e");
-                    const js = target.getGainableCards(player, "j");
-
-                    if (get.attitude(player, target) <= 0) {
-                        if (hs.length > 0) {
-                            return -1.5;
-                        }
-                        return es.some(card => {
+            }
+            let sub = get.subtype(button.link);
+            if (sub === "equip1") {
+                return (btv * Math.min(3.6, target.hp)) / 3;
+            }
+            if (sub === "equip2") {
+                if (name === "baiyin" && pos === "e" && target.isDamaged()) {
+                    let by = 3 - 0.6 * Math.min(5, target.hp);
+                    return get.sgn(get.recoverEffect(target, player, player)) * by;
+                }
+                return 1.57 * btv + val;
+            }
+            if (att <= 0 && (sub === "equip3" || sub === "equip4") && (player.hasSkill("shouli") || player.hasSkill("psshouli"))) {
+                return 0;
+            }
+            if (sub === "equip3" && !game.hasPlayer(cur => !cur.inRange(target) && get.attitude(cur, target) < 0)) {
+                return 0.4 * btv + val;
+            }
+            if (sub === "equip4") {
+                return btv / 2 + val;
+            }
+            return btv + val;
+        },
+        result: {
+            player(player, target) {
+                const hs = target.getGainableCards(player, "h");
+                const es = target.getGainableCards(player, "e");
+                const js = target.getGainableCards(player, "j");
+                const att = get.attitude(player, target);
+                if (att < 0) {
+                    if (
+                        !hs.length &&
+                        !es.some(card => {
                             return get.value(card, target) > 0 && card !== target.getEquip("jinhe");
-                        }) ||
-                            js.some(card => {
-                                var cardj = card.viewAs ? { name: card.viewAs } : card;
-                                if (cardj.name === "xumou_jsrg") {
-                                    return true;
-                                }
-                                return get.effect(target, cardj, target, player) < 0;
-                            })
-                            ? -1.5
-                            : 1.5;
+                        }) &&
+                        !js.some(card => {
+                            var cardj = card.viewAs ? { name: card.viewAs } : card;
+                            if (cardj.name === "xumou_jsrg") {
+                                return true;
+                            }
+                            return get.effect(target, cardj, target, player) < 0;
+                        })
+                    ) {
+                        return 0;
                     }
+                } else if (att > 1) {
                     return es.some(card => {
                         return get.value(card, target) <= 0;
                     }) ||
@@ -614,15 +581,52 @@ lib.translate._guohe_info = "出牌阶段，对区域里有牌的一名其他角
                             return get.effect(target, cardj, target, player) < 0;
                         })
                         ? 1.5
-                        : -1.5;
-                },
+                        : 0;
+                }
+                return 1;
             },
-            tag: {
-                loseCard: 1,
-                gain: 1,
+            target(player, target) {
+                const hs = target.getGainableCards(player, "h");
+                const es = target.getGainableCards(player, "e");
+                const js = target.getGainableCards(player, "j");
+
+                if (get.attitude(player, target) <= 0) {
+                    if (hs.length > 0) {
+                        return -1.5;
+                    }
+                    return es.some(card => {
+                        return get.value(card, target) > 0 && card !== target.getEquip("jinhe");
+                    }) ||
+                        js.some(card => {
+                            var cardj = card.viewAs ? { name: card.viewAs } : card;
+                            if (cardj.name === "xumou_jsrg") {
+                                return true;
+                            }
+                            return get.effect(target, cardj, target, player) < 0;
+                        })
+                        ? -1.5
+                        : 1.5;
+                }
+                return es.some(card => {
+                    return get.value(card, target) <= 0;
+                }) ||
+                    js.some(card => {
+                        var cardj = card.viewAs ? { name: card.viewAs } : card;
+                        if (cardj.name === "xumou_jsrg") {
+                            return false;
+                        }
+                        return get.effect(target, cardj, target, player) < 0;
+                    })
+                    ? 1.5
+                    : -1.5;
             },
-        }
+        },
+        tag: {
+            loseCard: 1,
+            gain: 1,
+        },
     }
+}
 
 
 

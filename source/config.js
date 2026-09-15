@@ -83,6 +83,15 @@ export default {
 			game.saveConfig('extension_永夜之境_voice_quick_play', item);
 		}
 	},
+	//========== 界面 ==========
+	/* card_button_skin: {
+		name: "选项按钮卡片美化",
+		init: false,
+		intro: "开启后，本体chooseButton的textbutton/tdnodes选项按钮换成卡片样式。<br>关闭则完全沿用本体外观，改完无需重启。",
+		onclick: function(item) {
+			game.saveConfig('extension_永夜之境_card_button_skin', item);
+		}
+	}, */
 	fgx0: {
 		name: "<font size='4'>---------武将测试工具---------</font>",
 		clear: true,

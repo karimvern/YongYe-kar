@@ -1,5 +1,6 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 import { xinx2Character as character } from "./character.js";
+import { xinxpeiyuSkill, newxinxpeiyuSkill } from '../js/xinxpeiyu.js';
 
 
 export let info = {
@@ -17,7 +18,7 @@ export let info = {
             'xianzhou': ['xinx_tingyun', 'xinx_jingliu', 'xinx_hanya', 'xinx_yinyuejun', 'xinx_guinaifen', 'xinx_wangguiren', 'xinx_feixiao', 'xinx_fuxuan', 'xinx_luocha', 'xinx_yunli'],
             'pinuokangni': ['xinxnewmeng_liuying', 'xinx_zhigengniao', 'xinx_huahuo', 'xinxmeng_liuying', 'xinx_huangquan', 'xinx_xingqiri', 'xinx_luanpo', 'xinx_dalihua'],
             'xinyiling': [],
-            'heita': ['xinx_daheita', 'xinx_ruanmei'],
+            'heita': ['xinxzhu_daheita','xinx_daheita', 'xinx_ruanmei'],
             'erxiangleyuan': ['xinx_huohua', 'xinx_yaoguang', 'xinx_feiying'],
             'beiluoboge': ['xinx_xier', 'xinx_buluoniya', 'xinx_luka'],
             'yishilvren': ['xinx_yunmodanxin', 'xinxnew_xinyanlvzhe', 'xinx_sikeke', 'xinx_yeshunguang', 'xinx_laite', 'xinx_aimisi', 'xinx_yixuan', 'xinx_yuanbanlin', 'xinx_Archer', 'xinx_xinyanlvzhe'],
@@ -91,6 +92,8 @@ export let info = {
         xinx_xinyanlvzhe: '<font color=#FF6557>薪炎永燃</font>',
         xinxnew_xinyanlvzhe: '<font color=#FF6557>薪炎永燃</font>',
         xinx_yunmodanxin: '<font color=#6EDDC9>茜草如诗</font>',
+        xinx_ruanmei: '<font color=#85DBD5>轻拢慢捻</font>',
+        xinxzhu_daheita:'<font color=#AC92F7>群星岸落</font>',
 
         // 58A7A6
         //65B8B1
@@ -99,6 +102,8 @@ export let info = {
     },
     //翻译
     translate: {
+        xinxzhu_daheita: '逐大黑塔',
+        xinxzhu_daheita_prefix: '逐',
         xinx_yunmodanxin: '杏云墨丹心',
         xinx_yunmodanxin_prefix: '杏',
         xinxnew_xinyanlvzhe: '杏薪炎之律者',
@@ -266,6 +271,12 @@ export let info = {
 
 
         //技能翻译
+        xinxduyi:'独一',
+        xinxduyi_info: '每回合每个手牌数限一次，你的手牌数不因本技能变为质数时，你摸两张牌。',
+        xinxpeiyu: '培育',
+        xinxpeiyu_info: '每轮开始或结束时，你可以从场上其他角色技能描述中的时机与效果中各选一个（每项限选一次），组成一个“每回合限一次”的技能并令一名角色获得之。',
+        newxinxpeiyu: '新培育',
+        newxinxpeiyu_info: '每轮开始或结束时，你可以提取场上角色技能的实际效果并为其选择新时机（触发技偷跑原结算、主动技在新时机还原原发动流程、印牌技全套属性搬运、响应印卡技近似为视为使用），组合成一个技能并令一名角色获得之（每个技能效果与时机均限提取一次，组合技能每回合限一次）。',
         xinxyingbie: '影别',
         xinxyingbie_info: `锁定技，你不因本技能触发以下项后，执行此项的下一项（首尾相连）：隐匿，摸两张牌，回复1点体力，受到1点伤害，弃置一张牌，造成1点伤害。`,
         xinxmenghui: '梦回',
@@ -283,7 +294,7 @@ export let info = {
         xinxzhuoshuox: '灼烁·改',
         xinxzhuoshuox_info: `每回合限一次，你可以视为使用一张基本牌并拼点，若你赢，你恢复一个区域并分配1点火焰伤害，然后重复此流程，否则你废除一个区域。`,
         xinxpoxiao: '破晓',
-        xinxpoxiao_info: `你拼点时，可以观看牌堆顶X张牌，选择其中一张作为你的拼点牌（X为你废除的区域数）。`,
+        xinxpoxiao_info: `你可以观看牌堆顶X张牌，选择其中一张作为你的拼点牌（X为你废除的区域数）。`,
         xinxtouying: '投影',
         xinxtouying_info: '锁定技，你使用非转化的非延时牌时移出之；你使用牌后，获得结算期间进入弃牌堆的牌的复制牌。你拥有「投影」牌中的装备牌效果。',
         xinxluoxuan: '螺旋',
@@ -389,11 +400,11 @@ export let info = {
         xinxxinzhui: "星坠",
         xinxxinzhui_info: `锁定技。你每使用三张牌，若你未处于“完全燃烧”，你${get.poptip('xinx_tiqianhuihe')}，并进入“完全燃烧”：①使用红色牌无法被响应，且于结算后摸一张牌。②将${get.poptip('xinxyingshi')}的触发条件改为“对一名被你标记的其他角色使用牌时”。当你于此状态下造成3点伤害后，退出“完全燃烧”。`,
         xinxxiaguang: "罅光",
-        xinxxiaguang_info: "你使用【杀】或单目标普通锦囊牌结算后，若目标未响应此牌，你令其将一张牌置于你的武将牌上；你响应牌后，可以将一张牌当做一张本回合使用过的非装备牌使用（每回合每种牌名限一次）。",
+        xinxxiaguang_info: `你使用目标唯一的${get.poptip('xinx_jishipai')}后，若目标未响应此牌，你令其将一张牌置于你的武将牌上；你响应牌后，可以将一张牌当做一张本回合使用过的非装备牌使用（每回合每种牌名限一次）。`,
         xinxshuohua: "朔华",
-        xinxshuohua_info: "其他角色的准备阶段，你观看牌堆顶三张牌并可以用武将牌上的牌替换其中任意张牌，若如此做，你选择获得其中一种花色的所有牌。然后你可以将武将牌上的所有牌当一张伤害值与响应牌数为X的冰【杀】使用（X为此牌对应的实体牌数）。",
+        xinxshuohua_info: "其他角色的准备阶段，你观看牌堆顶三张牌并可以用武将牌上的牌替换其中任意张牌，若如此做，你选择获得其中一种花色的所有牌。然后你可以将武将牌上的所有牌当一张伤害值与抵消牌数为X的冰【杀】使用（X为此牌对应的实体牌数）。",
         xinxzhili: "支离",
-        xinxzhili_info: "出牌阶段限一次或你使用伤害牌时，你可以重铸任意张牌并失去1点体力，然后直到你下回合开始，你造成的伤害和回复值+1。",
+        xinxzhili_info: "出牌阶段限一次或你使用伤害牌时，你可以重铸任意张牌并失去1点体力，然后直到你下回合开始，你使用牌造成的伤害和回复值+1。",
         xinxfandu: "返渡",
         xinxfandu_info: "锁定技，你每减少4点体力值时，选择一项并回复1点体力：1.对所有其他角色各造成1点伤害；2.使用一张牌（无距离限制），此牌可额外指定至多两名角色为目标，且你于结算后获得此牌。",
         xinxkaituo: "开拓",
@@ -684,7 +695,6 @@ export let info = {
             const removed = player.storage.xinxliuduan_removed || [];
             const yangGone = removed.includes('yang');
             const yinGone = removed.includes('yin');
-
             if (yangGone && yinGone) return '<span class="greytext">（已失效）</span>';
             let res = '转换技。';
             if (yangGone) {
@@ -905,6 +915,70 @@ export let info = {
     },
     //技能
     skill: {//group: ["xinxnewjishi_refresh"],
+        //逐大黑塔
+        xinxduyi: {
+            audio: "ext:永夜之境/audio:6",
+            isPrime(num) {
+                if (typeof num != "number" || num <= 1) return false;
+                if (num === 2) return true;
+                if (num % 2 === 0) return false;
+                for (let i = 3; i * i <= num; i += 2) {
+                    if (num % i === 0) return false;
+                }
+                return true;
+            },
+            /* isPrime(num) {
+                if (typeof num != "number" || num <= 1) return false;
+                for (let i = 2; i < num; i++) {
+                    if (num % i === 0) return false;
+                }
+                return true;
+            }, */
+            trigger: {
+                player: "loseAfter",
+                global: ["loseAsyncAfter", "equipAfter", "addToExpansionAfter", "gainAfter", "addJudgeAfter"],
+            },
+            filter(event, player) {
+                let nums = player.getStorage('xinxduyi_used');
+                if (nums.includes(player.countCards("h"))){
+                    return false;
+                }
+                if (event.getParent(2).name == "xinxduyi") return false;
+                const bool1 = event.getg && event.getg(player)?.length, bool2 = event.getl && event.getl(player)?.hs?.length;
+                return (bool1 || bool2) && get.info("xinxduyi").isPrime(player.countCards("h"));
+            },
+            forced: true,
+            locked: false,
+            async content(event, trigger, player) {
+                let num = player.countCards('h');
+                await player.draw(2);
+                player.addTempSkill('xinxduyi_used');
+                player.markAuto('xinxduyi_used', num);
+            },
+            subSkill:{
+                used:{
+                    onremove: true,
+                    charlotte:true,
+                    mark: true,
+                    markimage: "extension/永夜之境/image/mark/xinxlinggan.png",
+                    intro: {
+                        /* markcount(storage, player) {
+                            return (storage || 0).toString();
+                        }, */
+                        content(storage, player) {
+                            if (Array.isArray(storage) && storage.length > 0) {
+                                storage = storage.join("、");
+                            }
+                            return `已用质数：${storage}`;
+                        },
+                    },
+                }
+            }
+        },
+        //阮梅
+        //xinxpeiyu,
+        xinxpeiyu: xinxpeiyuSkill,
+        newxinxpeiyu: newxinxpeiyuSkill,
         //长夜月
         xinxyingbie: {
             audio: "fyrhmenglong",
@@ -1261,10 +1335,6 @@ export let info = {
                     await info.executeItem(item, executor);
                 }
             },
-        },
-        //阮梅
-        xinxpeiyu: {
-
         },
         //云墨
         xinxnewjishi: {
@@ -11490,7 +11560,8 @@ export let info = {
                             }
                         },
                         cardEnabled(card, player) {
-                            const usedWordCounts = player.getStorage("xinxsuyin_limit") || [];
+                            if (!card.cards) return;
+                            const usedWordCounts = player.getStorage("xinxsuyin_limit");
                             //const usedThisTurn = player.getHistory('useCard', evt => evt.is_xinxsuyin_used === true);
                             //if (usedThisTurn.length >= 1) {
                             for (let i of card.cards) {
@@ -11502,7 +11573,8 @@ export let info = {
                             //}
                         },
                         cardSavable(card, player) {
-                            const usedWordCounts = player.getStorage("xinxsuyin_limit") || [];
+                            if (!card.cards) return;
+                            const usedWordCounts = player.getStorage("xinxsuyin_limit");
                             // const usedThisTurn = player.getHistory('useCard', evt => evt.is_xinxsuyin_used === true);
                             //if (usedThisTurn.length >= 1) {
                             for (let i of card.cards) {
@@ -12865,7 +12937,7 @@ export let info = {
                     forced: true,
                     logTarget: "player",
                     filter(event, player) {
-                        return player.countMark('xinxzhili') > 0;//&& event.card
+                        return player.countMark('xinxzhili') > 0 && event.card;//&& event.card
                     },
                     async content(event, trigger, player) {
                         const num = player.countMark('xinxzhili');
@@ -12914,7 +12986,6 @@ export let info = {
                             return button.link === "damage" ? 1 : 0;
                         })
                         .forResult();
-
                     if (result.bool) {
                         await player.recover();
                         player.clearMark('xinxfandu', false);
@@ -12983,12 +13054,7 @@ export let info = {
                                 break;
                         }
                     }
-
                 }
-
-            },
-            init(player) {
-                player.storage.xinxfandu = 0;
             },
             markimage: 'extension/永夜之境/image/mark/xinxfandu.png',
             mark: true,
@@ -20321,35 +20387,17 @@ export let info = {
                     player.storage.xinxchuangshi = [];
                 }
                 player.addMark('xinxchuangshi_yichu', 1, false);
-                player.addCharge = async function (num, log) {
-                    if (typeof num != "number" || !num) num = 1;
-                    let maxCharge = player.getMaxCharge();
-                    num = Math.min(num, maxCharge - player.countMark("charge"));
-                    var next = game.createEvent("addCharge", false);
-                    next.player = this;
-                    next.num = num;
-                    next.log = log;
-                    next.setContent("addCharge");
-                    return next;
-                };
-                lib.element.content.addCharge = async function (event, trigger, player) {
-                    await event.trigger("addChargeBegin");
-                    if (event.num > 0) {
-                        player.addMark("charge", event.num, event.log);
-                        await event.trigger("addChargeAfter");
-                    }
-                };
             },
             beginMarkCount: 0,
             chargeSkill: 10,
             trigger: {
-                player: "addChargeAfter",
+                player: "addMark",
             },
             filter(event, player) {
                 /* const current = player.countCharge();
                 const thresholds = [2, 4, 6, 8, 10];
                 return thresholds.some(t => current >= t && !player.storage.xinxchuangshi.includes(t)); */
-                return event.num > 0 && player.countCharge() >= 2;
+                return event.markName == "charge" && event.num &&  player.countCharge() >= 2;
             },
             forced: true,
             charlotte: true,

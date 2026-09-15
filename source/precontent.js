@@ -231,7 +231,7 @@ export async function precontent(config, pack) {
             showName: 'ka',
         });
 
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', 'SP', '界',
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', 'SP', '界','手杀界','神',
             '乐', '华', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友', '雁翎','新杀|神','嗔','武'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
@@ -796,6 +796,14 @@ export async function precontent(config, pack) {
         xinxhasEquipType() {
             return this.hasSkill("xinxduoyi") || this.hasSkill("xinxequip");
         },
+        //获得一个勾玉：体力上限与体力同时+1（独立事件，可与本体loseHp等事件一样被await/触发时机）
+        addxGouyu(num) {
+            var next = game.createEvent("addxGouyu");
+            next.player = this;
+            next.num = (typeof num === "number") ? num : 1;
+            next.setContent("addxGouyu");
+            return next;
+        },
     });
     Object.assign(lib.element.content, {
         async xinxexpandEquip(event, trigger, player) {
@@ -845,6 +853,36 @@ export async function precontent(config, pack) {
             if (replacedCards.length > 0) {
                 await player.loseToDiscardpile(replacedCards);
             }
+        },
+        //获得勾玉
+        async addxGouyu(event, trigger, player) {
+            const { num } = event;
+            if (num <= 0) {
+                event._triggered = null;
+                return;
+            }
+            if (lib.config.background_audio) {
+                game.playAudio("effect", "recover");
+            }
+            game.broadcast(() => {
+                if (lib.config.background_audio) {
+                    game.playAudio("effect", "recover");
+                }
+            });
+            game.broadcastAll(player2 => {
+                if (lib.config.animation && !lib.config.low_performance) {
+                    player2.$recover();
+                }
+            }, player);
+            player.$damagepop(num, "wood");
+            game.log(player, `获得了${get.cnNumber(num)}个勾玉`);
+            event.originalHp = player.getHp();
+            event.originalMaxHp = player.maxHp;
+            player.maxHp += num;
+            event.changedMaxHp = player.maxHp - event.originalMaxHp;
+            event.changedHp = 0;
+            player.update();
+            player.changeHp(num, false);
         },
     });
 
@@ -979,7 +1017,6 @@ export async function precontent(config, pack) {
         }
     });
 
-
     //虚数属性
     game.addNature('xinx_xushu', '虚数', {
         linked: true,
@@ -1067,6 +1104,8 @@ export async function precontent(config, pack) {
             }
         }
     });
+
+    
 
 
 

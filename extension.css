@@ -480,6 +480,127 @@
 
 /* 
    纯阴影呼吸动画  */
+/* ==========================================
+   chooseButton 按钮皮肤：覆写本体的 textbutton / tdnodes
+   标记类由 precontent.js 的 patchChooseButtonSkin 挂上：
+     .xinx-cardui  → tdnodes 那一行的 .buttons 容器（同时充当两列网格容器）
+     .xinx-cardbtn → textbutton 的每个选项节点
+   默认是"无色卡片版"；培育的选择框再叠加 .xinx-peiyu 并按词条类别写入 --py-c，把左侧竖条换成类别色。
+   注意：.tdnode 的 width/margin/padding/font-size 均带 !important
+        （layout/default/layout.css:3866），故此处覆盖同样带 !important；
+        另外本体有 #window[data-radius_size=…] .shadowed.reduce_radius 这类ID选择器，
+        十周年UI 也有 #arena.decadeUI[data-loading-style=…] > .dialog .tdnode 的图片底规则，
+        故统一用 #window #arena 前缀（双ID）压过，避免依赖扩展加载顺序。
+========================================== */
+/* 两列网格：只作用于 tdnodes 那一行（.buttons 容器由本体的 Dialog.add 新建） */
+#window #arena .buttons.xinx-cardui {
+	display: grid !important;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 9px 12px;
+}
+
+/* 卡片本体（tdnodes 与 textbutton 通用） */
+#window #arena .buttons.xinx-cardui > .tdnode,
+#window #arena .dialog .xinx-cardbtn {
+	width: auto !important;
+	margin: 0 !important;
+	padding: 9px 26px 9px 12px !important; /* 右内边距给 ::after 箭头留位；左侧原为竖条留的14px，去掉竖条后收到12px */
+	font-size: 17px !important;
+	line-height: 1.3;
+	text-align: left;
+	display: block !important;
+	box-sizing: border-box;
+	position: relative; /* 引擎已设relative，此处防主题覆盖 */
+	overflow: hidden;
+	border-radius: 9px !important;
+	/* 卡片底：与本体 .shadowed 同款——平铺 20% 黑、无渐变（想更深/更浅只改这个 0.2） */
+	background: rgba(0, 0, 0, 0.2) !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px !important;
+	/* 旧样式备份（更实的渐变卡片底 + 外投影）：恢复时取消下面两行注释即可
+	background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.34)) !important;
+	box-shadow: rgba(0, 0, 0, 0.28) 0 0 0 1px, rgba(0, 0, 0, 0.22) 0 2px 4px !important;
+	*/
+	text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+	transition: transform 0.12s, background-image 0.12s, box-shadow 0.12s;
+}
+
+/* 左侧竖条：默认中性色（已停用：按钮不使用左侧色块，恢复时取消本段注释即可）
+#window #arena .buttons.xinx-cardui > .tdnode::before,
+#window #arena .dialog .xinx-cardbtn::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 4px;
+	background: rgba(255, 255, 255, 0.22);
+}
+*/
+
+/* 右侧箭头（选中时换成对勾） */
+/* #window #arena .buttons.xinx-cardui > .tdnode::after,
+#window #arena .dialog .xinx-cardbtn::after {
+	content: "›";
+	position: absolute;
+	right: 9px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 15px;
+	color: rgba(255, 255, 255, 0.42);
+} */
+
+/* 悬停（.selected 要排除掉：本体语义是"选中后保持选中态、不受光标位置影响"。
+   悬停选择器比 .selected 多一个 :hover 权重，不排除就会出现"选中后光标停在上面显示悬停色、移开才变黄"。*/
+/* #window:not(.nopointer) #arena .buttons.xinx-cardui > .tdnode:hover:not(.selected),
+#window:not(.nopointer) #arena .dialog .xinx-cardbtn:hover:not(.selected) {
+	background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(0, 0, 0, 0.26)) !important;
+	box-shadow: rgba(0, 0, 0, 0.28) 0 0 0 1px, rgba(0, 0, 0, 0.35) 0 4px 10px !important;
+	transform: translateY(-1px);
+} */
+
+/* 旧样式备份（金色底 + 黑字）：需要时把下面整段取消注释、并把新规则注释掉即可
+#window #arena .buttons.xinx-cardui > .tdnode.selected,
+#window #arena .dialog .xinx-cardbtn.selected {
+	background-image: linear-gradient(180deg, #e6d3a4, #bda06a) !important;
+	box-shadow: rgba(255, 236, 190, 0.55) 0 0 0 1px, rgba(255, 214, 140, 0.4) 0 0 12px !important;
+	color: #33260f !important;
+	text-shadow: none;
+}
+*/
+/* 选中：沿用本体 menu.css 的蓝色渐变（与 .tdnodes.selected 完全一致），字色保持白色不变 */
+#window #arena .buttons.xinx-cardui > .tdnode.selected,
+#window #arena .dialog .xinx-cardbtn.selected {
+	background-image: linear-gradient(rgba(47, 101, 150, 1), rgba(43, 90, 132, 1)) !important;
+	box-shadow: rgba(0, 0, 0, 0.3) 0 0 0 1px, rgba(96, 156, 208, 0.45) 0 0 10px !important;
+	color: white !important;
+	text-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+}
+/* 选中态竖条（已随左侧色块一并停用）
+#window #arena .buttons.xinx-cardui > .tdnode.selected::before,
+#window #arena .dialog .xinx-cardbtn.selected::before {
+	background: #fff8e6;
+}
+*/
+/* #window #arena .buttons.xinx-cardui > .tdnode.selected::after,
+#window #arena .dialog .xinx-cardbtn.selected::after {
+	content: "✓";
+	color: #3c2b10;
+} */
+
+/* 窄屏（手机）回落单列 */
+@media (max-width: 700px) {
+	#window #arena .buttons.xinx-cardui {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/* ---- 培育：左侧竖条换成词条类别色（已停用：与上面两段一起注释，恢复时三段一起放开）----
+   色值由 xinxpeiyu.js 的 pyHandle 按词条 tags 写入 --py-c。
+#window #arena .xinx-peiyu .buttons.xinx-cardui > .tdnode::before {
+	background: var(--py-c, #9c9c9c);
+}
+*/
+
 @keyframes fire-wrap-breathe {
     0% {
         box-shadow: 
@@ -506,5 +627,3 @@
             inset 0 0 40px 8px rgba(220, 20, 0, 0.5);
     }
 }
-
-

@@ -752,6 +752,33 @@ export let voices = {
     '#ext:永夜之境/audio/xinxliangyi1': '对付你们，一招足矣。',
     '#ext:永夜之境/audio/xinxliangyi2': '我来送你一程吧。',
     '#ext:永夜之境/audio/xinxliangyi3': '肃清妖兽，以救神州苍生。',
+
+    '#ext:永夜之境/audio/xinxpeiyu1': '生命，不仅存在于呼吸之间。',
+    '#ext:永夜之境/audio/xinxpeiyu2': '每一次呼吸，都是自我的感知。',
+    '#ext:永夜之境/audio/xinxpeiyu3': '那是什么？有点…感兴趣。',
+    '#ext:永夜之境/audio/xinxpeiyu4': '这便是生命的温度么…',
+    '#ext:永夜之境/audio/xinxpeiyu5': '哦？超出预想的成果……',
+    '#ext:永夜之境/audio/xinxpeiyu6': '兴许能有所帮助。',
+    '#ext:永夜之境/audio/xinxpeiyu7': '很好，优美的姿势。',
+    '#ext:永夜之境/audio/xinxpeiyu8': '生灵…真是奇妙。',
+    '#ext:永夜之境/audio/xinxpeiyu9': '你们仍有值得研究的价值。',
+    '#ext:永夜之境/audio/xinxpeiyu10': '普遍的解法而已。',
+    '#ext:永夜之境/audio/xinxpeiyu11': '就你吧。',
+    '#ext:永夜之境/audio/xinxpeiyu12': '慢慢来。',
+    '#ext:永夜之境/audio/xinxpeiyu13': '有趣吗？',
+    '#ext:永夜之境/audio/xinxpeiyu14': '听好了。',
+    '#ext:永夜之境/audio/xinxpeiyu15': '等待亦是变化。',
+
+
+    '#ext:永夜之境/audio/xinxduyi1': '锵锵——大变活人！',
+    '#ext:永夜之境/audio/xinxduyi2': '来喽来喽！',
+    '#ext:永夜之境/audio/xinxduyi3': '算是有点挑战…才怪。',
+    '#ext:永夜之境/audio/xinxduyi4': '好东西还在前头呢，别停别停。',
+    '#ext:永夜之境/audio/xinxduyi5': '来——猜猜～我是谁～',
+    '#ext:永夜之境/audio/xinxduyi6': '这就结束了？这就满足了？',
+
+
+
     
 
 
@@ -1537,6 +1564,17 @@ export let voices = {
 
     "#ext:永夜之境/audio/xinxfuwang1": "邓艾匹夫，吾岂是受降之辈！",
     "#ext:永夜之境/audio/xinxfuwang2": "亲上沙场，与敌决一死战。",
+
+    "#ext:永夜之境/audio/xinxxiyan1": "凿山辟道，裹毡滚崖！",
+    "#ext:永夜之境/audio/xinxxiyan2": "存亡之分，在此一举，何不可之有？！",
+    "#ext:永夜之境/audio/xinxnewjingong1": "此去成都，七百里险途，便是吾等青云路!",
+    "#ext:永夜之境/audio/xinxnewjingong2": "锦官城头尽悬魏帜，吾笑淮阴竟请封假王。",
+    "#ext:永夜之境/audio/xinxnewjingong3": "登临峨眉巅，始觉众山皆小。",
+    "#ext:永夜之境/audio/xinxnewjingong4": "摩天绝壁，难断脊梁，蜀道青云，安阻锋芒！",
+    "#ext:永夜之境/audio/xinxnewjingong5": "此战，非争一城一地，乃定鼎破国之功！",
+
+
+
 
 
 
