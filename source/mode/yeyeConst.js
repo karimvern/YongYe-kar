@@ -24,7 +24,7 @@ export const YEYE_RULES = {
 	bossReviveHp: 2,             // BOSS 阶段复生时的体力
 	//精英敌人强化：精英关里每个敌人都会套用这一组
 	eliteHpBonus: 2,             // 精英体力上限加成
-	eliteSkillCount: 1,          // 精英额外获得的可获取技能数
+	eliteSkillCount: 2,          // 精英额外获得的可获取技能数
 	eliteReviveHp: 2,            // 精英阶段复生时的体力（填 0 就是不复生）
 	//BOSS/精英强化倍率：15 关以前按原数值，15 关起 ×2，最后一关 ×3
 	enhanceBoostStage: 15,       // 从这一关起强化数值翻倍
@@ -35,13 +35,48 @@ export const YEYE_RULES = {
 	nextStageBonusCoin: 2,       // 「永夜之赐」每关额外功勋
 	maxLevel: 5,                 // 商店等级上限
 	upgradeCost: { 1: 5, 2: 6, 3: 7, 4: 8 },
-	shopRefreshCost: 1,
-	shopBuffCost: 10,             // 购买「强化」类的功勋价
-	shopSkillCost: 7,            // 购买「技能」类的功勋价
-	skillLimit: 100,              // 最多能把 12 个技能带入对局；超出的标红且不生效，卖掉前面的才会顶上来
+	shopBuffCost: 10,             // 「强化」的兜底基础价（正常会先读下面的档位表/单项 price）
+	shopSkillCost: 7,            // 购买「技能」类的基础功勋价
+	// ==================== 【强化定价】按档位 + 单项覆盖 ====================
+	// 强化实际价格 = 单项 price（若写了） → 否则本档位默认价 → 否则 shopBuffCost 兜底，
+	// 最后再加上本关递增价（stageShopPriceStep × 本关已买次数）。
+	// 想给不同档位定不同价，直接改这 5 个数字即可，例如 { 1: 10, 2: 12, 3: 18, 4: 22, 5: 28 }
+	buffPriceByLevel: {
+		1: 10,
+		2: 12,
+		3: 15,
+		4: 18,
+		5: 20,
+	},
+	skillLimit: 9,              // 最多能把 9 个技能带入对局；超出的标红且不生效，卖掉前面的才会顶上来
 	sellCoin: 2,
 	jadePerCoin: 100,            // 花 100 玉璧换 5 功勋
 	coinPerJade: 5,
+
+	// ==================== 【新增】商店限购与递增价格（每关重置） ====================
+	// 说明：这三项只影响“本关”的商店，进入下一关会自动清零。
+	// 想还原成旧版（不限购 / 不涨价 / 刷新 1 功勋）：
+	//   stageShopLimit 改成 999，stageShopPriceStep 改成 0，shopRefreshBase 改成 1，shopRefreshBaseMul 改成 1
+	stageShopLimit: 2,           // 每关「技能」「强化」各自最多能买几次
+	stageShopPriceStep: 2,       // 本关同类每多买 1 次单价 +2（技能 7→9→11，强化 10→12→14）
+	shopRefreshBase: 2,          // 本关第一次刷新的价格
+	shopRefreshBaseMul: 2,       // 之后每次刷新在上一价基础上乘这个倍率（2 → 4 → 8 → 16 …）
+
+	// ==================== 【新增节点】数值总表（锻造 / 祭坛 / 挑战） ====================
+	// 想停用这三种新节点：把下面的 enableNewNodes 改成 false。
+	// 改完三选一里就不会再出现它们，商店与原先的节点逻辑会自动回退到旧版。
+	enableNewNodes: true,
+	// —— 锻造：花功勋，选一个已有技能重铸成随机新技能 ——
+	forgeRerollCost: 2,             // 每次重铸消耗的功勋
+	// —— 祭坛：三种献祭，每种每次限一次 ——
+	altarHpCost: 3,                 // 献祭消耗的当前体力（体力 ≤ 这个值时不给该选项）
+	altarHpBuffMinLevel: 4,         // 献祭体力换到的强化最低档位（4=蛮力/防具，5=锦囊/强攻/延寿）
+	altarMaxHpCost: 1,              // 献祭消耗的体力上限
+	altarReviveRewardCoin: 8,       // 献祭 1 次复活额外给的功勋
+	// —— 挑战：自选加码，加码越狠奖励越高 ——
+	challengeCoinBonus: 3,          // 每选一项加码，胜利后额外给的功勋
+	challengeEnemyDelta: 2,         // 「以寡敌众」本关敌人 +2（改幅度就改这个数）
+	challengeMarkBonus: 2,          // 「夜之烙印」本关敌人全体各 +2 个夜之刻印（改幅度就改这个数）
 };
 
 /** 节点类型表 */
@@ -51,9 +86,16 @@ export const YEYE_NODES = {
 	event: { key: 'event', name: '奇遇', accent: '#c08cff', info: '触发一个随机事件。' },
 	rest: { key: 'rest', name: '休整', accent: '#7fe6a8', info: '回复部分体力并获得功勋。' },
 	boss: { key: 'boss', name: 'BOSS', accent: '#ff6b6b', info: '永夜化身：体力上限提升、多个夜之刻印、可复生一次，身旁有随从。' },
+	// ===== 【新增节点】以下三种由 YEYE_RULES.enableNewNodes 控制 =====
+	// 想彻底拿掉它们：把 enableNewNodes 改成 false；也可以把下面三行整段注释掉。
+	forge: { key: 'forge', name: '锻造', accent: '#ffcf6b', info: '花功勋重铸一个已有技能。' },
+	altar: { key: 'altar', name: '祭坛', accent: '#b06bff', info: '献祭体力 / 体力上限 / 复活，换取稀有奖励。' },
+	challenge: { key: 'challenge', name: '挑战', accent: '#ff4d6d', info: '自选加码，胜利后拿高额功勋。' },
 };
 
-export const YEYE_NODE_POOL = ['battle', 'elite', 'event', 'rest'];
+export const YEYE_NODE_POOL = ['battle', 'elite', 'event', 'rest']
+	// 【新增节点】开关在这里：enableNewNodes 为 true 时才把锻造/祭坛/挑战加进三选一池
+	.concat(YEYE_RULES.enableNewNodes ? ['forge', 'altar', 'challenge'] : []);
 
 /**
  * 夜之刻印（敌人词条）。
@@ -66,13 +108,11 @@ export const YEYE_MARKS = [
 	{ key: 'yeye_mk_wangyu', name: '亡语', info: '你死亡时，玩家失去2点体力。' },
 	{ key: 'yeye_mk_leifa', name: '雷罚', info: '回合开始时，对玩家造成1点雷电伤害。' },
 	{ key: 'yeye_mk_tanlan', name: '贪婪', info: '回合结束时，玩家弃置2张牌。' },
-	{ key: 'yeye_mk_zhoufu', name: '咒缚', info: '玩家使用【杀】时，你摸1张牌。' },
-	{ key: 'yeye_mk_shixue', name: '嗜血', info: '你造成伤害后回复1点体力。' },
+	{ key: 'yeye_mk_zhoufu', name: '咒缚', info: '玩家使用基本牌时，你摸1张牌。' },
+	{ key: 'yeye_mk_shixue', name: '嗜血', info: '你造成伤害后增加1点体力上限并回复1点体力。' },
 	{ key: 'yeye_mk_zhongjia', name: '重甲', info: '每回合限一次，你受到的【杀】伤害-1。' },
 	{ key: 'yeye_mk_jijia', name: '棘甲', info: '每回合限一次，你受到伤害后，对伤害来源造成1点伤害。' },
 	{ key: 'yeye_mk_shigu', name: '蚀骨', info: '每回合限一次，玩家对你造成伤害后，其失去1点体力。' },
-	{ key: 'yeye_mk_yinhun', name: '阴魂', info: '你死亡时，玩家失去1点体力。' },
-	{ key: 'yeye_mk_feiteng', name: '沸腾', info: '你的体力值不大于2时，造成的伤害+1。' },
 ];
 
 //把刻印注册成技能名与技能描述，玩家查看敌人武将牌时就能读到文本
@@ -93,7 +133,8 @@ export const YEYE_BUFFS = [
 	{ name: '武器', info: '起始手牌额外获得2张临时武器牌', value: 2, level: 2 }],
 	[{ name: '强身', info: '体力上限+1', value: 1, level: 3 },
 	{ name: '回复', info: '回复体力的效果+1', value: 1, level: 3 },
-	{ name: '丰收', info: '摸牌数+1', value: 1, level: 3 }],
+	// price 会覆盖 buffPriceByLevel[3]，单独给「摸牌数+1」定价
+	{ name: '丰收', info: '摸牌数+1', value: 1, level: 3, price: 25 }],
 	[{ name: '蛮力', info: '【杀】造成的伤害+1', value: 1, level: 4 },
 	{ name: '防具', info: '起始手牌额外获得2张临时防具牌', value: 2, level: 4 }],
 	[{ name: '锦囊', info: '起始手牌额外获得2张临时锦囊牌', value: 2, level: 5 },
@@ -143,6 +184,47 @@ export function yeyeIsBossStage(stage) {
 	return YEYE_RULES.bossStages.includes(stage);
 }
 
+/* ===================== 【新增】商店限购 / 递增价格 计算 ===================== */
+
+/**
+ * 强化单项的基础价（功勋）：
+ * 优先用 YEYE_BUFFS 里单项的 price → 其次按档位表 buffPriceByLevel[level] → 最后兜底 shopBuffCost。
+ * 例：{ name: '丰收', ..., level: 3, price: 25 } 就固定按 25 算。
+ */
+export function yeyeBuffBasePrice(buff) {
+	if (!buff) return YEYE_RULES.shopBuffCost || 0;
+	if (typeof buff.price === 'number') return buff.price;
+	const table = YEYE_RULES.buffPriceByLevel || {};
+	const byLevel = table[buff.level];
+	if (typeof byLevel === 'number') return byLevel;
+	return YEYE_RULES.shopBuffCost || 0;
+}
+
+/** 本关同类商品已买 boughtCount 次后，下一次购买的单价 */
+export function yeyeShopPrice(base, boughtCount) {
+	const step = YEYE_RULES.stageShopPriceStep || 0;
+	return (Number(base) || 0) + step * Math.max(0, Number(boughtCount) || 0);
+}
+
+/** 本关第 refreshCount 次刷新的价格：base × mul^refreshCount（2 → 4 → 8 …） */
+export function yeyeRefreshPrice(refreshCount) {
+	const base = YEYE_RULES.shopRefreshBase || 0;
+	const mul = YEYE_RULES.shopRefreshBaseMul || 1;
+	return base * Math.pow(mul, Math.max(0, Number(refreshCount) || 0));
+}
+
+/** 本关某类商品是否已经买满（达到 stageShopLimit） */
+export function yeyeShopLimitReached(boughtCount) {
+	return (Number(boughtCount) || 0) >= (YEYE_RULES.stageShopLimit || 0);
+}
+
+/** 进入下一关时清空商店限购计数（购买次数与刷新次数都归零） */
+export function yeyeResetStageShop(data) {
+	if (!data) return;
+	data.stageBought = { skill: 0, buff: 0 };
+	data.stageRefresh = 0;
+}
+
 /** 节点卡片上的具体说明（带上本关的敌人数量与功勋），让玩家一眼能分清哪个是打架哪个是事件 */
 export function yeyeNodeInfo(key, stage) {
 	const base = yeyeEnemyCount(stage);
@@ -164,6 +246,13 @@ export function yeyeNodeInfo(key, stage) {
 			const count = 1 + side;
 			return `永夜化身（体力上限+${yeyeScaled('bossHpBonus', stage)}、${yeyeScaled('markPerBoss', stage)} 个夜之刻印、可复生一次）+ ${side} 名随从　·　胜利 +${YEYE_RULES.bossCoin + yeyeEnemyBonus(count)} 功勋`;
 		}
+		// ===== 【新增节点】卡片说明（数值都取自 YEYE_RULES） =====
+		case 'forge':
+			return `花费${YEYE_RULES.forgeRerollCost} 功勋，将一个已有技能替换成随机技能，可连续重铸；离开时 +${YEYE_RULES.eventCoin} 功勋`;
+		case 'altar':
+			return `三选一献祭：${YEYE_RULES.altarHpCost} 点体力换稀有强化 / ${YEYE_RULES.altarMaxHpCost} 点体力上限换侍灵 / 1 次复活换 +${YEYE_RULES.altarReviveRewardCoin} 功勋与随机技能；离开时 +${YEYE_RULES.eventCoin} 功勋`;
+		case 'challenge':
+			return `自选加码（敌人 +${YEYE_RULES.challengeEnemyDelta} 或全体 +${YEYE_RULES.challengeMarkBonus} 刻印），胜利后每项 +${YEYE_RULES.challengeCoinBonus} 功勋`;
 		default:
 			return '';
 	}
@@ -217,8 +306,15 @@ export function yeyeNodeCandidates(stage) {
 		if (key === 'elite' && yeyeIsBossStage(stage + 1)) return false;
 		return true;
 	});
-	const result = pool.randomGets(Math.min(3, pool.length));
-	return result.filter(Boolean);
+	const result = pool.randomGets(Math.min(3, pool.length)).filter(Boolean);
+	// 【新增节点配套】池子变大后可能三张都不是能打的节点，这里保证至少留一个战斗类，避免功勋收入断档。
+	// 若不需要这条保底，删掉下面这一段即可。
+	const combat = ['battle', 'elite', 'challenge'];
+	if (result.length && !result.some(key => combat.includes(key))) {
+		const fallback = pool.filter(key => combat.includes(key)).randomGet();
+		if (fallback) result[Math.floor(Math.random() * result.length)] = fallback;
+	}
+	return result;
 }
 
 /** 从强化表里抽一个随机强化，minLevel 用来抽「稀有」强化 */

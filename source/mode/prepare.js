@@ -16,11 +16,14 @@ import {
     yeyeAddBuff,
     yeyeActiveSkills,
     yeyeScaled,
+    yeyeResetStageShop,
     yeyeOpenPanel,
     yeyePanelCard,
 } from "./yeyeConst.js";
 import { yeyePickEvent, yeyeRunEvent, yeyeGetEvent } from "./yeyeEvent.js";
 import { yeyePickServantId, yeyeGainServant, yeyeServantResultText, yeyeOpenServantSelect } from "./yeyeServant.js";
+// 【新增节点】锻造 / 祭坛 / 挑战；整体停用见 yeyeConst.js 的 YEYE_RULES.enableNewNodes
+import { yeyeRunForge, yeyeRunAltar, yeyeRunChallenge } from "./yeyeNode.js";
 const prepare = function () {
     //注册永夜将临专用的音频/图片工具函数
     modePrecontent();
@@ -464,7 +467,7 @@ const prepare = function () {
         const total = log.reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
         ui.create.div(
             '.yeye_EventDesc',
-            `本局共获得 ${total} 功勋　·　当前持有 ${data.coin || 0} 功勋　·　进行到第 ${data.barrier || 1} 关`,
+            `本局共获得 ${total} 功勋`,//当前持有 ${data.coin || 0} 功勋　· 进行到第 ${data.barrier || 1} 关
             api.body
         );
         if (!log.length) {
@@ -628,10 +631,53 @@ const prepare = function () {
             game.yeyeAdvanceStage(gain, '休整');
             return true;
         }
+        // ===== 【新增节点】锻造 / 祭坛 / 挑战 =====
+        // 想在测试时临时关掉：把 yeyeConst.js 的 YEYE_RULES.enableNewNodes 改成 false。
+        // 想彻底删除本功能：删掉下面这一整段即可（三选一池也要同步改 yeyeConst.js）。
+        if (nodeKey === 'forge' || nodeKey === 'altar') {
+            const run = nodeKey === 'forge' ? yeyeRunForge : yeyeRunAltar;
+            const done = await run(homeBody, data);
+            if (!done) {
+                //玩家放弃：退回商店，可以重新选节点
+                data.node = null;
+                game.saveConfig('wujinYongyeData', data);
+                return false;
+            }
+            game.yeyeAdvanceStage(YEYE_RULES.eventCoin, nodeKey === 'forge' ? '锻造' : '祭坛');
+            return true;
+        }
+        if (nodeKey === 'challenge') {
+            const mods = await yeyeRunChallenge(homeBody, data);
+            if (!mods) {
+                //玩家放弃挑战：退回商店，可以重新选节点
+                data.node = null;
+                game.saveConfig('wujinYongyeData', data);
+                return false;
+            }
+            //加码立即写入既有的临时字段，由 yeyeBuildEnemyList 消费
+            //幅度数值见 yeyeConst.js 的 YEYE_RULES.challengeEnemyDelta / challengeMarkBonus
+            if (mods.enemy) data.pendingEnemyDelta = (data.pendingEnemyDelta || 0) + (YEYE_RULES.challengeEnemyDelta || 0);
+            if (mods.mark) data.pendingMarkBonus = (data.pendingMarkBonus || 0) + (YEYE_RULES.challengeMarkBonus || 0);
+            //胜利奖励记在本场战斗状态上（结算时读取）
+            if (_status.yeyeGame) {
+                _status.yeyeGame.challenge = {
+                    bonus:
+                        (mods.enemy ? YEYE_RULES.challengeCoinBonus : 0) +
+                        (mods.mark ? YEYE_RULES.challengeCoinBonus : 0),
+                };
+            }
+            game.saveConfig('wujinYongyeData', data);
+        }
         //战斗 / 精英 / BOSS
         const enemies = game.yeyeBuildEnemyList(nodeKey, data);
         if (!enemies.length) {
             game.messagePopup_yy('敌人将池为空，无法开战');
+            // 【新增节点】挑战加码已经写进临时字段，这里回滚，避免泄漏到下一场战斗
+            if (nodeKey === 'challenge') {
+                delete data.pendingEnemyDelta;
+                delete data.pendingMarkBonus;
+                if (_status.yeyeGame) delete _status.yeyeGame.challenge;
+            }
             data.node = null;
             game.saveConfig('wujinYongyeData', data);
             return false;
@@ -661,6 +707,7 @@ const prepare = function () {
         data.node = null;
         data.pendingEvent = null;
         data.nodeCandidates = [];
+        yeyeResetStageShop(data); // 【新增】进入下一关，商店限购计数归零
         data.hp = Math.max(1, Math.min(data.hp || 1, data.maxHp || 1));
         game.saveConfig('wujinYongyeData', data);
         return game.yeyeAfterStage();
@@ -696,6 +743,11 @@ const prepare = function () {
         } else if (node === 'elite') {
             game.yeyeCoin(YEYE_RULES.stageCoin, '精英胜利', data);
             game.yeyeCoin(YEYE_RULES.eliteCoin, '精英额外奖励', data);
+        } else if (node === 'challenge') {
+            // 【新增节点】挑战：基础战斗奖励 + 已选加码的额外功勋
+            game.yeyeCoin(YEYE_RULES.stageCoin, '挑战胜利', data);
+            const challenge = _status.yeyeGame && _status.yeyeGame.challenge;
+            if (challenge && challenge.bonus) game.yeyeCoin(challenge.bonus, '挑战加码奖励', data);
         } else {
             game.yeyeCoin(YEYE_RULES.stageCoin, '战斗胜利', data);
         }
@@ -712,6 +764,7 @@ const prepare = function () {
         data.node = null;
         data.pendingEvent = null;
         data.nodeCandidates = [];
+        yeyeResetStageShop(data); // 【新增】进入下一关，商店限购计数归零
         if (data.nextStageBonus > 0) {
             game.yeyeCoin(YEYE_RULES.nextStageBonusCoin, '永夜之赐', data);
             data.nextStageBonus -= 1;

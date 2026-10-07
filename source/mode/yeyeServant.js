@@ -27,7 +27,7 @@ export const YEYE_SERVANT_TRANSLATE = {
 	yeye_sl_yeshunguang_a: "诛邪",
 	yeye_sl_yeshunguang_a_info: "限定技，出牌阶段，你可以令你本局与其他角色的距离视为1，出【杀】上限+1。",
 	yeye_sl_liuying_p: "萤火",
-	yeye_sl_liuying_p_info: "你受到伤害后摸2张牌；三阶起额外对伤害来源造成1点伤害。",
+	yeye_sl_liuying_p_info: "你体力值变化后摸1张牌并视为使用一张火【杀】；三阶起额外摸1张牌。",
 	yeye_sl_liuying_a: "燃坠",
 	yeye_sl_liuying_a_info: "限定技，出牌阶段，你可以对一名其他角色造成2点火焰伤害，三阶起改为3点。",
 	yeye_sl_ruanmei_p: "轻拢",
@@ -43,7 +43,7 @@ export const YEYE_SERVANT_TRANSLATE = {
 	yeye_sl_sanyueqi_a: "冰封",
 	yeye_sl_sanyueqi_a_info: "限定技，出牌阶段，你可以令一名其他角色翻面。",
 	yeye_sl_baie_p: "负世",
-	yeye_sl_baie_p_info: "每回合限一次：你成为伤害牌的目标时，可以将此牌改为【火攻】。",
+	yeye_sl_baie_p_info: "每回合限一次：你成为伤害牌的目标时，可以将此牌改为【火攻】，三阶起将使用者改为你。",
 	yeye_sl_baie_a: "逐火",
 	yeye_sl_baie_a_info: "限定技，出牌阶段，你可以视为使用X张无距离次数限制的火【杀】，X为你本关受到伤害的次数。",
 };
@@ -323,6 +323,13 @@ export function yeyeOpenServantSelect(onDone) {
 		card.addEventListener(lib.config.touchscreen ? 'touchend' : 'click', function (event) {
 			if (_status.dragged || _status.justdragged) return;
 			game.txhj_playAudioCall_yy('WinButton', null, true);
+			// 【新增】选中侍灵时直接播放它的技能语音（被动 / 主动随机一条，走和点将同一套解析）
+			game.txhj_TrySkillAudio_yy(
+				[servant.passive, servant.active].randomGet(),
+				{ name: servant.character },
+				null,
+				get.rand(1, 2)
+			);
 			if (selected && selected.card) selected.card.classList.remove('selected');
 			selected = entry;
 			card.classList.add('selected');

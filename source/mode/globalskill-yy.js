@@ -265,11 +265,11 @@ const globalSkill = {
         mode: ["wujin_yongye"],
         trigger: { global: "useCardAfter" },
         filter(event, player) {
-            return event.player && event.player == game.me && event.card && get.name(event.card) == 'sha';
+            return event.player && event.player == game.me && event.card && get.type(event.card) == 'basic';
         },
         async content(event, trigger, player) {
             game.log(player, "夜之刻印·咒缚");
-            await player.draw(1);
+            await player.draw();
         },
     },
     //===================== 夜之刻印·扩充 =====================
@@ -282,6 +282,7 @@ const globalSkill = {
         },
         async content(event, trigger, player) {
             game.log(player, "夜之刻印·嗜血");
+            await player.gainMaxHp();
             await player.recover();
         },
     },
@@ -322,31 +323,6 @@ const globalSkill = {
         async content(event, trigger, player) {
             game.log(player, "夜之刻印·蚀骨");
             await game.me.loseHp();
-        },
-    },
-    yeye_mk_yinhun: {
-        forced: true,
-        mode: ["wujin_yongye"],
-        trigger: { player: "dieBegin" },
-        filter(event, player) {
-            if (_status.gameStart === false) return false;
-            return !!(game.me && !game.me.isDead());
-        },
-        async content(event, trigger, player) {
-            await game.me.loseHp();
-            game.log(player, "夜之刻印·阴魂");
-        },
-    },
-    yeye_mk_feiteng: {
-        forced: true,
-        mode: ["wujin_yongye"],
-        trigger: { source: "damageBegin1" },
-        filter(event, player) {
-            return player.hp <= 2 && event.player && event.player != player;
-        },
-        content() {
-            trigger.num += 1;
-            game.log(player, "夜之刻印·沸腾");
         },
     },
     //===================== BOSS：永夜化身（阶段复生一次） =====================
@@ -406,7 +382,7 @@ const globalSkill = {
     },
     yeye_sl_changyeyue_a: {
         audio: "fyrhmenglong",
-        logAudio: index => "ext:永夜之境/audio/fyrhmenglong" + (typeof index === "number" ? index : get.rand(7, 10)) +".mp3",
+        logAudio: index => "ext:永夜之境/audio/fyrhmenglong" + (typeof index === "number" ? index : get.rand(7, 10)) + ".mp3",
         charlotte: true,
         forced: true,
         mode: ["wujin_yongye"],
@@ -470,18 +446,22 @@ const globalSkill = {
         charlotte: true,
         forced: true,
         mode: ["wujin_yongye"],
-        trigger: { player: "damage" },
-        filter(event, player) {
-            if (player != game.me) return false;
-            const source = event.source;
-            return !!(source && source != player);
+        trigger: {
+            player: ["changeHpAfter"],
         },
         async content(event, trigger, player) {
             const source = trigger.source;
+            let num = 1
             if (game.yeyeServantLevelOf('liuying') >= 3) {
-                if (source && !source.isDead()) await source.damage(1, player);
+                num = 2;
             }
-            await player.draw(2);
+            await player.draw(num);
+            await player.chooseUseTarget({
+                card: get.autoViewAs({ name: "sha", nature: "fire", isCard: true }),
+                //nodistance: true,
+                addCount: false,
+                forced: true,
+            });
         },
     },
     yeye_sl_liuying_a: {
@@ -673,12 +653,10 @@ const globalSkill = {
         audio: "xinxfushi",
         charlotte: true,
         mode: ["wujin_yongye"],
-        trigger: { target: "useCardToTargeted" },
+        trigger: { global: "useCard" },
         filter(event, player) {
-            if (player != game.me) return false;
-            if (!event.card || !event.player || event.player == player) return false;
+            if (event.player == player) return false;
             if (!event.targets || !event.targets.includes(player)) return false;
-            if (get.name(event.card) == 'huogong') return false;
             return get.is.damageCard(event.card);
         },
         usable: 1,
@@ -686,6 +664,11 @@ const globalSkill = {
             const source = trigger.player;
             const { card, cards: cards2 } = trigger;
             trigger.card.name = "huogong";
+            if (game.yeyeServantLevelOf('baie') >= 3) {
+                trigger.player = player;
+                trigger.targets = [source];
+                player.line(trigger.targets);
+            } 
         },
     },
     //逐火：每关限一次，视为使用X张火【杀】
@@ -710,24 +693,24 @@ const globalSkill = {
             player.awakenSkill(event.name);
             const num = player.getAllHistory('damage').length;
             for (let i = 0; i < num; i++) {
-            const result = await player
-                .chooseUseTarget(
-                    {
-                        name: "sha",
-                        nature: "fire",
-                        nodistance: true,
-                        addCount: false,
-                        isCard: true,
-                    },
-                    `逐火：请选择火【杀】的目标（第${i + 1}/${num}张）`,
-                    false
-                )
-                .forResult();
+                const result = await player
+                    .chooseUseTarget(
+                        {
+                            name: "sha",
+                            nature: "fire",
+                            nodistance: true,
+                            addCount: false,
+                            isCard: true,
+                        },
+                        `逐火：请选择火【杀】的目标（第${i + 1}/${num}张）`,
+                        false
+                    )
+                    .forResult();
 
-            if (!result?.bool) {
-                break;
+                if (!result?.bool) {
+                    break;
+                }
             }
-        }
         },
     },
 }

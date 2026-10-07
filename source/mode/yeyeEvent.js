@@ -310,7 +310,7 @@ export const YEYE_EVENTS = [
 				},
 			},
 			{
-				text: '花 60 玉璧，换体力上限 +1',
+				text: '花 60 玉璧，勾玉 +1',
 				cost: { jade: 60 },
 				available(data) {
 					return (data.jade || 0) >= 60;
@@ -318,7 +318,7 @@ export const YEYE_EVENTS = [
 				run(data) {
 					data.maxHp += 1;
 					data.hp += 1;
-					return '体力上限 +1。';
+					return '勾玉 +1。';
 				},
 			},
 		],

@@ -14,6 +14,11 @@ import {
     yeyeMarkName,
     yeyeArenaLayout,
     yeyeDuelModeEnabled,
+    // 【新增】商店限购与递增价格的计算函数（数值在 yeyeConst.js 的 YEYE_RULES）
+    yeyeShopPrice,
+    yeyeRefreshPrice,
+    yeyeShopLimitReached,
+    yeyeBuffBasePrice,
 } from "./yeyeConst.js";
 import {
     yeyeOpenServantPanel,
@@ -155,6 +160,9 @@ const mode = function () {
                     pendingWinBonus: 0,/*下一场战斗胜利额外功勋*/
                     pendingEquipCards: 0,/*下一场战斗开局额外临时装备牌*/
                     freeReviveOnce: false,/*本局首次失败不消耗复活*/
+                    // 【新增】商店限购与刷新翻倍的每关计数（进入下一关会自动清零，见 prepare.js 的 yeyeResetStageShop）
+                    stageBought: { skill: 0, buff: 0 },/*本关已购买次数：技能/强化各记一份*/
+                    stageRefresh: 0,/*本关已刷新次数*/
                 };
                 game.saveConfig('wujinYongyeData', lib.config.wujinYongyeData);
                 return lib.config.wujinYongyeData;
@@ -697,6 +705,14 @@ const mode = function () {
                 const leftBody = ui.create.div('.yeye_DataLeftBody', body);
                 const rightBody = ui.create.div('.yeye_DataRightBody', body);
                 function funcBuff(shop, str, str2) {
+                    // 商店里上架的商品显示当前售价（右侧「已拥有」列表 str2 == 'right' 不显示）
+                    let shopPriceSuffix = '';
+                    if (str2 !== 'right') {
+                        if (!wujinYongyeData.stageBought) wujinYongyeData.stageBought = { skill: 0, buff: 0 };
+                        const boughtNow = wujinYongyeData.stageBought[str] || 0;
+                        const basePrice = str == 'buff' ? yeyeBuffBasePrice(shop) : YEYE_RULES.shopSkillCost;
+                        shopPriceSuffix = `　·　售价 ${yeyeShopPrice(basePrice, boughtNow)} 功勋`;
+                    }
                     const icon = (function () {
                         let clickPrompt;
                         if (str == 'buff') {
@@ -741,7 +757,7 @@ const mode = function () {
                                 } else {
                                     query.innerHTML = `
                             <p class="buff-name">${str == 'buff' ? '加成' : '技能'}【${str == 'buff' ? (shop.name || '未知Buff') : (get.translation(shop) || '未知技能')}】</p>
-                            <p class="buff-info">${str == 'buff' ? (shop.info || '暂无描述') : (lib.translate[shop + "_info"] || '暂无描述')}</p>
+                            <p class="buff-info">${str == 'buff' ? (shop.info || '暂无描述') : (lib.translate[shop + "_info"] || '暂无描述')}${shopPriceSuffix}</p>
                             `;
                                     if (str == 'skill') {
                                         if (info.derivation) {
@@ -771,7 +787,7 @@ const mode = function () {
                                 query.style[str2] = '53%';
                                 query.innerHTML = `
                             <p class="buff-name">${str == 'buff' ? '加成' : '技能'}【${str == 'buff' ? (shop.name || '未知Buff') : (get.translation(shop) || '未知技能')}】</p>
-                            <p class="buff-info">${str == 'buff' ? (shop.info || '暂无描述') : (lib.translate[shop + "_info"] || '暂无描述')}</p>
+                            <p class="buff-info">${str == 'buff' ? (shop.info || '暂无描述') : (lib.translate[shop + "_info"] || '暂无描述')}${shopPriceSuffix}</p>
                             `;
                                 if (str == 'skill') {
                                     if (info.derivation) {
@@ -806,14 +822,18 @@ const mode = function () {
 
                 let icon0 = (function () {
                     let clickPrompt = ui.create.div('.yeye_DataIcon0', '刷新', leftBody, (event) => {
-                        const str = `是否花费1功勋刷新商店？`;
+                        // 【新增】刷新价格：本关第一次 YEYE_RULES.shopRefreshBase，之后每次翻倍（2 → 4 → 8 …）
+                        // 想还原成固定 1 功勋：把 yeyeConst.js 的 shopRefreshBase 改成 1、shopRefreshBaseMul 改成 1
+                        const refreshCost = yeyeRefreshPrice(wujinYongyeData.stageRefresh || 0);
+                        const str = `是否花费${refreshCost}功勋刷新商店？（本关第 ${(wujinYongyeData.stageRefresh || 0) + 1} 次刷新）`;
                         game.purchasePrompt_yy('刷新', str, homeBody, (bool) => {
                             if (bool) {
-                                if (wujinYongyeData.coin < 1) {
+                                if (wujinYongyeData.coin < refreshCost) {
                                     game.messagePopup_yy('功勋不足');
                                     return;
                                 }
-                                wujinYongyeData.coin -= 1;
+                                wujinYongyeData.coin -= refreshCost;
+                                wujinYongyeData.stageRefresh = (wujinYongyeData.stageRefresh || 0) + 1;
                                 topCoin.innerHTML = wujinYongyeData.coin;
                                 _status.choiceShop = undefined;
                                 _status.choiceType = undefined;
@@ -840,9 +860,20 @@ const mode = function () {
                 let icon1 = (function () {
                     let clickPrompt = ui.create.div('.yeye_DataIcon1', '购买', leftBody, (event) => {
                         if (_status.choiceShop) {
-                            //强化类 8 功勋、普通技能 5 功勋
-                            const itemCost = _status.choiceType == 'buff' ? YEYE_RULES.shopBuffCost : YEYE_RULES.shopSkillCost;
-                            const str = `是否花费${itemCost}功勋购买${_status.choiceType == 'buff' ? '强化 【' + _status.choiceShop.name + '】' : '技能 【' + get.translation(_status.choiceShop) + '】'}？`;
+                            // ===== 【新增】商店限购与递增价格 =====
+                            // 每关「技能」「强化」各自最多买 stageShopLimit 次，同类每多买 1 次单价 +stageShopPriceStep。
+                            // 数值与开关都在 yeyeConst.js 的 YEYE_RULES（想还原旧版：limit 改 999、step 改 0）。
+                            const buyType = _status.choiceType == 'buff' ? 'buff' : 'skill';
+                            if (!wujinYongyeData.stageBought) wujinYongyeData.stageBought = { skill: 0, buff: 0 };
+                            const bought = wujinYongyeData.stageBought[buyType] || 0;
+                            if (yeyeShopLimitReached(bought)) {
+                                game.messagePopup_yy(`本关${buyType === 'buff' ? '强化' : '技能'}已购满 ${YEYE_RULES.stageShopLimit} 次，进入下一关才能继续购买`);
+                                return false;
+                            }
+                            // 强化按「单项 price → 档位默认价 → shopBuffCost」取基础价（见 yeyeBuffBasePrice）
+                            const buyBase = buyType == 'buff' ? yeyeBuffBasePrice(_status.choiceShop) : YEYE_RULES.shopSkillCost;
+                            const itemCost = yeyeShopPrice(buyBase, bought);
+                            const str = `是否花费${itemCost}功勋购买${_status.choiceType == 'buff' ? '强化 【' + _status.choiceShop.name + '】' : '技能 【' + get.translation(_status.choiceShop) + '】'}？（本关第 ${bought + 1}/${YEYE_RULES.stageShopLimit} 次）`;
                             game.purchasePrompt_yy('购买商品', str, homeBody, (bool) => {
                                 if (bool) {
                                     if (wujinYongyeData.coin < itemCost) {
@@ -870,6 +901,7 @@ const mode = function () {
                                         return;
                                     }
                                     wujinYongyeData.coin -= itemCost;
+                                    wujinYongyeData.stageBought[buyType] = bought + 1;
                                     topCoin.innerHTML = wujinYongyeData.coin;
                                     if (_status.choiceType == 'buff') {
                                         //「强身」在购买时立刻结算体力上限，这样跨关保留体力时不会反复叠加
@@ -2161,7 +2193,7 @@ const mode = function () {
     }, {
         translate: '永夜将临',
         extension: '永夜之境',
-        intro: '魔改自《无尽模式》，原作者：.',
+        intro: '',
         config: {
             yeyeIntro: {
                 name: `<div style="padding:4px 8px;line-height:1.5;">${YEYE_INTRO.replace(/\n/g, '<br>')}</div>`,

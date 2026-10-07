@@ -1316,38 +1316,7 @@ export let info = {
                         ])
                         .set("filterOk", moved => moved[1].some(i => !get.owner(i)))
                         .set("processAI", list => {
-                            const player = get.event().player,
-                                limit = Math.min(get.event().num, player.countCards("h"));
-                            let cards = list[0][1].slice(),
-                                hs = player.getCards("h");
-                            if (cards.reduce((num, card) => num + get.value(card), 0) > player.getCards("h").reduce((num, card) => num + get.value(card), 0)) {
-                                cards.sort((a, b) => get.number(a) - get.number(b));
-                                hs.sort((a, b) => get.number(b) - get.number(a));
-                                let cards2 = cards.slice(0, limit),
-                                    hs2 = hs.slice(0, limit);
-                                if (hs2.reduce((num, card) => num + get.number(card), 0) > cards2.reduce((num, card) => num + get.number(card), 0)) {
-                                    cards.removeArray(cards2);
-                                    hs.removeArray(hs2);
-                                    return [cards.concat(hs2), hs.concat(cards2)];
-                                }
-                                return [cards, hs];
-                            } else {
-                                cards.sort((a, b) => get.value(b) - get.value(a));
-                                hs.sort((a, b) => get.value(a) - get.value(b));
-                                let cards2 = cards.slice(0, limit),
-                                    hs2 = hs.slice(0, limit),
-                                    list = [cards, hs];
-                                for (let i = 0; i < limit; i++) {
-                                    if (get.value(cards2[i]) > get.value(hs2[i])) {
-                                        const change = [cards2[i], hs2[i]];
-                                        cards[i] = change[1];
-                                        hs[i] = change[0];
-                                    } else {
-                                        break;
-                                    }
-                                }
-                                return list;
-                            }
+                                return 0;
                         })
                         .set("sum", sum)
                         .set("num", num)

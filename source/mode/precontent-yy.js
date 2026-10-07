@@ -4,94 +4,85 @@ import { lib, game, ui, get, ai, _status } from "../../../../noname.js";
 const precontent = function () {
     let currentPlayingAudio = null;
     let currentPlayingAudioPath = "";
+    // 每次点击 +1：上一次点击留下的 onEnded/onError 回调看到 token 变了就直接作废
+    let yeyeAudioToken = 0;
+
+    /**
+     * 取某个技能的语音文件列表。
+     * 直接用本体自己的解析器 get.Audio.skill（noname/get/audio.js），
+     * 这样扩写武将、侍灵、本体武将吃的是和战斗中「技能台词」完全同一套 audio 声明规则：
+     *   audio: "ext:永夜之境/audio:4"    → extension/永夜之境/audio/<技能名>1~4.mp3
+     *   audio: "其它技能名"               → 复用那个技能的语音
+     *   logAudio: index => "完整路径.mp3" → 用 logAudio 算路径
+     */
+    function yeyeSkillAudioFiles(skill, player, which) {
+        if (!skill) return [];
+        try {
+            const args = [typeof which === 'number' ? which : get.rand(1, 2)];
+            const list = get.Audio.skill({ skill: skill, player: player, args: args }).fileList;
+            return Array.isArray(list) ? list.filter(file => typeof file === 'string' && file) : [];
+        } catch (err) {
+            console.warn('语音解析失败：', skill, err);
+            return [];
+        }
+    }
+
     game.txhj_TrySkillAudio_yy = function (skill, player, directaudio, which, skin) {
         if (_status.qhly_viewRefreshing) return;
-
-        if (currentPlayingAudio && !currentPlayingAudio.ended) return;
-        var info = get.info(skill);
-        if (!info) return;
+        if (!skill) return;
         _status.qhly_previewAudio = true;
         try {
-            var audioname = skill;
-            if (info.audioname2 && info.audioname2[player.name]) {
-                audioname = info.audioname2[player.name];
-                info = lib.skill[audioname];
-            }
-            var audioinfo = info?.audio;
-            if (!audioinfo) return;
-            if (typeof audioinfo == 'string' && lib.skill[audioinfo]) {
-                audioname = audioinfo;
-                audioinfo = lib.skill[audioname].audio;
-            }
-
-            let playPath = "";
-            let isExtensionAudio = false;
-            if (typeof audioinfo == 'string') {
-                if (audioinfo.indexOf('ext:') == 0) {
-                    isExtensionAudio = true;
-                    audioinfo = audioinfo.split(':');
-                    if (audioinfo.length == 3) {
-                        let playName = audioname;
-                        if (audioinfo[2] != 'true') {
-                            audioinfo[2] = parseInt(audioinfo[2]);
-                            if (audioinfo[2]) {
-                                playName = typeof which == 'number'
-                                    ? audioname + (which % audioinfo[2] + 1)
-                                    : audioname + Math.ceil(audioinfo[2] * Math.random());
-                            }
-                        }
-                        playPath = `ext:${audioinfo[1]}/${playName}`;
+            let files = yeyeSkillAudioFiles(skill, player, which);
+            // 这个技能没配到语音时退一步：从该角色的其它技能里找一个有语音的。
+            // （扩展武将经常只有部分技能写了 audio，随机点到没写的技能就整段没声音）
+            if (!files.length && player && player.name) {
+                let others = [];
+                try {
+                    others = get.character(player.name, 3);
+                } catch (err) {
+                    others = [];
+                }
+                if (Array.isArray(others)) {
+                    others = others.slice(0);
+                    others.remove(skill);
+                    others.randomSort();
+                    for (const other of others) {
+                        files = yeyeSkillAudioFiles(other, player, which);
+                        if (files.length) break;
                     }
                 }
-            } else if (Array.isArray(audioinfo)) {
-                audioname = audioinfo[0];
-                audioinfo = audioinfo[1];
             }
+            if (!files.length) return;
 
-            if (Array.isArray(info.audioname) && player) {
-                if (info.audioname.includes(player.name)) {
-                    audioname += '_' + player.name;
-                } else if (info.audioname.includes(player.name1)) {
-                    audioname += '_' + player.name1;
-                } else if (info.audioname.includes(player.name2)) {
-                    audioname += '_' + player.name2;
-                }
-            }
-
-            if (!playPath) {
-                let playName = audioname;
-                if (typeof audioinfo == 'number') {
-                    playName = typeof which == 'number'
-                        ? audioname + (which % audioinfo + 1)
-                        : audioname + Math.ceil(audioinfo * Math.random());
-                }
-                playPath = `skill/${playName}`;
-            }
-
-            if (playPath) {
-                if (currentPlayingAudio) {
+            // 点第二个武将时直接覆盖：先作废旧回调，再停掉正在播的那条语音
+            const token = ++yeyeAudioToken;
+            const playPath = files.randomGet() || files[0];
+            if (currentPlayingAudio) {
+                try {
                     currentPlayingAudio.pause();
                     currentPlayingAudio.remove();
-                }
-                currentPlayingAudio = game.playAudio({
-                    path: playPath,
-                    rangekey: skill,
-                    onPlay: (ev) => {
-                        currentPlayingAudioPath = playPath;
-                        //  console.log('音频开始播放：', playPath);
-                    },
-                    onEnded: (ev) => {
-                        currentPlayingAudio = null;
-                        currentPlayingAudioPath = "";
-                        // console.log('音频播放结束：', playPath);
-                    },
-                    onError: (ev) => {
-                        currentPlayingAudio = null;
-                        currentPlayingAudioPath = "";
-                        console.error('音频播放出错：', playPath, ev);
-                    }
-                });
+                } catch (err) { }
+                currentPlayingAudio = null;
             }
+            currentPlayingAudio = game.playAudio({
+                path: playPath,
+                rangekey: skill,
+                onPlay: (ev) => {
+                    if (token !== yeyeAudioToken) return;
+                    currentPlayingAudioPath = playPath;
+                },
+                onEnded: (ev) => {
+                    if (token !== yeyeAudioToken) return;
+                    currentPlayingAudio = null;
+                    currentPlayingAudioPath = "";
+                },
+                onError: (ev) => {
+                    if (token !== yeyeAudioToken) return;
+                    currentPlayingAudio = null;
+                    currentPlayingAudioPath = "";
+                    console.warn('语音播放失败：', playPath, ev);
+                }
+            });
         } catch (err) {
             console.error('语音播放逻辑异常：', err);
             currentPlayingAudio = null;
