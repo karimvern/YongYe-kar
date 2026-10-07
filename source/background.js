@@ -171,11 +171,15 @@ export async function clearThumbnailCacheFiles() {
 export function syncStartupBackground(link = getSavedBackground()) {
     const style = document.documentElement.style;
     if (!link || link == DEFAULT_KEY) {
-        // 交回本体：由本体的背景设置决定启动背景
-        style.backgroundImage = '';
-        style.backgroundSize = '';
-        style.backgroundPosition = '';
-        if (typeof lib.init.background == 'function') lib.init.background();
+        // 记录不是扩展写的：本体在 boot 最开始已经画好了，动它只会让加载界面变空白
+        if (!isOwnStartupRecord()) return;
+        // 记录还是扩展写的（换回默认 / 扩展被关掉）：先交回本体，再按本体记录重画
+        try {
+            if (typeof lib.init.background == 'function') lib.init.background();
+        } catch (e) {
+            console.warn(`《${EXTENSION_NAME}》：交回启动背景失败。`, e);
+        }
+        paintStartupBackground();
         return;
     }
     style.backgroundImage = toCSSURL(getBackgroundImageURL(link));
@@ -193,11 +197,59 @@ export function syncStartupBackground(link = getSavedBackground()) {
 
 /**
  * 清掉扩展写入的“启动/加载阶段背景”，交回本体。
- * 扩展被关闭时本体不会执行 precontent，需要由扩展入口主动调用，
- * 否则重开一局时加载界面还会显示扩展背景。
+ *
+ * 注意：扩展一旦被关闭，本体的 importExtension 会直接用空扩展顶替
+ * （import.js 里 !game.hasExtension(name) 那条分支），扩展代码根本不会执行，
+ * 所以“被关闭”这件事只能靠 installDisableCleanupHook 在还开着的时候处理。
  */
 export function clearStartupBackground() {
     syncStartupBackground(DEFAULT_KEY);
+}
+
+/** 读取本体“启动/加载阶段背景”的记录 */
+function getStartupRecord() {
+    try {
+        return localStorage.getItem(lib.configprefix + 'background');
+    } catch (e) {
+        return null;
+    }
+}
+
+/** 记录是不是扩展自己写进去的（判断要不要交回本体） */
+function isOwnStartupRecord(value = getStartupRecord()) {
+    return typeof value == 'string' && value.startsWith(`../../${BACKGROUND_FOLDER}/`);
+}
+
+/**
+ * 按“启动背景记录”重画 html 背景（复刻本体的 setBackground）。
+ *
+ * 交回本体之后必须补这一步：本体只在 boot 最开始画一次，
+ * 下一次要等所有扩展加载完、createBackground 跑起来才重建背景层，中间会一直空着。
+ */
+function paintStartupBackground() {
+    const style = document.documentElement.style;
+    let value = getStartupRecord();
+    if (value && value[0] == '[') {
+        // 本体开了“随机背景”时这个记录是一个数组
+        try {
+            const list = JSON.parse(value);
+            if (!Array.isArray(list) || !list.length) throw new Error();
+            value = list[Math.floor(Math.random() * list.length)];
+            if (typeof value != 'string' || value.startsWith('custom_')) value = null;
+        } catch (e) {
+            value = null;
+        }
+    }
+    if (!value) {
+        style.backgroundImage = '';
+        style.backgroundSize = '';
+        style.backgroundPosition = '';
+        return;
+    }
+    style.backgroundImage = `url("${lib.assetURL}image/background/${value}.jpg")`;
+    style.backgroundSize = 'cover';
+    style.backgroundPosition = '50% 50%';
+    style.height = '100%';
 }
 
 function isImageFile(name) {
@@ -328,8 +380,16 @@ export function applyBackgroundFromConfig() {
 export function installBackgroundWatcher() {
     if (installBackgroundWatcher.installed) return;
     installBackgroundWatcher.installed = true;
+    const saved = getSavedBackground();
+    if (!saved || saved == DEFAULT_KEY) {
+        // 选的是「默认」：本体负责加载阶段的背景，扩展不碰 ui.background。
+        // 只有记录里还留着扩展写的值（上次没交回）时才修一次，
+        // 否则这里什么都不做 —— 本体的加载界面不会因为我们而变空白。
+        if (isOwnStartupRecord()) syncStartupBackground(DEFAULT_KEY);
+        return;
+    }
     // 尽早同步加载阶段（html）的背景，缩短重开时默认背景的停留时间
-    syncStartupBackground();
+    syncStartupBackground(saved);
     const tryApply = () => {
         if (!ui.background) return false;
         applyBackgroundFromConfig();
@@ -343,4 +403,32 @@ export function installBackgroundWatcher() {
     observer.observe(document.body, { childList: true });
     // 保险：一分钟之后无论如何都停止监听
     setTimeout(() => observer.disconnect(), 60000);
+}
+
+/**
+ * 盯住扩展自己的“开启”开关，关闭时把启动背景交回本体。
+ *
+ * 为什么需要它：关掉扩展后本体会用空扩展顶替，扩展代码不再执行，
+ * 之前在 localStorage 里写下的启动背景记录就没人清了 —— 重开游戏时
+ * 加载界面还会显示扩展背景（而且那张图可能很大，白白解码一次）。
+ * 所以要在扩展还开着的时候挂上这个钩子，关掉的那一刻就把记录交回本体
+ * 并立刻按本体记录重画，避免留下空白。
+ */
+export function installDisableCleanupHook() {
+    if (installDisableCleanupHook.installed) return;
+    installDisableCleanupHook.installed = true;
+    const enableKey = `extension_${EXTENSION_NAME}_enable`;
+    const originalSaveConfig = game.saveConfig;
+    if (typeof originalSaveConfig != 'function') return;
+    game.saveConfig = function (...args) {
+        const result = originalSaveConfig.apply(this, args);
+        try {
+            if (args[0] === enableKey && (args[1] === false || lib.config[enableKey] === false)) {
+                clearStartupBackground();
+            }
+        } catch (e) {
+            console.warn(`《${EXTENSION_NAME}》：关闭扩展时清理启动背景失败。`, e);
+        }
+        return result;
+    };
 }

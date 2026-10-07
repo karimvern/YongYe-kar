@@ -193,14 +193,14 @@ export function yeyeRunAltar(host, data) {
  * 返回 Promise<{enemy:boolean, mark:boolean} | null>：null = 放弃（退回节点选择）
  * ========================================================================== */
 export function yeyeRunChallenge(host, data) {
-	const api = yeyeNodePanel(host, '挑战 · 选择加码', 'yeye_ChallengeBody', null);
+	const api = yeyeNodePanel(host, '挑战 · 选择条件', 'yeye_ChallengeBody', null);
 	const mods = { enemy: false, mark: false };
 
 	function render() {
 		yeyePanelClear(api.body);
 		ui.create.div(
 			'.yeye_EventDesc',
-			`每选一项加码，胜利后额外 +${YEYE_RULES.challengeCoinBonus} 功勋。`,
+			`每选一项条件，胜利后额外 +${YEYE_RULES.challengeCoinBonus} 功勋。`,
 			api.body
 		);
 		yeyePanelCard(api.body, {

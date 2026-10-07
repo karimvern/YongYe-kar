@@ -1634,12 +1634,19 @@ export let info = {
                     filter(event, player) {
                         const evt = event.getParent("useCard");
                         if (evt.fyrhruyu_override) return false;
-                        return evt.fyrhrulu_shan === 0 && event.card?.name == "sha" && event.targets?.includes(player) && !event.excluded?.includes(player);
+                        if (evt.fyrhrulu_cleared) return false;
+                        //不能要求player在targets中——绫华自己使用此杀调整到响应牌数0时，
+                        //她是使用者而非目标，若按原条件判断则永远不会取消目标。
+                        //fyrhrulu_shan===0仅会被绫华的调整写入，足以限定作用范围
+                        return evt.fyrhrulu_shan === 0 && event.card?.name == "sha";
                     },
                     async content(event, trigger, player) {
                         const evt = trigger.getParent("useCard");
+                        evt.fyrhrulu_cleared = true;
+                        //targets是useCard事件targets的同一引用，清空即取消所有目标的结算
                         trigger.targets.length = 0;
-                        trigger.all_excluded = true;
+                        //all_excluded必须设在useCard事件上：useCard内容的step11~15检查的是它自身的all_excluded
+                        evt.all_excluded = true;
                         game.log(player, "取消了", evt.card, "的所有目标");
                     },
                 },
@@ -16379,8 +16386,6 @@ export let info = {
                 }
                 if (isSha) {
                     trigger.directHit.add(player);
-                } else {
-                    trigger.nowuxie = true;
                 }
 
                 let result =
@@ -16436,11 +16441,28 @@ export let info = {
                         });
                 }
                 else {
+                    //在被使用的锦囊牌上标记nowuxie：全局技能_wuxie的filter会检查card.storage.nowuxie
+                    //（standard.js:4231），标记后该锦囊结算时不再询问任何角色是否使用无懈可击。
+                    //时序依据：useCardToBegin（询问无懈的时机）晚于useCardToTargeted（本技能的触发时机），
+                    //且此处仅在实际发动成功后执行，避免取消使用时标记残留
+                    const card = trigger.card;
+                    if (card) {
+                        (card.storage ??= {}).nowuxie = true;
+                    }
                     player
                         .when({ global: "useCardToBegin" })
                         .filter(evt => evt.card == trigger.card)
                         .step(async (event, trigger, player) => {
                             trigger.neutralize();
+                        });
+                    //锦囊结算完毕（useCardAfter）后清除标记，不影响此牌之后被回收再次使用
+                    player
+                        .when({ global: "useCardAfter" })
+                        .filter(evt => evt == trigger.getParent())
+                        .step(async (event, trigger, player) => {
+                            if (card?.storage) {
+                                delete card.storage.nowuxie;
+                            }
                         });
                 }
 

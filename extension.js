@@ -7,7 +7,7 @@ import character from './source/packages/main/character.js'
 import skill from './source/packages/main/skill.js'
 import card from './source/packages/main/card.js'
 import basic from './source/basic.js'
-import { refreshBackgroundItem, clearStartupBackground } from './source/background.js'
+import { refreshBackgroundItem, installDisableCleanupHook } from './source/background.js'
 import modePrepare from './source/mode/prepare.js'
 import { applyLegacyAssets } from './source/mode/yeyeSkin/yeyeSkin.js' // [旧样式层]
 export let type = 'extension';
@@ -21,9 +21,9 @@ export default async function(){
     const extensionInfo = await lib.init.promises.json(`${basic.extensionDirectoryPath}info.json`);
     // 扫描 image/newbackground 文件夹，填充设置页中的背景列表
     await refreshBackgroundItem();
-    // 扩展被关闭时本体的 precontent 不会执行，这里主动清掉之前写入的启动背景，
-    // 否则重开一局时加载界面还会显示扩展背景
-    if (!lib.config['extension_永夜之境_enable']) clearStartupBackground();
+    // 扩展被关闭后本体不会加载扩展代码（importExtension 用空扩展顶替），
+    // 所以“关闭时清理启动背景”只能在还开着的时候接管：见 background.js
+    installDisableCleanupHook();
     let extension = {
         name:extensionInfo.name,
         editable:false,

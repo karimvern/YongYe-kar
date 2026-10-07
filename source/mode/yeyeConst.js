@@ -252,7 +252,7 @@ export function yeyeNodeInfo(key, stage) {
 		case 'altar':
 			return `三选一献祭：${YEYE_RULES.altarHpCost} 点体力换稀有强化 / ${YEYE_RULES.altarMaxHpCost} 点体力上限换侍灵 / 1 次复活换 +${YEYE_RULES.altarReviveRewardCoin} 功勋与随机技能；离开时 +${YEYE_RULES.eventCoin} 功勋`;
 		case 'challenge':
-			return `自选加码（敌人 +${YEYE_RULES.challengeEnemyDelta} 或全体 +${YEYE_RULES.challengeMarkBonus} 刻印），胜利后每项 +${YEYE_RULES.challengeCoinBonus} 功勋`;
+			return `自选条件（敌人 +${YEYE_RULES.challengeEnemyDelta} 或全体 +${YEYE_RULES.challengeMarkBonus} 刻印），胜利后每项 +${YEYE_RULES.challengeCoinBonus} 功勋`;
 		default:
 			return '';
 	}
