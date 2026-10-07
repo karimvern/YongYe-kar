@@ -1,0 +1,816 @@
+/* ==========================================================================
+   永夜将临 · 旧样式层（已冻结，可整体删除）
+
+   默认样式在 ../style.css（永夜新样式）。这份文件是「切回旧素材」的还原层：
+   作用域固定 body.yeye-legacy，只有打开 模式设置 →「使用旧版素材」时才生效，
+   关闭时对页面零影响。
+
+   ── 维护等级：冻结 ──
+   本层只保证「能切换、旧观感基本可读」，不再要求与新样式逐像素对齐。
+   以后修改 ../style.css 时，不必同步这份文件。
+
+   它只跟踪下面这 8 个属性，其余一概不管（新加的装饰会自然"漏"进旧样式）：
+     background-image / background-size / background-position / background-repeat
+     background-color / color / border-radius / box-shadow
+
+   想恢复 100% 对齐时跑 tools 里那两条命令：
+     python tools/regen_legacy.py    # 从 tools/yy_original_style.css 重新生成本文件
+     node   tools/check_legacy.mjs   # 比对「原样式」与「新样式 + 本层」，应报零差异
+   详见 tools/README.md。
+
+   ⚠ 新样式（../style.css）刻意不使用 !important —— 一旦使用，就会压过本层、
+   以及 mode.js 给档位图标写下的内联贴图，旧观的技能框/六边形就还原不出来了。
+
+   本文件由 tools/regen_legacy.py 生成，头部注释与规则都来自脚本，手工改会被覆盖。
+   移除方法：删掉 yeyeSkin/ 整个文件夹，再删掉 extension.js 与 mode.js 里带
+   「[旧样式层]」注释的那几行。
+   ========================================================================== */
+
+/* 字体：固定写死 shousha，将来新样式换字体也不影响旧观感 */
+body.yeye-legacy {
+	--yy-font: shousha;
+	--yy-font-fallback: shousha, 'Microsoft YaHei', sans-serif;
+}
+
+/* 关掉新样式独有的整屏星点。
+   content: none 已让它不生成，这里再把各项属性复位，
+   保证与旧样式的计算样式逐项一致（省得以后比对时误判）。 */
+body.yeye-legacy .yeye_Home::after {
+	content: none;
+	display: inline;
+	position: static;
+	left: auto;
+	top: auto;
+	width: auto;
+	height: auto;
+	opacity: 1;
+	background-image: none;
+	background-size: auto;
+	z-index: auto;
+	pointer-events: auto;
+}
+
+/* 同理，新样式把外框底板挪到了 .yeye_HomeBody::before，旧层要关掉它 */
+body.yeye-legacy .yeye_HomeBody::before {
+	content: none;
+	display: inline;
+	position: static;
+	inset: auto;
+	border-radius: 0;
+	background-image: none;
+	box-shadow: none;
+	z-index: auto;
+	pointer-events: auto;
+}
+
+/* 这一条原本是 font-family: "shousha", serif，
+   在 style.css 里被并进了 --yy-font-fallback，旧层单独还原回原值 */
+body.yeye-legacy .yeye_buffInfo {
+	font-family: "shousha", serif;
+}
+
+/* 旧层用内联贴图表达档位；若切换时残留了档位 class，映射回原图 */
+body.yeye-legacy .yeye_DataBuffIcon.yy-tier-hi {
+	background-image: url(../image/icon/buff4.png) !important;
+}
+body.yeye-legacy .yeye_DataBuffIcon.yy-tier-low {
+	background-image: url(../image/icon/buff3.png) !important;
+}
+body.yeye-legacy .yeye_DataMeSkillIcon.yy-tier-hi {
+	background-image: url(../image/icon/skills1.png) !important;
+}
+body.yeye-legacy .yeye_DataMeSkillIcon.yy-tier-low {
+	background-image: url(../image/icon/skills0.png) !important;
+}
+
+/* 超出带入上限的技能：旧样式下贴图不能改色，改用红圈 + 红字标出来 */
+body.yeye-legacy .yeye_DataMeSkillIcon.yeye_skillOverflow {
+	color: #ff6b6b;
+	outline: 2px solid #ff6b6b;
+	outline-offset: -2px;
+	opacity: 0.9;
+}
+
+/* 拖拽落点高亮：与上面的标红同为 outline，靠"后来者胜"压过它 */
+body.yeye-legacy .yeye_DataMeSkillIcon.yeye_skillDropTarget {
+	outline: 3px solid #4fd6e6;
+	outline-offset: 1px;
+}
+
+/* ===== 以下规则由 tools/regen_legacy.py 生成（依据 tools/yy_original_style.css），
+   手工修改会在下次重新生成时被覆盖 ===== */
+
+body.yeye-legacy .yeye_ChoiceCharacterGroupDivMax {
+	color: #958264;
+}
+
+body.yeye-legacy .yeye_ChoiceCharacterGroupDivName {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_ChoiceCharacterGroupDivNameText {
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #ffd700;
+	border-radius: 8px;
+}
+
+body.yeye-legacy .yeye_ChoiceCharacterOkButton {
+	background-image: url(../image/icon/icon_Button3.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #ffec8b;
+	border-radius: 8px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_ChoiceCharacterPlayImp1 {
+	border-radius: 8px;
+}
+
+body.yeye-legacy .yeye_ChoiceCharacterPlayImp2 {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_ChoiceCharacterPlayText {
+	background-color: rgba(0, 0, 0, 0.75);
+	color: rgba(200, 200, 200, 1);
+}
+
+body.yeye-legacy .yeye_ChoiceCharacterSouButton {
+	background-image: url(../image/icon/icon_Button3.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #ffec8b;
+	border-radius: 8px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_ChooseButton {
+	background-image: url(../image/icon/icon_0.png);
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	border-radius: 8px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_ChooseButton:hover {
+	box-shadow: 0px 0px 14px rgba(0, 255, 0, 0.75);
+}
+
+body.yeye-legacy .yeye_ChooseOk {
+	color: #9dff9d;
+}
+
+body.yeye-legacy .yeye_DataBuffBody {
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+body.yeye-legacy .yeye_DataBuffBodyBuff {
+	background-image: url(../image/icon/icon_2.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataBuffBodyCell {
+	background-image: url(../image/icon/icon_2.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataBuffBodyDiv {
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+body.yeye-legacy .yeye_DataBuffBodySkill {
+	background-image: url(../image/icon/icon_2.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataBuffIcon {
+	background-image: url(../image/icon/buff4.png);
+	background-size: 110% 110%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	border-radius: 8px;
+}
+
+body.yeye-legacy .yeye_DataBuff_div {
+	background-image: url(../image/icon/Datadiv.png);
+	background-size: 100% 100%;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataIcon0 {
+	background-image: url(../image/icon/icon_1.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataIcon1 {
+	background-image: url(../image/icon/icon_2.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataIcon2 {
+	background-image: url(../image/icon/icon_0.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataIcon3 {
+	background-image: url(../image/icon/icon_1.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataIcon4 {
+	background-image: url(../image/icon/icon_2.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataIcon5 {
+	background-image: url(../image/icon/icon_1.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataLevelBody {
+	background-image: url(../image/icon/levelBody.png);
+	background-size: 100% 100%;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DataMeBuffIcon {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_DataMeSkillIcon {
+	background-image: url(../image/icon/skills0.png);
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_DataPlayBody {
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+body.yeye-legacy .yeye_DataRevive_hp1 {
+	background-image: url(../image/icon/revive_hp1.png);
+	background-size: auto;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_DataRevive_hp2 {
+	background-image: url(../image/icon/revive_hp2.png);
+	background-size: auto;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_DataSkillBody {
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+body.yeye-legacy .yeye_DataSkillBodyDiv {
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+body.yeye-legacy .yeye_DataTextBody {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_DataTop-achievementbutton {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_DataTop-coin {
+	background-image: url(../image/icon/coin1.png);
+	background-size: 100% 100%;
+	background-position: 0% 0%;
+	background-repeat: repeat;
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_DataTop-jade {
+	background-image: url(../image/icon/jade1.png);
+	background-size: 100% 100%;
+	background-position: 0% 0%;
+	background-repeat: repeat;
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_DataTop-recordbutton {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_DatalevelIcon {
+	background-image: url(../image/icon/icon_2.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_DatalevelImage1 {
+	background-image: url(../image/icon/rank0.png);
+	background-size: auto;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_DatalevelImage2 {
+	background-image: url(../image/icon/rank1.png);
+	background-size: auto;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_EventDesc {
+	color: #d8d0a4;
+}
+
+body.yeye-legacy .yeye_EventResult {
+	color: #f3ecc4;
+}
+
+body.yeye-legacy .yeye_EventSubTitle {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_Home {
+	background-image: url(../image/background/bg-touming-1.jpg);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_HomeBody {
+	background-image: url(../image/background/bg-touming-5.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_HomeBody2 {
+	background-image: url(../image/background/frame1.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_HomeBodyBackground1 {
+	background-image: url(../image/background/img_select_general_bg.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_HomeBodyBackground2 {
+	background-image: url(../image/background/img_battle_pre_bg.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_LogAmount {
+	color: #9dff9d;
+}
+
+body.yeye-legacy .yeye_LogRow {
+	background-color: rgba(24, 24, 36, 0.72);
+	color: #d8d0a4;
+}
+
+body.yeye-legacy .yeye_PackButton {
+	background-image: url(../image/icon/icon_0.png);
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	border-radius: 10px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_PackButton:hover {
+	box-shadow: 0px 0px 18px rgba(0, 255, 0, 0.75);
+}
+
+body.yeye-legacy .yeye_PackNum {
+	color: #cfd8dc;
+}
+
+body.yeye-legacy .yeye_PackTitle {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_Panel {
+	background-color: rgba(6, 6, 12, 0.92);
+	border-radius: 8px;
+	box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+}
+
+body.yeye-legacy .yeye_PanelButton {
+	background-image: url(../image/icon/icon_2.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_PanelCard {
+	background-color: rgba(24, 24, 36, 0.86);
+	color: #e5dba5;
+	border-radius: 6px;
+}
+
+body.yeye-legacy .yeye_PanelCard.selected {
+	box-shadow: 0 0 14px rgba(0, 255, 0, 0.45);
+}
+
+body.yeye-legacy .yeye_PanelCardAvatar {
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_PanelCardCost {
+	color: #9dff9d;
+}
+
+body.yeye-legacy .yeye_PanelCardInfo {
+	color: #bdb58a;
+}
+
+body.yeye-legacy .yeye_PanelCardName {
+	color: #f3ecc4;
+}
+
+body.yeye-legacy .yeye_PanelClose {
+	background-image: url(../image/icon/icon_1.png);
+	background-size: 100% 100%;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_PanelEmpty {
+	color: #bdb58a;
+}
+
+body.yeye-legacy .yeye_PanelTitle {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_PointGroupDiv {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 8px;
+}
+
+body.yeye-legacy .yeye_PointPlayBody {
+	border-radius: 10px;
+}
+
+body.yeye-legacy .yeye_PointPlayBox {
+	background-image: url(../image/background/bg-touming-6.png);
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 10px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_PointPlayDiv {
+	background-image: url(../image/icon/icon_point2.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 10px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_PointTitle {
+	background-image: url(../image/icon/dianjiang.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_ServantBtn {
+	background-image: url(../image/icon/icon_0.png);
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	border-radius: 8px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_ServantCard {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 10px;
+}
+
+body.yeye-legacy .yeye_ServantCard.selected {
+	box-shadow: -4px 0 5px rgba(0, 255, 0, 0.75), 0 -4px 5px rgba(0, 255, 0, 0.75), 4px 0 5px rgba(0, 255, 0, 0.75), 0 4px 5px rgba(0, 255, 0, 0.75);
+}
+
+body.yeye-legacy .yeye_ServantGrid {
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+body.yeye-legacy .yeye_ServantOwned {
+	color: #ffe45c;
+}
+
+body.yeye-legacy .yeye_ServantSearchBtn {
+	background-image: url(../image/icon/icon_0.png);
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	border-radius: 6px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_ServantSearchInput {
+	background-color: rgba(0, 0, 0, 0.55);
+	color: #e5dba5;
+	border-radius: 6px;
+}
+
+body.yeye-legacy .yeye_ServantTitle {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_StateHome {
+	background-color: rgba(0, 0, 0, 0.65);
+}
+
+body.yeye-legacy .yeye_buffInfo {
+	background-color: rgba(0, 0, 0, 0.65);
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_characterDivMobile {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_characterDivMobileName {
+	color: rgb(255, 255, 255);
+}
+
+body.yeye-legacy .yeye_characterDivMobileStarICON {
+	background-image: url(../image/icon/icon_star.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_characterDivMobileStarICON2 {
+	background-image: url(../image/icon/icon_star.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_chooseChangeBtn {
+	background-image: url(../image/icon/icon_0.png);
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	border-radius: 8px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_chooseCharacterCharacterBody {
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+body.yeye-legacy .yeye_chooseCharacterDiv {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 10px;
+}
+
+body.yeye-legacy .yeye_chooseCharacterPlayBodySkills1 {
+	color: rgb(207, 107, 0);
+}
+
+body.yeye-legacy .yeye_chooseCharacterPlayBodySkills2 {
+	color: rgb(207, 107, 0);
+}
+
+body.yeye-legacy .yeye_chooseCharacterPlayBodySkills3 {
+	color: #f3e8dd;
+}
+
+body.yeye-legacy .yeye_consoledeskHomeButton {
+	background-image: url(../image/icon/button.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_consoledeskHomeButtonBox {
+	background-image: url(../image/icon/button2.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_consoledeskHomeButtonMenu {
+	background-image: url(../image/icon/icon_menu.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_consoledeskHomeButtonOut {
+	background-image: url(../image/icon/icon_out.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_consoledeskPlayBg {
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_consoledeskPlayHpICON {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_consoledeskPlayHpICON2 {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+body.yeye-legacy .yeye_consoledeskPlayImp1 {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 10px 10px 10px 10px;
+}
+
+body.yeye-legacy .yeye_consoledeskPlayImp2 {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 8px;
+}
+
+body.yeye-legacy .yeye_consoledeskPlayImpL {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 30px 30px 8px 8px;
+}
+
+body.yeye-legacy .yeye_consoledeskPlayImpX {
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 34px 34px 8px 8px;
+}
+
+body.yeye-legacy .yeye_consoledeskPlayName {
+	color: rgb(255, 255, 255);
+}
+
+body.yeye-legacy .yeye_icon0 {
+	background-image: url(../image/icon/icon_0.png);
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	border-radius: 8px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_icon1 {
+	background-image: url(../image/icon/icon_0.png);
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	border-radius: 8px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_icon2 {
+	background-image: url(../image/icon/icon_0.png);
+	background-size: 100% 100%;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	border-radius: 8px;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_messagePopupDivBg {
+	background-image: url(../image/icon/icon_Popup1.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_messagePopupDivText {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_playBody {
+	background-color: rgba(0, 0, 0, 0.35);
+}
+
+body.yeye-legacy .yeye_purchasePromptBody {
+	background-image: url(../image/background/frame8.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border-radius: 0;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_purchasePromptButton1 {
+	background-image: url(../image/icon/icon_Button13.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_purchasePromptButton2 {
+	background-image: url(../image/icon/icon_Button13.png);
+	background-size: cover;
+	background-position: center center;
+	background-repeat: no-repeat;
+	color: #e5dba5;
+	box-shadow: none;
+}
+
+body.yeye-legacy .yeye_purchasePromptText {
+	color: #342319;
+}
+
+body.yeye-legacy .yeye_purchasePromptTitle {
+	color: #e5dba5;
+}
+
+body.yeye-legacy .yeye_textBody {
+	color: #e5dba5;
+}

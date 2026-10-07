@@ -21,27 +21,47 @@ Object.assign(lib.skill, {
         silent: true,
         popup: true,
     },
-    //保留
+    //保留（全局存储版：所有玩家的保留数据统一存放在 _status.xinx_baoliu_dict，key 自带 playerid；其他技能统一通过 getDict/getCardAge 读写）
     _yyzjbaoliu: {
         ruleSkill: true,
         trigger: { global: ["phaseEnd", "roundStart"] },
         silent: true,
         firstDo: true,
         charlotte: true,
+        // 获取全局保留数据表
+        getDict() {
+            if (!_status.xinx_baoliu_dict) _status.xinx_baoliu_dict = {};
+            return _status.xinx_baoliu_dict;
+        },
+        // 统一读取接口：某张牌的保留回合数（age）与保留轮数（roundAge）；position 可传 "h" 等覆盖（默认按牌的当前位置，s 视为 h）
+        getCardAge(player, card, position) {
+            const dict = get.info("_yyzjbaoliu").getDict();
+            let pos = position || get.position(card) || "h";
+            if (pos === "s") pos = "h";
+            const cid = card._cardid || card.cardid;
+            const baseKey = player.playerid + "_" + pos + "_" + cid;
+            return { age: dict[baseKey] || 0, roundAge: dict[baseKey + "_round"] || 0 };
+        },
         async content(event, trigger, player) {
-            let dict = player.getStorage("yyzjbaoliu") || {};
-            let newDict = {};
+            const dict = get.info("_yyzjbaoliu").getDict();
             let isRound = event.triggername === "roundStart";
-            let hs = player.getCards("h");
+            let hs = player.getCards("he");
+            let validKeys = new Set();
             for (let card of hs) {
                 let baseKey = player.playerid + "_" + get.position(card) + "_" + card.cardid;
                 let roundKey = baseKey + "_round";
+                validKeys.add(baseKey);
+                validKeys.add(roundKey);
                 let oldTurnAge = dict[baseKey] || 0;
                 let oldRoundAge = dict[roundKey] || 0;
-                newDict[baseKey] = isRound ? oldTurnAge : oldTurnAge + 1;
-                newDict[roundKey] = isRound ? oldRoundAge + 1 : oldRoundAge;
+                dict[baseKey] = isRound ? oldTurnAge : oldTurnAge + 1;
+                dict[roundKey] = isRound ? oldRoundAge + 1 : oldRoundAge;
             }
-            player.setStorage("yyzjbaoliu", newDict);
+            // 清理该玩家已不在手牌/装备区中的旧条目（不影响其他玩家）
+            let prefix = player.playerid + "_";
+            for (let key of Object.keys(dict)) {
+                if (key.startsWith(prefix) && !validKeys.has(key)) delete dict[key];
+            }
         }
     },
     //虚无卡牌

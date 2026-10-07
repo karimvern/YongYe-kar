@@ -1,4 +1,5 @@
 import {lib, game, ui, get, ai, _status} from '../../../noname.js';
+import { getBackgroundRowHTML, openBackgroundWindow } from './backgroundWindow.js';
 export default {
 	loadUpdateContent: { //参考《忽悠宇宙》
 		// 👇 font-family: \'Songti SC\', \'SimSun\',
@@ -59,6 +60,8 @@ export default {
 			game.saveConfig('extension_永夜之境_video_enable', item);
 		}
 	}, */
+
+
 	/* yeshunguang_end_video: {
         name: "开启叶瞬光退幻视频",
         init: true,
@@ -83,7 +86,34 @@ export default {
 			game.saveConfig('extension_永夜之境_voice_quick_play', item);
 		}
 	},
+	/* yyjl0: {
+		name: "<font size='4'>---------《永夜降临》模式---------</font>",
+		clear: true,
+	}, */
+	//敌人将池上限
+	/* yeyeEnemyPoolLimit: {
+		name: '《永夜将临》将池上限',
+		init: false,
+		intro: '开启后，《永夜将临》的敌人将池最多保留70名角色。',
+	}, */
 	//========== 界面 ==========
+	background_divider: {
+		name: "<font size='4'>---------游戏背景切换---------</font>",
+		clear: true,
+		nopointer: true,
+	},
+	background_image: {
+		// 点击打开独立的选择窗口，所以这里用 getter 让设置行也能显示当前背景
+		get name() {
+			return getBackgroundRowHTML();
+		},
+		clear: true,
+		onclick() {
+			openBackgroundWindow(this);
+			// 返回 false 可以撤销点击产生的高亮状态
+			return false;
+		},
+	},
 	/* card_button_skin: {
 		name: "选项按钮卡片美化",
 		init: false,
@@ -123,6 +153,24 @@ export default {
 		name: "武将测试辅助",
 		intro: '<font color="#FFFF00">开启后可以使用一些测试武将的小功能。',
 	},
-	
+	//========== 永夜将临 ==========
+	/* yeyeTextSizeOn: {
+		name: '【永夜将临】字体大小调整',
+		init: false,
+		intro: '是否开启永夜将临界面的字体调整开关',
+	},
+	yeyeTextSize: {
+		name: '【永夜将临】字体调整倍率',
+		init: '1',
+		input: true,
+		intro: '手机端字体调整倍率，输入数字',
+		onblur: function () {
+			const inputValue = this.innerHTML.replace(/<br>/g, "");
+			let value = parseFloat(inputValue);
+			if (isNaN(value)) value = 1;
+			this.innerHTML = value;
+			game.saveConfig("extension_永夜之境_yeyeTextSize", value);
+		},
+	}, */
 
 }

@@ -7,7 +7,77 @@ import { lib, game, ui, get, ai, _status } from "noname";
 /* lib.skill.dcsbtaozhou = {
     inherit: "dcsbtaozhou",
 } */
-
+lib.skill.tiqi = {
+    audio: 2,
+		trigger: { global: ["phaseDrawEnd", "phaseDrawSkipped", "phaseDrawCancelled"] },
+		filter(event, player) {
+			if (player === event.player) {
+				return false;
+			}
+			const num = event.player
+				.getHistory("gain", evt => evt.getParent().name === "draw" && evt.getParent("phaseDraw") === event)
+				.map(evt => evt.cards.length)
+				.reduce((a, b) => a + b, 0);
+			return num !== 2;
+		},
+		frequent: true,
+		logTarget: "player",
+		async content(event, trigger, player) {
+			let num = trigger.player
+				.getHistory("gain", evt => evt.getParent().name === "draw" && evt.getParent("phaseDraw") === trigger)
+				.map(evt => evt.cards.length)
+				.reduce((a, b) => a + b, 0);
+			num = Math.abs(num - 2);
+			event.num = num;
+			await player.draw(num);
+			if (!trigger.player.isIn()) {
+				return;
+			}
+			const result = await player
+				.chooseControl({
+					controls: [` +${num} `, ` -${num} `, "cancel2"],
+					prompt: `是否改变${get.translation(trigger.player)}本回合的手牌上限？`,
+					ai: () => {
+						const sgn = get.sgn(get.attitude(player, trigger.player));
+						if (sgn === 0) {
+							return 2;
+						}
+						if (sgn === 1) {
+							return 0;
+						}
+						return 1;
+					},
+				})
+				.forResult();
+			if (result.index < 2) {
+				const target = trigger.player;
+				player.line(target);
+				if (!target.storage.tiqi_effect) {
+					target.storage.tiqi_effect = 0;
+				}
+				target.storage.tiqi_effect += num * get.sgn(0.5 - result.index);
+				target.addTempSkill("tiqi_effect");
+				target.markSkill("tiqi_effect");
+			}
+		},
+		subSkill: {
+			effect: {
+				mod: {
+					maxHandcard(player, num) {
+						if (typeof player.storage.tiqi_effect === "number") {
+							return num + player.storage.tiqi_effect;
+						}
+					},
+				},
+				charlotte: true,
+				onremove: true,
+				mark: true,
+				intro: {
+					content: num => `手牌上限${num < 0 ? "" : "+"}${num}`,
+				},
+			},
+		},
+}
 lib.skill.olzongluan = {
     audio: 2,
     trigger: { player: "phaseZhunbeiBegin" },

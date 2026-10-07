@@ -11,6 +11,7 @@ import {
     specialObsever,
 } from "./MatationObsever/PileObsever.js";
 import { initExtraContent } from './js/index.js';
+import { installBackgroundWatcher } from './background.js';
 
 export let charPack = {
     xinx1: {
@@ -37,6 +38,10 @@ for (let key in characterIntro) {
 
 
 export async function precontent(config, pack) {
+
+
+    // 让开始界面也能应用扩展设置里选中的游戏背景
+    installBackgroundWatcher();
 
     await initExtraContent(config, pack);
 
@@ -231,7 +236,7 @@ export async function precontent(config, pack) {
             showName: 'ka',
         });
 
-        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', 'SP', '界','手杀界','神',
+        const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', 'SP', '界','手杀界','神','夏','手杀',
             '乐', '华', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友', '雁翎','新杀|神','嗔','武'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
@@ -1104,13 +1109,5 @@ export async function precontent(config, pack) {
             }
         }
     });
-
-    
-
-
-
-
-
-
 
 }

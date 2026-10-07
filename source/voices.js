@@ -777,6 +777,30 @@ export let voices = {
     '#ext:永夜之境/audio/xinxduyi5': '来——猜猜～我是谁～',
     '#ext:永夜之境/audio/xinxduyi6': '这就结束了？这就满足了？',
 
+    '#ext:永夜之境/audio/xinxweiling1': '那些岁月，犹如无可追挽的幻光。',
+    '#ext:永夜之境/audio/xinxweiling2': '身为将军，麾下云骑以命相托，不可有一日懈怠。',
+    '#ext:永夜之境/audio/xinxweiling3': '兵戈，无情！',
+    '#ext:永夜之境/audio/xinxweiling4': '雷霆，在此！',
+    '#ext:永夜之境/audio/xinxweiling5': '煌煌威灵，遵吾敕命。斩无赦！',
+    '#ext:永夜之境/audio/xinxweiling6': '爻老板神照烛隐，我可以心安理得做个闭目将军了。',
+    '#ext:永夜之境/audio/xinxweiling7': '敌阵进退，仰赖符卿卜测了。',
+    '#ext:永夜之境/audio/xinxzixiao1': '该出奇兵了。',
+    '#ext:永夜之境/audio/xinxzixiao2': '破绽百出。',
+    '#ext:永夜之境/audio/xinxzixiao3': '时不我待。',
+    '#ext:永夜之境/audio/xinxzixiao4': '随我冲阵。',
+
+    '#ext:永夜之境/audio/xinxruwo1': '快看快看，飞起来咯？',
+    '#ext:永夜之境/audio/xinxruwo2': '愿开拓之旅，永远有涟漪相伴♪',
+    '#ext:永夜之境/audio/xinxruwo3': '嘻，到人家表现啦♪',
+    '#ext:永夜之境/audio/xinxruwo4': '开始第二乐章吧。',
+    '#ext:永夜之境/audio/xinxruwo5': '锵锵——有什么宝贝，也和我分享吧？',
+    '#ext:永夜之境/audio/xinxruwo6': '好多好多！当作我们的宝藏，收下吧。',
+    '#ext:永夜之境/audio/xinxruwo7': '就这样一直继续下去，好吗？',
+    '#ext:永夜之境/audio/xinxruwo8': '嗯哼♪',
+    '#ext:永夜之境/audio/xinxruwo9': '每一段回忆，都化作涟漪。',
+    '#ext:永夜之境/audio/xinxruwo10': '嗯…想荡秋千了呢。',
+    
+
 
 
     
@@ -827,58 +851,7 @@ export let voices = {
 
 
 
-   
-
-
-    
-
-    
-
-    
-    
-   
-    
-    
-    
-    
-    
-    
-
-
-   
-    
-    
-
- 
-
-    
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-    
-
-    
-
-
-
-
-
-
     //风雨如晦
-
      '#ext:永夜之境/audio/fyrhmenglong1': '好啦，不要再胡闹啦。',
      '#ext:永夜之境/audio/fyrhmenglong2': '等会就让你们安静下来~',
      '#ext:永夜之境/audio/fyrhmenglong3': '那些璀璨的花朵，正是新生的梦。',
@@ -943,6 +916,32 @@ export let voices = {
      '#ext:永夜之境/audio/fyrhchanglie2': '尔等食君之禄，焉作无声之鹑。',
      '#ext:永夜之境/audio/fyrhfuwang1': '尔等手中之刀俎，可饱民腹乎？',
      '#ext:永夜之境/audio/fyrhfuwang2': '武夫可保境，亦有书生弼国。',
+
+     '#ext:永夜之境/audio/fyrhkqiti1': '最高の走りを…それがここにいる理由だ。',
+     '#ext:永夜之境/audio/fyrhkqiti2': 'キミに出会えた…それが私にとっての奇跡だ。',
+     '#ext:永夜之境/audio/fyrhkqiti3': '私たちの勝ちだな！',
+     '#ext:永夜之境/audio/fyrhkqiti4': '勝ちに行こう！',
+     '#ext:永夜之境/audio/fyrhkqiangxi1': '…見ていてくれ…これが！私の！…全力だ！',
+     '#ext:永夜之境/audio/fyrhkqiangxi2': 'みんな、全力で行こう。',
+     '#ext:永夜之境/audio/fyrhkqiangxi3': '私の…全力だ！',
+
+     '#ext:永夜之境/audio/fyrhlongsha1': '纵横乱世，非惟刀兵，亦抑辩才。',
+     '#ext:永夜之境/audio/fyrhlongsha2': '鹤鸣九皋，声闻于天。',
+     '#ext:永夜之境/audio/fyrhlongsha3': '日升于东，而暮于西。',  
+     '#ext:永夜之境/audio/fyrhlongsha4': '痛哉！大汉将士已不复，文明又能存几时？',
+     '#ext:永夜之境/audio/fyrhlongsha5': '古今兴废，圣贤经传，无所不览。',  
+     '#ext:永夜之境/audio/fyrhlongsha6': '三教九流，诸子百家，无所不通。',
+
+     '#ext:永夜之境/audio/fyrhrulu1': '拿下了。',
+     '#ext:永夜之境/audio/fyrhrulu2': '樱吹雪。',
+     '#ext:永夜之境/audio/fyrhrulu3': '神里流…霜灭！',  
+     '#ext:永夜之境/audio/fyrhruyu1': '雪纷飞。',
+     '#ext:永夜之境/audio/fyrhruyu2': '失礼了。',
+     '#ext:永夜之境/audio/fyrhruyu3': '起舞吧。！',  
+     '#ext:永夜之境/audio/fyrhruyu4': '神里绫华，参上。',
+     '#ext:永夜之境/audio/fyrhruyu5': '凡请赐教。',
+     '#ext:永夜之境/audio/fyrhruyu6': '请多关照。', 
+ 
      
     
 
@@ -952,10 +951,7 @@ export let voices = {
      
       
     
-      
-
-
-
+    
      '#ext:永夜之境/audio/fyrhpitai1': '否极泰来。',
      '#ext:永夜之境/audio/fyrhpitai2': '互通有无，实为妙计',
      '#ext:永夜之境/audio/fyrhpitai3': '阴阳变转，生生不绝。',
@@ -1394,25 +1390,29 @@ export let voices = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //杏雅三国
+    //姜维
+    '#ext:永夜之境/audio/xinxnewpixing1': '维行丞相之策，方有兴复之机。',
+    '#ext:永夜之境/audio/xinxnewpixing2': '大任在肩，维定竭尽心力。',
+    '#ext:永夜之境/audio/xinxnewpixing3': '天下今幽，维当燃犀，以身照夜。',
+    '#ext:永夜之境/audio/xinxnewpixing4': '蹈丞相遗业，纵路崎，亦无悔！',
+    '#ext:永夜之境/audio/xinxnewpixing5': '继前人兴汉之愿，举国以奋其威！',
+
+    '#ext:永夜之境/audio/xinxnewpanzhi1': '武侯遗志未竟，众将何问归期。',
+    '#ext:永夜之境/audio/xinxnewpanzhi2': '以身擎国，誓承丞相夙愿！',
+    '#ext:永夜之境/audio/xinxnewpanzhi3': '诸围皆敛兵聚谷，退就汉、乐二城。',
+    '#ext:永夜之境/audio/xinxnewpanzhi4': '丞相北伐之计，尔等敢不遵乎？',
+    '#ext:永夜之境/audio/xinxnewpanzhi5': '鹓雏尚蹀躞，群鸱怎趋前？',
+    '#ext:永夜之境/audio/xinxnewpanzhi6': '久闻汝善战之名，今何故踟蹰不进？',
+    '#ext:永夜之境/audio/xinxnewpanzhi7': '汝之屯田方论，亦识兵书要略乎？',
+
+    '#ext:永夜之境/audio/xinxqiongfa1': '取川蜀地利天险，定叫汝莫敢来攻！',
+    '#ext:永夜之境/audio/xinxqiongfa2': '袭恩师之术，行御敌之计。',
+    '#ext:永夜之境/audio/xinxqiongfa3': '北伐之意，维必献绵薄之力！',
+    '#ext:永夜之境/audio/xinxqiongfa4': '殒身祈天，定不负万人之愿！',
+    '#ext:永夜之境/audio/xinxqiongfa5': '将星临斗，必照汉室以光复！',
+    
+
     //张辽
     '#ext:永夜之境/audio/xinxyufu1': '久闻盛名，今日一见，不过尔尔。',
     '#ext:永夜之境/audio/xinxyufu2': '堂堂大将，甘为缩头之鼠乎？',
@@ -1640,10 +1640,10 @@ export let voices = {
     '#ext:永夜之境/audio/xinxjianxiong2': '为谋天下一统，何惜眼前小损！',
     '#ext:永夜之境/audio/xinxjianxiong3': '恨其才不为我所用，宁杀之亦胜入他人之手。',
     '#ext:永夜之境/audio/xinxjianxiong4': '兵行错役之制，可绝负我之人！',
-    '#ext:永夜之境/audio/dz_K_wuqian1': '动作，就是要这样快！',
-    '#ext:永夜之境/audio/dz_K_wuqian2': '策马袭敌，乘胜追击！',
-    '#ext:永夜之境/audio/dz_K_huanren1': '没有防备我吧？',
-    '#ext:永夜之境/audio/dz_K_huanren2': '逍遥津下溃吴侯！',
+    '#ext:永夜之境/audio/xinxcwuqian1': '动作，就是要这样快！',
+    '#ext:永夜之境/audio/xinxcwuqian2': '策马袭敌，乘胜追击！',
+    '#ext:永夜之境/audio/xinxchuanren1': '没有防备我吧？',
+    '#ext:永夜之境/audio/xinxchuanren2': '逍遥津下溃吴侯！',
     '#ext:永夜之境/audio/xinxwugui1': '哼，司马氏可为，吾如何不可为？',
     '#ext:永夜之境/audio/xinxwugui2': '这天下，未必不能姓钟！',
     '#ext:永夜之境/audio/xinxsanku1': '天行五色，雪覆林间睡狐，独我执白。',

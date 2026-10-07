@@ -478,7 +478,8 @@ export let xinxpeiyuSkill = {
                     let m;
                     while ((m = re.exec(descriptions))) {
                         const name = info.getCardId(m[2]);
-                        if (!name) continue;
+                        //排除闪/无懈可击等无目标响应牌（防误提取，filter的hasUseTarget再兜底）
+                        if (!name || ['shan','wuxie'].includes(name)) continue;
                         const nature = pyNatureMap[m[1]] || "";
                         cards.set(`${name}|${nature}`, { name, nature });
                     }
@@ -780,7 +781,7 @@ export let xinxpeiyuSkill = {
                             prompt: `造物：交给${get.translation(player)}${num}张牌`,
                             forced: true,
                             position: "he",
-                            selected: num,
+                            selectCard: num,
                             target: player,
                             ai(card) {
                                 return 6 - get.value(card);
@@ -904,14 +905,14 @@ export let xinxpeiyuSkill = {
             key: "damageOthers",
             //条件变体式兜"造成1点伤害，若……，改为2点"
             numMatch: [/造成([0-9]+)点伤害/, /分配([0-9]+)点伤害/, /令[^，。；]{0,10}受到([0-9]+)点伤害/, numMatchChange(["造成", "受到", "分配"], { unit: "点" })],
-            name: num => `你可以对一名其他角色造成${num}点伤害`,
+            name: num => `你可以对一名角色造成${num}点伤害`,
             makeEffect: num => ({
                 filter(event, player) {
                     return game.hasPlayer(target => target != player);
                 },
                 async cost(event, trigger, player) {
                     event.result = await player
-                        .chooseTarget(get.prompt2(event.skill), (card, player, target) => target != player)
+                        .chooseTarget(get.prompt2(event.skill), (card, player, target) => true)
                         .set("ai", target => get.damageEffect(target, get.player(), get.player()))
                         .forResult();
                 },
@@ -962,7 +963,9 @@ export let xinxpeiyuSkill = {
         },
         {
             key: "loseHpOthers",
-            numMatch: /失去([0-9]+)点体力/,
+            //主式要求带数字（"失去1点体力"）；纯锚点保底无数字句式（"你可以失去体力"→按1生成），
+            //两式均以(?!上限)排除"失去1点体力上限"（那是体力上限词条的语义）
+            numMatch: [/失去([0-9]+)点体力(?!上限)/, /失去[^，。；]{0,4}体力(?!上限)/],
             name: num => `你可以令一名角色失去${num}点体力`,
             makeEffect: num => ({
                 filter(event, player) {
@@ -1004,7 +1007,6 @@ export let xinxpeiyuSkill = {
             key: "gainOthers",
             //双向断言排除"从牌堆获得""获得牌堆顶的"句式（那是从牌堆而非角色区域拿牌，与 gainSha/gainTrick 的牌堆语义不同）
             numMatch: [/(?<!牌堆[^，。；]{0,4})获得(?!牌堆)[^，。；]{0,12}([0-9]+)张牌/,numMatchAfter("获得其中")],
-            //numMatch: /获得[^，。；]{0,12}([0-9]+)张牌/,
             name: num => `你可以获得一名角色区域内的${num}张牌`,
             makeEffect: num => ({
                 filter(event, player) {
