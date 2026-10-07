@@ -1873,7 +1873,8 @@
 	justify-content: center;
 	text-align: center;
 	font-family: var(--yy-font);
-	font-size: 2.4vw;
+	/* 手机端 vw 会缩得很小，用 max(最小像素, vw) 兜底；桌面端 vw 更大时仍按原值走 */
+	font-size: max(22px, 2.4vw);
 	letter-spacing: 0.4vw;
 	color: #e5dba5;
 	border-bottom: 1px solid rgba(229, 219, 165, 0.35);
@@ -1890,7 +1891,7 @@
 	justify-content: center;
 	text-align: center;
 	font-family: var(--yy-font);
-	font-size: 1.6vw;
+	font-size: max(16px, 1.6vw);
 	color: #e5dba5;
 	background-size: 100% 100%;
 	background-image: var(--yy-btn-blue);
@@ -1973,7 +1974,7 @@
 .yeye_PanelCardName {
 	position: static;
 	display: block;
-	font-size: 1.6vw;
+	font-size: max(16px, 1.6vw);
 	line-height: 1.5;
 	color: #f3ecc4;
 	white-space: normal;
@@ -1982,7 +1983,7 @@
 .yeye_PanelCardInfo {
 	position: static;
 	display: block;
-	font-size: 1.2vw;
+	font-size: max(14px, 1.2vw);
 	line-height: 1.45;
 	color: #bdb58a;
 	white-space: normal;
@@ -1994,7 +1995,7 @@
 	top: 50%;
 	transform: translateY(-50%);
 	text-align: right;
-	font-size: 1.3vw;
+	font-size: max(14px, 1.3vw);
 	color: #9dff9d;
 	white-space: nowrap;
 }
@@ -2006,7 +2007,7 @@
 	padding: 4% 0%;
 	text-align: center;
 	font-family: var(--yy-font);
-	font-size: 1.6vw;
+	font-size: max(16px, 1.6vw);
 	line-height: 1.8;
 	color: #bdb58a;
 }
@@ -2022,7 +2023,7 @@
 	justify-content: center;
 	text-align: center;
 	font-family: var(--yy-font);
-	font-size: 1.7vw;
+	font-size: max(16px, 1.7vw);
 	color: #e5dba5;
 	background-size: 100% 100%;
 	background-image: var(--yy-btn-gold);
@@ -2035,7 +2036,7 @@
 	padding: 1.5% 0%;
 	text-align: center;
 	font-family: var(--yy-font);
-	font-size: 1.5vw;
+	font-size: max(15px, 1.5vw);
 	line-height: 1.7;
 	color: #d8d0a4;
 }
@@ -2047,7 +2048,7 @@
 	padding: 2% 0%;
 	text-align: center;
 	font-family: var(--yy-font);
-	font-size: 1.8vw;
+	font-size: max(16px, 1.8vw);
 	color: #e5dba5;
 }
 
@@ -2059,7 +2060,7 @@
 	box-sizing: border-box;
 	text-align: center;
 	font-family: var(--yy-font);
-	font-size: 1.8vw;
+	font-size: max(16px, 1.8vw);
 	line-height: 1.9;
 	color: #f3ecc4;
 }
@@ -2086,13 +2087,13 @@
 	background-color: rgba(24, 24, 36, 0.72);
 	border-left: 5px solid rgba(229, 219, 165, 0.45);
 	font-family: var(--yy-font-fallback);
-	font-size: 1.2vw;
+	font-size: max(14px, 1.2vw);
 	color: #d8d0a4;
 }
 
 .yeye_LogAmount {
 	color: #9dff9d;
-	font-size: 1.2vw;
+	font-size: max(14px, 1.2vw);
 	white-space: nowrap;
 }
 
@@ -2103,7 +2104,8 @@
    下面这一区块只负责「长什么样」：设计令牌 + 面板、按钮、图标的观感。
    默认即生效，不再引用任何 UI 位图（只有武将卡星级 icon_star.png 保留）。
 
-   想切回旧素材观感：打开 模式设置 → 「使用旧版素材」。
+   （原「切回旧素材观感」的入口是 模式设置 →「使用旧版素材」，
+     该按钮现已注释停用，见 source/mode/yeyeSkin/yeyeSkin.js。）
    旧样式层的实现全部在 source/mode/yeyeSkin/ 里，可整体删除。
    该层已「冻结」：改这里不必同步它；若要让旧观感重新逐像素对齐，
    见 source/mode/yeyeSkin/tools/README.md（两条命令）。

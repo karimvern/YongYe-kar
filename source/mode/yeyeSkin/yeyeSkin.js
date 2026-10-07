@@ -34,6 +34,9 @@ let obsoleteKeyCleaned = false;
 
 /** 模式设置里的开关项，由 mode.js 用展开运算符并入 config */
 export const YEYE_LEGACY_CONFIG = {
+    // 【已停用】「使用旧版素材」按钮：按要求注释掉，模式设置里不再显示这一项。
+    // 需要恢复时，把下面整段 [CONFIG_KEY]: {...}, 取消注释即可（其余代码都不受影响）。
+    /*
     [CONFIG_KEY]: {
         name: '使用旧版素材',
         intro: '开启后，永夜将临的页面切回旧样式的素材与观感（旧贴图、旧文字色、无整屏星点）；关闭则使用默认的「永夜」新样式。随时可切，不影响存档与玩法。',
@@ -53,6 +56,7 @@ export const YEYE_LEGACY_CONFIG = {
             applyLegacyAssets(bool);
         },
     },
+    */
 };
 
 /** 当前是否使用旧样式，读不到配置时按「用新样式」处理 */

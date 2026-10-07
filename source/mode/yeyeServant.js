@@ -283,6 +283,64 @@ export function yeyeServantResultText(result) {
 }
 
 /**
+ * 右键查看侍灵技能：改用本体的「武将资料卡」窗口（和点将右键武将牌是同一种样式）。
+ *
+ * 侍灵的两个技能（yeye_sl_*）并不挂在 servant.character 这张武将牌上，
+ * 所以这里临时捏一张同名武将牌、把技能列表换成侍灵的两个技能，
+ * 借 ui.click.charactercard 渲染原生样式，窗口关闭后再把临时数据回收掉。
+ * 返回 true 表示成功走原生窗口，false 表示环境不支持（调用方可退回自定义面板）。
+ */
+function yeyeOpenServantNativeCard(servant) {
+	if (!ui.click || typeof ui.click.charactercard !== 'function') return false;
+	const tmpName = '__yeye_servant_' + servant.id;
+	const base = lib.character[servant.character];
+	const has = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+	const had = {
+		character: has(lib.character, tmpName),
+		translate: has(lib.translate, tmpName),
+		intro: has(lib.characterIntro, tmpName),
+	};
+	const old = {
+		character: lib.character[tmpName],
+		translate: lib.translate[tmpName],
+		intro: lib.characterIntro[tmpName],
+	};
+	// 复制对应武将的性别 / 势力 / 体力，只替换技能列表
+	lib.character[tmpName] = get.convertedCharacter(
+		base
+			? [base.sex, base.group, base.maxHp, [servant.passive, servant.active]]
+			: ['', '', 4, [servant.passive, servant.active]]
+	);
+	lib.translate[tmpName] = servant.name;
+	lib.characterIntro[tmpName] = `侍灵【${servant.name}】：选中后获得该侍从（已有则升阶），并设为出战。`;
+
+	// noedit=true 关掉「禁用 / 收藏」；resume=false 不需要恢复游戏；
+	// 最后一个参数用对应武将的立绘，标题用侍灵名
+	ui.click.charactercard(tmpName, null, true, false, null, servant.character);
+
+	// 资料卡默认停在「介绍」页，这里直接切到「技能」页
+	setTimeout(function () {
+		const card = document.querySelector('.menubg.charactercard');
+		if (!card) return;
+		const btn = card.querySelector('.skillButton');
+		if (btn) btn.click();
+	}, 20);
+
+	// 窗口关闭后回收临时武将数据（资料卡是一次性读取，关闭即不再使用）
+	const timer = setInterval(function () {
+		if (document.querySelector('.charactercard')) return;
+		clearInterval(timer);
+		if (had.character) lib.character[tmpName] = old.character;
+		else delete lib.character[tmpName];
+		if (had.translate) lib.translate[tmpName] = old.translate;
+		else delete lib.translate[tmpName];
+		if (had.intro) lib.characterIntro[tmpName] = old.intro;
+		else delete lib.characterIntro[tmpName];
+	}, 300);
+	return true;
+}
+
+/**
  * 开局「选择获得侍从」界面。
  * 沿用点将的武将卡样式：两行、每行 6 张，超过两行可上下滑动，并支持正则搜索
  * （名字 / 技能名 / 技能描述）。选中后点「确定」即获得该侍从（已有则升阶）
@@ -340,9 +398,12 @@ export function yeyeOpenServantSelect(onDone) {
 		//右键查看该侍从的技能
 		card.oncontextmenu = function (event) {
 			game.txhj_playAudioCall_yy('WinButton', null, true);
-			const text = yeyeServantSkillText(servant);
-			const api = yeyeOpenPanel(view, servant.name + ' · 技能', 'yeye_ServantSkillBody');
-			ui.create.div('.yeye_EventDesc', `【${text.passiveName}】${text.passiveInfo}<br><br>【${text.activeName}】${text.activeInfo}`, api.body);
+			// 优先用本体的「武将资料卡」样式；环境不支持时退回原来的自定义面板
+			if (!yeyeOpenServantNativeCard(servant)) {
+				const text = yeyeServantSkillText(servant);
+				const api = yeyeOpenPanel(view, servant.name + ' · 技能', 'yeye_ServantSkillBody');
+				ui.create.div('.yeye_EventDesc', `【${text.passiveName}】${text.passiveInfo}<br><br>【${text.activeName}】${text.activeInfo}`, api.body);
+			}
 			event.stopPropagation();
 			event.preventDefault();
 			return false;

@@ -711,7 +711,7 @@ const mode = function () {
                         if (!wujinYongyeData.stageBought) wujinYongyeData.stageBought = { skill: 0, buff: 0 };
                         const boughtNow = wujinYongyeData.stageBought[str] || 0;
                         const basePrice = str == 'buff' ? yeyeBuffBasePrice(shop) : YEYE_RULES.shopSkillCost;
-                        shopPriceSuffix = `　·　售价 ${yeyeShopPrice(basePrice, boughtNow)} 功勋`;
+                        //shopPriceSuffix = `　·　售价 ${yeyeShopPrice(basePrice, boughtNow)} 功勋`;
                     }
                     const icon = (function () {
                         let clickPrompt;

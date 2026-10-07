@@ -17,7 +17,7 @@ export const YEYE_PACKS = [
     { key: 'all', name: '永夜之境', packs: ['xinx1', 'xinx2', 'xinxfenyu', 'xinxhuaijiu'] },
 ];
 
-export const YEYE_INTRO = `参考了《无尽模式》、《太虚幻境》的代码。\n胜利条件：闯过 ${YEYE_RULES.totalStages} 关；第 ${YEYE_RULES.bossStages.join('/')} 关为永夜化身（BOSS），击败最后的 BOSS 即通关。\n每关在「战斗 / 精英 / 奇遇 / 休整」中选一，敌人将池作为敌人来源。`;
+export const YEYE_INTRO = `参考了《无尽模式》、《太虚幻境》的代码。\n胜利条件：击败最后的BOSS即通关。`;
 
 function hideDecadeUI() {
     if (!window.decadeUI) return;
