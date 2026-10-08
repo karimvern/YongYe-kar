@@ -14,6 +14,9 @@ import {
     yeyeMarkName,
     yeyeArenaLayout,
     yeyeDuelModeEnabled,
+    // 【座位】谁先手 / 玩家几号位（数值与规则见 yeyeConst.js 的 playerSeat 三项）
+    yeyePlayerSeat,
+    yeyeSeatPlan,
     // 【新增】商店限购与递增价格的计算函数（数值在 yeyeConst.js 的 YEYE_RULES）
     yeyeShopPrice,
     yeyeRefreshPrice,
@@ -25,8 +28,6 @@ import {
     yeyeActiveServant,
     yeyeApplyServantSkills,
 } from "./yeyeServant.js";
-// [旧样式层] 可选：把页面切回旧素材，全部实现在 yeyeSkin/ 里；删除该文件夹即可整体移除
-import { YEYE_LEGACY_CONFIG, applyLegacyAssets, applyAssetTier } from "./yeyeSkin/yeyeSkin.js";
 import { yeyeMakeSortable } from "./yeyeSkillDrag.js";
 //势力框图片（永夜之境自建势力 xinx/xing 也有兜底）
 function yeyeName2Image(group) {
@@ -34,6 +35,39 @@ function yeyeName2Image(group) {
     if (!known.includes(group)) group = 'unknown';
     return 'extension/永夜之境/source/mode/image/style/name2_' + group + '.png';
 }
+
+/* ============================================================================
+ * 《永夜将临》模式 · 模块地图（要改东西，先看这里）
+ *
+ * 这个模式由下面这些文件组成，一个文件只干一件事：
+ *   prepare.js        【入口】扩展的 prepare 钩子指到这里：建牌桌、抽敌人、开商店、推进关卡。
+ *                     节点分发在 game.yeyeStartNode，关卡推进在 game.yeyeAdvanceStage。
+ *   mode.js           本文件 = 模式本体（game.addMode）：start 主循环、gameinit（每关发将 /
+ *                     刻印 / 算座位）、phaseLoop（出手顺序）、胜负结算、商店与数据面板、
+ *                     以及最末尾的「模式设置项 config」。
+ *   yeyeConst.js      【数值总表】YEYE_RULES / YEYE_NODES / YEYE_MARKS / YEYE_BUFFS /
+ *                     YEYE_SHOP_PLAN，以及抽奖、定价、座位等共享纯函数。调平衡先看这里。
+ *   yeyeNode.js       三个新增节点（锻造 / 祭坛 / 挑战）的界面与结算。
+ *   yeyeEvent.js      奇遇事件的池子与结算。
+ *   yeyeServant.js    侍灵（附身型伙伴）的表、发放与升级。
+ *   globalskill-yy.js 模式全局技能（夜之刻印、侍灵技能、战斗规则类技能）。
+ *   yeyeUI.js         进模式时的选将 / 选敌人将池界面 + 模式介绍文案。
+ *   precontent-yy.js  模式专属语音等资源。
+ *   yeyeSkillDrag.js  商店 / 数据面板里的技能拖拽排序。
+ *
+ * ── 常见改动去哪改 ──
+ *   数值（功勋、价格、敌人数量、强化档位、限购…）→ yeyeConst.js 的 YEYE_RULES（每项都有注释）
+ *   某个节点的代价 / 奖励（例：祭坛献祭体力给什么）→ yeyeNode.js 里对应 yeyePanelCard 的 onClick
+ *   奇遇奖励                                  → yeyeEvent.js
+ *   谁先手 / 玩家几号位                        → yeyeConst.js 的 playerSeat 三项；
+ *                                              本文件 gameinit 里「出手座位分配」消费它，
+ *                                              游戏内也能用「设置 → 永夜将临 → 玩家座位」直接切
+ *   总关数 / BOSS 关 / 敌人成长                → yeyeConst.js 的 totalStages、bossStages、yeyeEnemyCount()
+ *   单个节点的实际战斗内容                      → prepare.js 的 game.yeyeBuildEnemyList
+ *   菜单里出现的模式开关                        → 本文件末尾 config 里的条目
+ *
+ * 约定：逻辑里尽量不写死数字，一律从 YEYE_RULES 取；带【】的注释块是可以照抄改的模板。
+ * ========================================================================== */
 const mode = function () {
     game.addMode('wujin_yongye', {
         name: 'wujin_yongye',
@@ -717,15 +751,12 @@ const mode = function () {
                         let clickPrompt;
                         if (str == 'buff') {
                             clickPrompt = ui.create.div('.yeye_DataBuffIcon', shop.name);
-                            applyAssetTier(clickPrompt, 'buff', shop.level > 2 ? 'hi' : 'low'); // [旧样式层]
+                            //档位只用 class 表达，样式由 style.css 的 .yy-tier-* 决定
+                            clickPrompt.classList.add(shop.level > 2 ? 'yy-tier-hi' : 'yy-tier-low');
                         } else if (str == 'skill') {
                             let divname = str2 == 'right' ? '.yeye_DataMeSkillIcon' : '.yeye_DataBuffIcon';
                             clickPrompt = ui.create.div(divname, get.translation(shop));
-                            if (str2 == 'right') {
-                                applyAssetTier(clickPrompt, 'skill', get.skillRank(shop) > 1 ? 'hi' : 'low'); // [旧样式层]
-                            } else {
-                                applyAssetTier(clickPrompt, 'buff', get.skillRank(shop) > 1 ? 'hi' : 'low'); // [旧样式层]
-                            }
+                            clickPrompt.classList.add(get.skillRank(shop) > 1 ? 'yy-tier-hi' : 'yy-tier-low');
                         }
 
                         clickPrompt.choiced = function () {
@@ -1494,21 +1525,22 @@ const mode = function () {
                         if (!_status.gameStart) {
                             break;
                         }
+                        // 下一名出手者按「座位号」找：座位号比当前大的里最小的那个，没有就绕回最小的
+                        // （也就是新的一轮）。注意不能按 dataset.position 找 —— 玩家坐 2 号位时，
+                        // 桌面位置 0 是玩家、位置 1 才是 1 号位（反贼），两者顺序并不一致。
+                        // 座位号由 gameinit 按 yeyeSeatPlan 分配：队友固定最后，所以这里不会让队友先手。
                         let findNext = current => {
                             let players = game.players
                                 .slice(0)
                                 .concat(game.dead)
                                 .filter(player => player && player.dataset)
-                                .sort((a, b) => parseInt(a.dataset.position) - parseInt(b.dataset.position));
+                                .sort((a, b) => a.getSeatNum() - b.getSeatNum());
                             if (current && current.dataset) {
-                                let position = parseInt(current.dataset.position);
-                                for (let i = 0; i < players.length; i++) {
-                                    if (parseInt(players[i].dataset.position) > position) {
-                                        return players[i];
-                                    }
-                                }
+                                const seat = current.getSeatNum();
+                                const nextPlayer = players.find(player => player !== current && player.getSeatNum() > seat);
+                                if (nextPlayer) return nextPlayer;
                             }
-                            return players[0];
+                            return players.find(player => player !== current) || players[0];
                         };
                         const nextPlayer = findNext(event.player);
                         if (!nextPlayer) {
@@ -1585,16 +1617,40 @@ const mode = function () {
                 const yeyeIsBoss = yeyeNode === 'boss';
                 //配置武将合集（不含玩家）
                 let players = _status.yeyeGame.enemy.slice(0);
-                //对决模式（欢乐）：本关多出来的座位就是队友，且固定排在最后一个座位。
-                //玩家 1 号位、队友 4 号位（敌人排在中间，构成 1/4 对 2/3）。
-                //直接用「实际座位数 - 敌人 - 玩家」推出队友数量，保证与建桌布局一致
-                //（敌人 1 名时没有队友；敌人 2 名时 1 名队友；敌人 >= 3 时敌人夹在中间）。
+                //对决模式（欢乐）：本关多出来的座位就是队友。队友固定占最后一个「座位号」
+                //（永远最后出手），具体坐哪个桌子格子由 yeyeSeatPlan 按座位号算出来。
+                //队友数量直接用「实际座位数 - 敌人 - 玩家」推出，保证与建桌布局一致
+                //（敌人 1 名时没有队友；敌人 2 名时 1 名队友；敌人 >= 3 时队友仍在最后出手）。
                 const yeyeAllySlots = Math.max(0, game.players.length - players.length - 1);
-                const yeyeEnemySeats = game.players.length - 1 - yeyeAllySlots;
                 console.log('[永夜对决] 座位数=' + game.players.length + ' 敌人数=' + players.length + ' 队友数=' + yeyeAllySlots);
 
+                // ============ 出手座位分配（想改「谁先手 / 玩家几号位」就改这一段）============
+                // 「座位号」= 出手顺序：1 号位每轮第一个行动，数字越大越后出手。
+                // 座位号沿桌子顺序递增、玩家坐自己的号位（实现在 yeyeConst.js 的 yeyeSeatPlan）：
+                //   · 玩家 1 号位时 = 原版：自己(1) → 右(2) → 上(3) → 左(4, 队友)；
+                //   · 玩家 2 号位时：左(1号位，反贼) → 玩家(2) → 右(3) → 上(4, 队友)；
+                //   也就是「1 号位永远在玩家左边、玩家下家（3 号位）在右边」，队友永远是最后一个号位。
+                // 本体的「我」必须待在 dataset.position = 0 的格子（手牌区跟着这个节点），
+                // 所以玩家格子不动；队友格子会跟着座位号走，别写死“队友 = 最后一个格子”。
+                // phaseLoop 按座位号走，出手顺序就跟着变。
+                // 模式设置（开始界面点「永夜将临」那一页）里的「玩家座位」可以固定成 1 / 2 号位。
+                const yeyeStageNow = (lib.config.wujinYongyeData && lib.config.wujinYongyeData.barrier) || 1;
+                const yeyeSeat = yeyeSeatPlan(game.players.length, yeyePlayerSeat(yeyeStageNow), yeyeAllySlots);
+                const yeyeSeatOf = index => yeyeSeat.seats[Math.max(0, Math.min(yeyeSeat.seats.length - 1, index))];
+                const yeyeIsAllyPos = index => yeyeSeat.allyPositions.includes(index);
+                console.log(
+                    '[永夜座位] 第' +
+                        yeyeStageNow +
+                        '关 · ' +
+                        game.players
+                            .map(
+                                (player, i) =>
+                                    `${player == game.me ? '玩家' : yeyeIsAllyPos(i) ? '队友' : '敌人'}${yeyeSeat.seats[i]}号位`
+                            )
+                            .join(' · ')
+                );
+
                 //分发武将牌
-                let seatNum = 1;
                 for (let i = 0; i < game.players.length; i++) {
                     const player = game.players[i];
                     player.getId();
@@ -1606,8 +1662,8 @@ const mode = function () {
                         player.setIdentity('zhu');
                         player.side = true;
                         game.zhu = player;
-                    } else if (i > yeyeEnemySeats) {
-                        //队友：最后一个座位，与玩家同阵营（identity 'zhong'，界面显示“忠”）。
+                    } else if (yeyeIsAllyPos(i)) {
+                        //队友：占最后一个座位号（永远最后出手），与玩家同阵营（identity 'zhong'，界面显示“忠”）。
                         //武将取自玩家将池，排除玩家自己与本关敌人，避免同关重名。
                         let allyName = null;
                         try {
@@ -1636,8 +1692,9 @@ const mode = function () {
                         player.setIdentity('fan');
                         player.side = false;
                     }
-                    player.setSeatNum(seatNum);
-                    seatNum++;
+                    //座位号 = 按桌子位置（dataset.position，建桌时是按 0,1,2… 依次给的）查表
+                    const yeyeSeatIndex = Number(player.dataset && player.dataset.position);
+                    player.setSeatNum(yeyeSeatOf(Number.isFinite(yeyeSeatIndex) ? yeyeSeatIndex : i));
                 }
                 game.players.sortBySeat();
                 //敌人只统计反贼，队友（'zhong'）不吃夜之刻印/BOSS 模板
@@ -2018,7 +2075,16 @@ const mode = function () {
                             _status.gameStart = true;
                             _status.enterGame = true;
                         }
-                        await game.phaseLoop(game.zhu || _status.firstAct || game.me);
+                        // 从 1 号位开始走这一轮。玩家默认就是 1 号位（等价于原来的
+                        // game.zhu 先手）；当「玩家座位」被改成 2 号位后，这里自然变成
+                        // 玩家上家（通常是敌人）先手，玩家第二个行动。
+                        // 相关数值/开关：yeyeConst.js 的 playerSeat 三项、模式设置「玩家座位」。
+                        const yeyePhaseStarter =
+                            game.players.find(current => current && current.getSeatNum() === 1) ||
+                            game.zhu ||
+                            _status.firstAct ||
+                            game.me;
+                        await game.phaseLoop(yeyePhaseStarter);
                     }
                 });
             },            showIdentity: function (me) {
@@ -2205,6 +2271,19 @@ const mode = function () {
                 intro: '开启后，队友在敌人≥2名时出现，位于最后一个座位、敌人夹在中间。关闭则不加入队友。',
                 init: true,
             },
+            // 【车位/先手】座位号 = 每轮的出手顺序，1 号位第一个行动。
+            // 规则默认值在 yeyeConst.js 的 YEYE_RULES（playerSeat 三项）；
+            // 这里选「固定」就能随时改回去，不用动代码。
+            playerSeat: {
+                name: '玩家座位',
+                intro: '玩家的出手座位（几号位）。1号位先手，10关以后换成2号位；。队友（忠臣）固定最后一位。',
+                init: 'auto',
+                item: {
+                    auto: '10关后换2号位',
+                    1: '固定 1 号位（玩家先手）',
+                    2: '固定 2 号位（敌人先手）',
+                },
+            },
             inquired: {
                 name: '询问',
                 intro: "开启后点击按钮不进行询问",
@@ -2215,7 +2294,6 @@ const mode = function () {
                 intro: "开启后相应功能将消耗玉璧",
                 init: true,
             },
-            ...YEYE_LEGACY_CONFIG, // [旧样式层]
             deleteModeNode: {
                 name: '重置记录',
                 init: false,
@@ -2236,9 +2314,6 @@ const mode = function () {
             },
         },
     });
-
-    // [旧样式层] 模式注册后按设置同步一次，避免依赖扩展初始化时机
-    applyLegacyAssets();
 
 }
 

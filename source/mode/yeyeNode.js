@@ -5,14 +5,32 @@
  * 三种新节点的实现全部集中在本文件，数值全部来自 yeyeConst.js 的 YEYE_RULES。
  * 想停用：把 YEYE_RULES.enableNewNodes 改成 false（三选一里就不会再出现它们）。
  * 想彻底删掉：删除本文件，并删掉 prepare.js 里 import 与分发处的「新增节点」代码块。
+ *
+ * ── 想改某个节点的「代价 / 奖励」，看这三处即可（每个节点一个函数）──
+ *   · 锻造 yeyeRunForge  ：每次重铸花多少功勋 → YEYE_RULES.forgeRerollCost
+ *   · 祭坛 yeyeRunAltar  ：三种献祭的代价与奖励 → YEYE_RULES 的 altarXxx，
+ *                          具体发放逻辑在每个 yeyePanelCard 的 onClick 里（下面有逐条注释）
+ *   · 挑战 yeyeRunChallenge：加码幅度与奖励 → YEYE_RULES 的 challengeXxx
+ *
+ * ── 通用写法（照着改就不会错）──
+ *   yeyePanelCard(面板, {
+ *      title:   卡片标题,
+ *      info:    卡片说明（建议和实际数值保持一致，数值请从 YEYE_RULES 取，别写死）,
+ *      cost:    右上角的代价文字（'' = 不显示）,
+ *      disabled:true 时变灰不可点,
+ *      onClick() { 真正结算；改完数据记得 game.saveConfig('wujinYongyeData', data); 再 render(); }
+ *   })
+ *   面板里显示新数据 = 调 render()（函数内部会清空并重新画一遍卡片）。
+ *   发奖励的常用工具：yeyeRandomGainableSkills(data, n) 抽 n 个本局还没拿过的随机技能、
+ *   yeyeGainableSkillPool(data) 看还剩哪些技能可选、yeyeRandomBuff(最低档) + yeyeAddBuff(data, buff)
+ *   抽/加一条强化、yeyePickServantId(data,false) + yeyeGainServant(data,id) 发侍灵、
+ *   game.yeyeCoin(数量, 理由, data) 发功勋。
  */
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 import {
 	YEYE_RULES,
-	yeyeRandomBuff,
 	yeyeRandomGainableSkills,
 	yeyeGainableSkillPool,
-	yeyeAddBuff,
 	yeyeOpenPanel,
 	yeyePanelCard,
 	yeyePanelClear,
@@ -100,7 +118,7 @@ export function yeyeRunForge(host, data) {
 
 /* ============================================================================
  * 祭坛：三种献祭，每种每次限一次
- * 数值：YEYE_RULES.altarHpCost / altarHpBuffMinLevel / altarMaxHpCost / altarReviveRewardCoin
+ * 数值：YEYE_RULES.altarHpCost / altarHpSkillCount / altarMaxHpCost / altarReviveRewardCoin
  * ========================================================================== */
 export function yeyeRunAltar(host, data) {
 	const api = yeyeNodePanel(host, '祭坛', 'yeye_AltarBody', true);
@@ -111,22 +129,34 @@ export function yeyeRunAltar(host, data) {
 		yeyePanelClear(api.body);
 		ui.create.div('.yeye_EventDesc', '向永夜献上代价，换取本不属于你的力量。每种献祭每次限一次。', api.body);
 
-		// —— 献祭体力 → 稀有强化 ——
+		// —— 献祭体力 → 随机技能 ——
+		// 代价：当前体力 -YEYE_RULES.altarHpCost（默认 3）；体力 ≤ 代价时不给点（避免把自己献死）
+		// 奖励：yeyeRandomGainableSkills 抽 YEYE_RULES.altarHpSkillCount 个技能（默认 1 个），
+		//       直接进 data.skill（技能池与商店 / 锻造完全同一套过滤规则，见 yeyeConst.js 的
+		//       yeyeGainableSkillPool：已拥有的不再抽、静默/限定/负面技等都会被排除）。
+		// 想换回「稀有强化」：把 onClick 里的 skills 两行换成
+		//   const buff = yeyeRandomBuff(YEYE_RULES.altarHpBuffMinLevel); if (buff) yeyeAddBuff(data, buff);
+		// 并重新 import yeyeRandomBuff / yeyeAddBuff（原来就是这么写的）。
 		const hpCost = YEYE_RULES.altarHpCost;
+		const hpSkillCount = Math.max(1, Number(YEYE_RULES.altarHpSkillCount) || 1);
 		const hpAvailable = !used.hp && (data.hp || 1) > hpCost;
 		yeyePanelCard(api.body, {
 			title: '献祭体力',
-			info: `失去 ${hpCost} 点当前体力，随机获得 1 条稀有强化（体力 ≤ ${hpCost} 时不能用）`,
+			info: `失去 ${hpCost} 点当前体力，随机获得 ${hpSkillCount} 个技能（体力 ≤ ${hpCost} 时不能用）`,
 			cost: used.hp ? '已献祭' : '',
 			disabled: !hpAvailable,
 			onClick() {
 				data.hp = Math.max(1, (data.hp || 1) - hpCost);
-				const buff = yeyeRandomBuff(YEYE_RULES.altarHpBuffMinLevel);
-				if (buff) yeyeAddBuff(data, buff);
+				const skills = yeyeRandomGainableSkills(data, hpSkillCount);
+				if (skills.length) skills.forEach(skill => data.skill.push(skill));
 				used.hp = true;
 				game.saveConfig('wujinYongyeData', data);
 				game.txhj_playAudioCall_yy('WinButton', null, true);
-				game.messagePopup_yy(buff ? `获得强化【${buff.name}】` : '强化池已空');
+				game.messagePopup_yy(
+					skills.length
+						? `获得技能【${skills.map(skill => get.translation(skill)).join('】【')}】`
+						: '技能池已空'
+				);
 				render();
 			},
 		});

@@ -24,6 +24,26 @@ import { yeyePickEvent, yeyeRunEvent, yeyeGetEvent } from "./yeyeEvent.js";
 import { yeyePickServantId, yeyeGainServant, yeyeServantResultText, yeyeOpenServantSelect } from "./yeyeServant.js";
 // 【新增节点】锻造 / 祭坛 / 挑战；整体停用见 yeyeConst.js 的 YEYE_RULES.enableNewNodes
 import { yeyeRunForge, yeyeRunAltar, yeyeRunChallenge } from "./yeyeNode.js";
+
+/**
+ * ============================================================================
+ * 《永夜将临》模式 · 入口（prepare）
+ *
+ * 本文件只负责「流程」，不存数值：
+ *   1. 注册模式用的工具函数（音频/图片/UI 刷新、功勋、清场、结算…），全部挂在 game 上，
+ *      这样 mode.js 与各个节点的技能里都能直接调用 game.yeyeXxx。
+ *   2. game.yeyeBuildEnemyList  —— 按节点类型（战斗/精英/BOSS）组出本关敌人，写回 _status.yeyeGame。
+ *   3. game.yeyeStartNode       —— 玩家在三选一里点了某个节点后走的分发：
+ *                                  战斗/精英/BOSS → 组装敌人后开打（resume）
+ *                                  奇遇 → yeyeEvent.js；休整 → 直接回血结算
+ *                                  锻造/祭坛 → yeyeNode.js；挑战 → 先选加码再开打
+ *   4. game.yeyeAdvanceStage    —— 非战斗节点结算：加功勋、关卡 +1、刷新商店、通关判定。
+ *   5. 结算相关的 yeyeWinStage / yeyeLoseStage / yeyeSettleStage。
+ *
+ * 想改数值（功勋、敌人数量、限购…）→ 去 yeyeConst.js 的 YEYE_RULES，不要在这里写死。
+ * 想改某个节点的界面/奖励      → 去 yeyeNode.js（新增三种）或 yeyeEvent.js（奇遇）。
+ * ============================================================================
+ */
 const prepare = function () {
     //注册永夜将临专用的音频/图片工具函数
     modePrecontent();

@@ -1183,7 +1183,7 @@ export let info = {
                 if (cards.length) {
                     if (matched) {
                         if (!player.storage?.xinxruwos) {
-                            ui.backgroundMusic.src = `${lib.assetURL}extension/永夜之境/audio/music/昔涟 (中文和声伴奏).mp3`;
+                            ui.backgroundMusic.src = `${lib.assetURL}extension/永夜之境/audio/music/昔涟.mp3`;
                             player.storage.xinxruwos = true;
                         }
                         player.logSkill("xinxruwo", null, null, null, [get.rand(5, 7)]);
@@ -9525,7 +9525,7 @@ export let info = {
                     }
                 },
             },
-            group: 'xinxangang_add',
+            group: 'fyrhzaoju_mark',
             subSkill: {
                 effect: {
                     charlotte: true,
@@ -20926,7 +20926,7 @@ export let info = {
                     }
                 }
             },
-            group: 'xinxangang_add',
+            group: 'fyrhzaoju_mark',
             subSkill: {
                 swap: {
                     trigger: { global: "compareCardShowBefore" },
@@ -22695,7 +22695,7 @@ export let info = {
                 const num = player.maxHp - player.getHp();
                 event.result = await player
                     .chooseCardTarget({
-                        prompt: `将${num}张牌与体力上限交给一名其他角色，然后与其各摸一张牌。`,
+                        prompt: `将至多${num}张牌与体力上限交给一名其他角色，然后与其各摸一张牌。`,
                         filterCard: true,
                         position: "he",
                         selectCard: [1, num],
@@ -22813,9 +22813,8 @@ export let info = {
                     await player.gainMaxHp(trigger.num);
                     //await trigger.player.damage(trigger.num,'player', "unreal");
                 } */
-                if (player.countMark("xinxbahuang") >= 3 && event.player?.isIn()) {
-                    player.clearMark("xinxbahuang");
-                    if (trigger.player?.isIn()) {
+                if (player.countMark("xinxbahuang") >= 3 && trigger.player?.isIn()) {
+                        player.clearMark("xinxbahuang");
                         player.logSkill("xinxbahuang", [trigger.player], null, null, [get.rand(5, 6)]);
                         await trigger.player.damage(trigger.num, player);
                     }

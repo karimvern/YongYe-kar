@@ -2,8 +2,18 @@
 import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
 
 /**
- * 《永夜将临》肉鸽化改造的数值总表。
- * 想调平衡只改这里，玩法逻辑统一从这里取数。
+ * 《永夜将临》肉鸽化改造的数值总表 + 共享纯函数。
+ *
+ * 本文件分四块，改东西时按需找：
+ *   1. YEYE_RULES   —— 全部数值（关数、功勋、价格、限购、新增节点、玩家座位…），
+ *                      每一项后面都有注释说明作用；玩法逻辑统一从这里取数，不要写死数字。
+ *   2. YEYE_NODES   —— 节点类型表（名字、颜色、卡片说明的兜底文案）。
+ *   3. YEYE_MARKS   —— 夜之刻印（敌人词条），会被注册成技能描述。
+ *   4. 下面的函数   —— 抽强化/技能、商店定价、限购、座位分配等纯计算，供各文件调用。
+ *
+ * 例：想把「祭坛献祭体力」的奖励改回稀有强化 → 改 yeyeNode.js 的 onClick（本文件只需
+ * altarHpSkillCount / 强化档位两个数字）；想改谁先手 → 看 YEYE_RULES 的 playerSeat 三项
+ * 与下面的 yeyePlayerSeat / yeyeSeatPlan。
  */
 export const YEYE_RULES = {
 	totalStages: 25,                          // 单局总关数
@@ -70,13 +80,27 @@ export const YEYE_RULES = {
 	forgeRerollCost: 2,             // 每次重铸消耗的功勋
 	// —— 祭坛：三种献祭，每种每次限一次 ——
 	altarHpCost: 3,                 // 献祭消耗的当前体力（体力 ≤ 这个值时不给该选项）
-	altarHpBuffMinLevel: 4,         // 献祭体力换到的强化最低档位（4=蛮力/防具，5=锦囊/强攻/延寿）
+	altarHpSkillCount: 1,           // 献祭体力换到的随机技能数量（默认 1 个；想换回强化见 yeyeNode.js 的注释）
+	altarHpBuffMinLevel: 4,         // 【备用】只有把「献祭体力」改回发强化时才会用到：强化最低档位（4=蛮力/防具，5=锦囊/强攻/延寿）
 	altarMaxHpCost: 1,              // 献祭消耗的体力上限
 	altarReviveRewardCoin: 8,       // 献祭 1 次复活额外给的功勋
 	// —— 挑战：自选加码，加码越狠奖励越高 ——
 	challengeCoinBonus: 3,          // 每选一项加码，胜利后额外给的功勋
 	challengeEnemyDelta: 2,         // 「以寡敌众」本关敌人 +2（改幅度就改这个数）
 	challengeMarkBonus: 2,          // 「夜之烙印」本关敌人全体各 +2 个夜之刻印（改幅度就改这个数）
+
+	// ==================== 【玩家座位】出手顺序 ====================
+	// 「几号位」= 每轮的出手顺序：1 号位每轮第一个行动，数字越大越后出手。
+	// 规则：默认玩家 1 号位（也就是原来的先手）；从 playerSeatSwitchStage 这一关起，
+	// 换成 playerSeatAfterSwitch 号位（默认第 11 关 = “10 关以后”换成 2 号位）。
+	// 队友（忠臣）固定最后出手：永远占最大的座位号，不会被轮到 1 号位；
+	// 玩家不是 1 号位时，1 号位一定落在反贼身上（见 yeyeSeatPlan）。
+	// 想全程还原成“玩家永远先手”：把 playerSeatSwitchStage 改成比 totalStages 大的数（例如 999）。
+	// 想在游戏里随时切：开始界面点「永夜将临」进的模式设置里有「玩家座位」，
+	// 可以固定成 1 / 2 号位，或选「自动」交给这里的规则判断。
+	playerSeat: 1,                  // 未触发换座位时，玩家的出手座位
+	playerSeatSwitchStage: 11,      // 从第几关开始换座位（11 = 第 11 关起，也就是 10 关以后）
+	playerSeatAfterSwitch: 2,       // 换到几号位（2 = 玩家第二个出手，先手交给他的上家）
 };
 
 /** 节点类型表 */
@@ -89,7 +113,7 @@ export const YEYE_NODES = {
 	// ===== 【新增节点】以下三种由 YEYE_RULES.enableNewNodes 控制 =====
 	// 想彻底拿掉它们：把 enableNewNodes 改成 false；也可以把下面三行整段注释掉。
 	forge: { key: 'forge', name: '锻造', accent: '#ffcf6b', info: '花功勋重铸一个已有技能。' },
-	altar: { key: 'altar', name: '祭坛', accent: '#b06bff', info: '献祭体力 / 体力上限 / 复活，换取稀有奖励。' },
+	altar: { key: 'altar', name: '祭坛', accent: '#b06bff', info: '献祭体力 / 体力上限 / 复活，换取随机技能等奖励。' },
 	challenge: { key: 'challenge', name: '挑战', accent: '#ff4d6d', info: '自选加码，胜利后拿高额功勋。' },
 };
 
@@ -134,11 +158,11 @@ export const YEYE_BUFFS = [
 	[{ name: '强身', info: '体力上限+1', value: 1, level: 3 },
 	{ name: '回复', info: '回复体力的效果+1', value: 1, level: 3 },
 	// price 会覆盖 buffPriceByLevel[3]，单独给「摸牌数+1」定价
-	{ name: '丰收', info: '摸牌数+1', value: 1, level: 3, price: 25 }],
+	{ name: '丰收', info: '摸牌数+1', value: 1, level: 3, price: 30 }],
 	[{ name: '蛮力', info: '【杀】造成的伤害+1', value: 1, level: 4 },
 	{ name: '防具', info: '起始手牌额外获得2张临时防具牌', value: 2, level: 4 }],
 	[{ name: '锦囊', info: '起始手牌额外获得2张临时锦囊牌', value: 2, level: 5 },
-	{ name: '强攻', info: '使用【杀】的次数上限+1', value: 1, level: 5 },
+	{ name: '强攻', info: '使用【杀】的次数上限+1', value: 1, level: 1 },
 	{ name: '延寿', info: '增加体力上限的效果+1', value: 1, level: 5 }],
 ];
 
@@ -250,7 +274,7 @@ export function yeyeNodeInfo(key, stage) {
 		case 'forge':
 			return `花费${YEYE_RULES.forgeRerollCost} 功勋，将一个已有技能替换成随机技能，可连续重铸；离开时 +${YEYE_RULES.eventCoin} 功勋`;
 		case 'altar':
-			return `三选一献祭：${YEYE_RULES.altarHpCost} 点体力换稀有强化 / ${YEYE_RULES.altarMaxHpCost} 点体力上限换侍灵 / 1 次复活换 +${YEYE_RULES.altarReviveRewardCoin} 功勋与随机技能；离开时 +${YEYE_RULES.eventCoin} 功勋`;
+			return `三选一献祭：${YEYE_RULES.altarHpCost} 点体力换 ${YEYE_RULES.altarHpSkillCount} 个随机技能 / ${YEYE_RULES.altarMaxHpCost} 点体力上限换侍灵 / 1 次复活换 +${YEYE_RULES.altarReviveRewardCoin} 功勋与随机技能；离开时 +${YEYE_RULES.eventCoin} 功勋`;
 		case 'challenge':
 			return `自选条件（敌人 +${YEYE_RULES.challengeEnemyDelta} 或全体 +${YEYE_RULES.challengeMarkBonus} 刻印），胜利后每项 +${YEYE_RULES.challengeCoinBonus} 功勋`;
 		default:
@@ -298,6 +322,90 @@ export function yeyeArenaLayout(enemyCount) {
 	if (!yeyeDuelModeEnabled()) return { total: enemyCount + 1, ally: false };
 	const ally = enemyCount >= 2;
 	return { total: enemyCount + 1 + (ally ? 1 : 0), ally };
+}
+
+/**
+ * 本关玩家的「出手座位」（几号位）。
+ *
+ * 取值优先级（从高到低）：
+ *  1. 模式设置里的「玩家座位」：'1' / '2' / … = 整局固定成这个座位（游戏里随时能切，不用改代码）；
+ *  2. YEYE_RULES.playerSeatSwitchStage：到了这一关（含）就换成 playerSeatAfterSwitch 号位；
+ *  3. YEYE_RULES.playerSeat：以上都没触发时的座位。
+ *
+ * @param { number } [stage] 当前关卡（lib.config.wujinYongyeData.barrier）
+ * @returns { number } 玩家的座位号，1 = 先手
+ */
+export function yeyePlayerSeat(stage) {
+	const fallback = Math.max(1, Number(YEYE_RULES.playerSeat) || 1);
+	try {
+		const mc = lib.config.mode_config && lib.config.mode_config.wujin_yongye;
+		const manual = mc && mc.playerSeat;
+		if (manual !== undefined && manual !== 'auto' && manual !== '') {
+			const num = parseInt(manual);
+			if (num >= 1) return num;
+		}
+	} catch (e) {
+		// 读不到模式设置时按规则走
+	}
+	const from = Number(YEYE_RULES.playerSeatSwitchStage);
+	if (from > 0 && Number(stage) >= from) {
+		return Math.max(1, Number(YEYE_RULES.playerSeatAfterSwitch) || fallback);
+	}
+	return fallback;
+}
+
+/**
+ * 把「座位号」分给桌子上的每个位置（dataset.position）。
+ *
+ * 座位 = 出手顺序：1 号位每轮第一个行动，2 号位第二个……数字越大越后出手。
+ *
+ * 分配规则（三条，改规则就改这里）：
+ *   1. 座位号沿桌子顺序递增，玩家（永远在 dataset.position = 0）坐 playerSeat 号位。
+ *      所以「玩家上家」= 1 号位，画面上就在玩家左边；「玩家下家」= playerSeat+1 号位，
+ *      画面上在玩家右边（4 人桌：位置 0 下、1 右、2 上、3 左）。
+ *   2. 队友（忠臣）固定占最大的那几个座位号 —— 也就是永远最后出手。
+ *      队友的格子因此会跟着座位号走（不是固定占最后一个格子）。
+ *   3. 玩家要的号位超出范围会夹到 [1, total - 队友数]，保证队友还能拿到最后几个号位。
+ *
+ * 本体的「我」必须待在 dataset.position = 0 的格子（手牌区跟着这个节点），所以玩家位置不动。
+ *
+ * 例（4 人桌：座位号按 位置0玩家、1 右、2 上、3 左 排）：
+ *   playerSeat = 1 → 座位 [1,2,3,4]：玩家(1) → 右(2) → 上(3) → 左(4)=队友（原版行为）
+ *   playerSeat = 2 → 座位 [2,3,4,1]：左(1号位，反贼) → 玩家(2) → 右(3) → 上(4)=队友
+ *
+ * @param { number } total 本关座位总数
+ * @param { number } playerSeat 玩家要坐第几号位（出手顺序）
+ * @param { number } [allyCount] 队友数量（占最大的几个座位号），默认 0
+ * @returns {{ seats: number[], playerSeat: number, allyPositions: number[], allySeats: number[], firstIndex: number }}
+ *          seats[i]：桌子位置 i 的座位号；playerSeat：玩家实际拿到的座位号；
+ *          allyPositions：队友占的桌子位置；allySeats：队友的座位号（出手最靠后）；firstIndex：1 号位的位置号
+ */
+export function yeyeSeatPlan(total, playerSeat, allyCount = 0) {
+	const count = Math.max(1, Math.floor(Number(total) || 1));
+	const allies = Math.max(0, Math.min(count - 1, Math.floor(Number(allyCount) || 0)));
+	const maxPlayerSeat = Math.max(1, count - allies);
+	const seat = Math.max(1, Math.min(maxPlayerSeat, Math.floor(Number(playerSeat) || 1)));
+	const playerIndex = 0; // 本体的「我」永远在位置 0，位置不动、只改座位号
+	const seats = [];
+	for (let i = 0; i < count; i++) {
+		// 沿桌子顺序从玩家（位置 0）往后数：位置 i 的座位号 = 玩家座位 + i（绕回 1..count）
+		seats[i] = ((i + seat - 1) % count) + 1;
+	}
+	// 队友坐最大的几个座位号（最后出手）：从“不是玩家的位置”里按座位号从大到小挑
+	const allyPositions = seats
+		.map((seatNum, index) => ({ seatNum, index }))
+		.filter(item => item.index !== playerIndex)
+		.sort((a, b) => b.seatNum - a.seatNum)
+		.slice(0, allies)
+		.map(item => item.index)
+		.sort((a, b) => a - b);
+	return {
+		seats,
+		playerSeat: seat,
+		allyPositions,
+		allySeats: allyPositions.map(index => seats[index]),
+		firstIndex: seats.indexOf(1),
+	};
 }
 
 /** 本关的三个节点候选：精英不会出现在 BOSS 前一关 */

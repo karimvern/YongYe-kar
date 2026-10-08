@@ -27,7 +27,7 @@ export const YEYE_SERVANT_TRANSLATE = {
 	yeye_sl_yeshunguang_a: "诛邪",
 	yeye_sl_yeshunguang_a_info: "限定技，出牌阶段，你可以令你本局与其他角色的距离视为1，出【杀】上限+1。",
 	yeye_sl_liuying_p: "萤火",
-	yeye_sl_liuying_p_info: "你体力值变化后摸1张牌并视为使用一张火【杀】；三阶起额外摸1张牌。",
+	yeye_sl_liuying_p_info: "你体力值变化后摸1张牌并视为使用一张火【杀】。",
 	yeye_sl_liuying_a: "燃坠",
 	yeye_sl_liuying_a_info: "限定技，出牌阶段，你可以对一名其他角色造成2点火焰伤害，三阶起改为3点。",
 	yeye_sl_ruanmei_p: "轻拢",

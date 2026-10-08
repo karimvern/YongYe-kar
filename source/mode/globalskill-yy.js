@@ -452,9 +452,6 @@ const globalSkill = {
         async content(event, trigger, player) {
             const source = trigger.source;
             let num = 1
-            if (game.yeyeServantLevelOf('liuying') >= 3) {
-                num = 2;
-            }
             await player.draw(num);
             await player.chooseUseTarget({
                 card: get.autoViewAs({ name: "sha", nature: "fire", isCard: true }),

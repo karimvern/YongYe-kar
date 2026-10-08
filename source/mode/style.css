@@ -2104,15 +2104,9 @@
    下面这一区块只负责「长什么样」：设计令牌 + 面板、按钮、图标的观感。
    默认即生效，不再引用任何 UI 位图（只有武将卡星级 icon_star.png 保留）。
 
-   （原「切回旧素材观感」的入口是 模式设置 →「使用旧版素材」，
-     该按钮现已注释停用，见 source/mode/yeyeSkin/yeyeSkin.js。）
-   旧样式层的实现全部在 source/mode/yeyeSkin/ 里，可整体删除。
-   该层已「冻结」：改这里不必同步它；若要让旧观感重新逐像素对齐，
-   见 source/mode/yeyeSkin/tools/README.md（两条命令）。
-
-   ⚠ 本区块刻意不使用 !important：
-   档位图标在旧样式层里是由 mode.js 写内联 background-image 表达的，
-   一旦这里加了 !important，就会连内联贴图一起压掉，旧观感无法还原。
+   ⚠ 档位规则刻意不使用 !important：
+   .yy-tier-hi / .yy-tier-low 靠「选择器更具体」覆盖 .yeye_DataBuffIcon /
+   .yeye_DataMeSkillIcon 的基础规则；一旦基础规则加了 !important，档位就会失效。
    ========================================================================== */
 
 /* 设计令牌挂在 body 上：模式 UI 有三个互不嵌套的根

@@ -1243,44 +1243,6 @@ export let info = {
         fyrhliewang: {
             audio: "ext:永夜之境/audio:4",
             logAudio: () => "ext:永夜之境/audio/fyrhliewang" + get.rand(1, 2) + ".mp3",
-            marktext: "❄️",
-            mark: true,
-            intro: {
-                markcount(storage, player) {
-                    const cards = get.discarded().filterInD("d");
-                    const suits = new Set();
-                    for (const card of cards) {
-                        const suit = get.suit(card);
-                        if (suit && suit !== 'none') {
-                            suits.add(suit);
-                        }
-                    }
-                    return suits.size;
-                },
-                mark(dialog, storage, player) {
-                    dialog.css({ width: "50%" });
-                    if (get.is.phoneLayout()) {
-                        dialog.classList.add("fullheight");
-                    }
-                    const centerCards = get.discarded().filterInD("d");
-                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄本回合弃牌堆</div>');
-                    const suitMap = { spade: "♠", heart: "♥", club: "♣", diamond: "♦" };
-                    const suits = new Set();
-                    for (const card of centerCards) {
-                        const suit = get.suit(card);
-                        if (suit && suit !== "none") {
-                            suits.add(suit);
-                        }
-                    }
-                    const suitText = Object.keys(suitMap).filter(s => suits.has(s)).map(s => `<span style="color:${s == "heart" || s == "diamond" ? "#ff6666" : "#ffffff"}">${suitMap[s]}</span>`).join(" ");
-                    dialog.addText(`<div class="text center" style="padding:5px;">已收集花色：${suitText || '<span style="opacity:0.6">无</span>'}</div>`);
-                    if (centerCards.length) {
-                        dialog.addAuto(centerCards);
-                    } else {
-                        dialog.addText('<div class="text center" style="opacity:0.6">暂无卡牌</div>');
-                    }
-                },
-            },
             sunbenSkill: true,
             manualConfirm: true,
             enable: "phaseUse",
@@ -1340,7 +1302,7 @@ export let info = {
                     }
                 }
             },
-            group: ["fyrhliewang_ice", "fyrhliewang_mark"],//'xinxangang_add'
+            group: ["fyrhliewang_ice", "fyrhzaoju_mark"],
             subSkill: {
                 mark: {
                     charlotte: true,
@@ -1353,7 +1315,7 @@ export let info = {
                     filter(event, player) {
                         return player.hasSkill("fyrhliewang");
                     },
-                    content() {
+                    async content(event, trigger, player) {
                         game.countPlayer(current => {
                             if (current.hasSkill("fyrhliewang")) {
                                 current.updateMark("fyrhliewang");
@@ -21283,66 +21245,95 @@ export let info = {
                     player: 1,
                 },
             },
-            //group: 'xinxangang_add',
-            marktext: "🪚",
-            mark: true,
-            intro: {
-                markcount(storage, player) {
-                    const cards = get.discarded().filterInD("d");
-                    const suits = new Set();
-                    for (const card of cards) {
-                        const suit = get.suit(card);
-                        if (suit && suit !== 'none') {
-                            suits.add(suit);
-                        }
-                    }
-                    return suits.size;
-                },
-                mark(dialog, storage, player) {
-                    dialog.css({ width: "50%" });
-                    if (get.is.phoneLayout()) {
-                        dialog.classList.add("fullheight");
-                    }
-                    const centerCards = get.discarded().filterInD("d");
-                    dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄本回合弃牌堆</div>');
-                    const suitMap = { spade: "♠", heart: "♥", club: "♣", diamond: "♦" };
-                    const suits = new Set();
-                    for (const card of centerCards) {
-                        const suit = get.suit(card);
-                        if (suit && suit !== "none") {
-                            suits.add(suit);
-                        }
-                    }
-                    const suitText = Object.keys(suitMap).filter(s => suits.has(s)).map(s => `<span style="color:${s == "heart" || s == "diamond" ? "#ff6666" : "#ffffff"}">${suitMap[s]}</span>`).join(" ");
-                    dialog.addText(`<div class="text center" style="padding:5px;">已收集花色：${suitText || '<span style="opacity:0.6">无</span>'}</div>`);
-                    if (centerCards.length) {
-                        dialog.addAuto(centerCards);
-                    } else {
-                        dialog.addText('<div class="text center" style="opacity:0.6">暂无卡牌</div>');
-                    }
+            //获得技能时挂载通用"本回合弃牌堆"标记
+            init(player, skill) {
+                player.markSkill("fyrhzaoju_mark");
+                const text = get.info("fyrhzaoju_mark").getTipText();
+                if (text) {
+                    player.addTip("fyrhzaoju_mark", text);
                 }
             },
-            group: 'fyrhzaoju_use',
+            onremove(player, skill) {
+                player.unmarkSkill("fyrhzaoju_mark");
+                player.removeTip("fyrhzaoju_mark");
+            },
+            group: ['fyrhzaoju_mark'],
             subSkill: {
                 mark: {
+                    //通用的"本回合弃牌堆"实时标记技能：
+                    //mark弹窗显示本回合弃牌堆的牌与已存在花色；tip实时显示当前花色（无花色时清空tip）
                     charlotte: true,
+                    mark: true,
+                    marktext: "🎴",
+                    intro: {
+                        name:'',
+                        markcount(storage, player) {
+                            return get.info("fyrhzaoju_mark").getSuits().size;
+                        },
+                        mark(dialog, storage, player) {
+                            dialog.css({ width: "50%" });
+                            if (get.is.phoneLayout()) {
+                                dialog.classList.add("fullheight");
+                            }
+                            const centerCards = get.discarded().filterInD("d");
+                            dialog.addText('<div class="text center" style="font-size:18px; font-weight:bold; padding:5px; margin-top:15px; border-bottom:1px solid rgba(128,128,128,0.3)">🀄本回合弃牌堆</div>');
+                            const suitText = get.info("fyrhzaoju_mark").getSuitText();
+                            dialog.addText(`<div class="text center" style="padding:5px;">已存在花色：${suitText || '<span style="opacity:0.6">无</span>'}</div>`);
+                            if (centerCards.length) {
+                                dialog.addAuto(centerCards);
+                            } else {
+                                dialog.addText('<div class="text center" style="opacity:0.6">暂无卡牌</div>');
+                            }
+                        },
+                    },
+                    getSuits() {
+                        const suits = new Set();
+                        const cards = get.discarded()?.filterInD("d") || [];
+                        for (const card of cards) {
+                            const suit = get.suit(card);
+                            if (suit && suit !== 'none') {
+                                suits.add(suit);
+                            }
+                        }
+                        return suits;
+                    },
+                    getSuitText() {
+                        const suits = get.info("fyrhzaoju_mark").getSuits();
+                        return lib.suit.filter(s => suits.has(s)).map(s => `${get.translation(s)}`).join(" ");
+                    },
+                    //工具函数：tip文本（无花色时返回null，由调用方清空tip）
+                    getTipText() {
+                        const suits = get.info("fyrhzaoju_mark").getSuits();
+                        if (!suits.size) {
+                            return null;
+                        }
+                        return `📔 ${get.info("fyrhzaoju_mark").getSuitText()}`;
+                    },
+                    trigger: {
+                        global: ["loseAfter","loseAsyncAfter","cardsDiscardAfter"],
+                    },
                     forced: true,
                     popup: false,
-                    trigger: {
-                        global: ["cardsDiscardAfter", "loseToDiscardpileAfter", "cardsGotoPileAfter"],
-                    },
+                    silent: true,
                     filter(event, player) {
-                        return player.hasSkill("fyrhzaoju");
+                        return true;
                     },
-                    content() {
+                    async content(event, trigger, player) {
                         game.countPlayer(current => {
-                            if (current.hasSkill("fyrhzaoju")) {
-                                current.updateMark("fyrhzaoju");
+                            if (!(current.hasSkill("fyrhzaoju") || current.hasSkill("fyrhzaoju_mark"))) {
+                                return;
+                            }
+                            current.updateMark("fyrhzaoju_mark");
+                            //tip实时更新：本回合弃牌堆没有花色的牌时清空tip
+                            const text = get.info("fyrhzaoju_mark").getTipText();
+                            if (text) {
+                                current.addTip("fyrhzaoju_mark", text);
+                            } else {
+                                current.removeTip("fyrhzaoju_mark");
                             }
                         });
                     },
                 },
-
             }
         },
         fyrhchongsheng: {

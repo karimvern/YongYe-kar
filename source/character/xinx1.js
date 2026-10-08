@@ -5451,8 +5451,11 @@ export let info = {
                             return '将一张【羽】当做' + (get.translation(links[0][3]) || '') + get.translation(links[0][2]) + '使用或打出';
                         },
                     },
-                    hiddenCard: function (player, name) {
-                        var type = get.type2(name);
+                    hiddenCard (player, name) {
+                        if (player.getStat("skill").xinxshuangmang_use) {
+                            return false;
+                        }
+                        let type = get.type2(name);
                         return (type == "basic" || type == "trick") && player.getCards('s', function (card) {
                             return card.hasGaintag('xinxchiyu_tag')
                         }).length > 0;

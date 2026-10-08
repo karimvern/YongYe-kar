@@ -9,14 +9,11 @@ import card from './source/packages/main/card.js'
 import basic from './source/basic.js'
 import { refreshBackgroundItem, installDisableCleanupHook } from './source/background.js'
 import modePrepare from './source/mode/prepare.js'
-import { applyLegacyAssets } from './source/mode/yeyeSkin/yeyeSkin.js' // [旧样式层]
 export let type = 'extension';
 lib.init.css(lib.assetURL + 'extension/永夜之境', 'extension');
 lib.init.css(lib.assetURL + 'extension/永夜之境', 'card');
 //无尽模式·永夜 的样式
 lib.init.css(lib.assetURL + 'extension/永夜之境/source/mode', 'style');
-// [旧样式层] 可选：样式全部带 body.yeye-legacy 前缀，默认不生效（默认走 style.css 的永夜新样式）
-lib.init.css(lib.assetURL + 'extension/永夜之境/source/mode/yeyeSkin', 'skin');
 export default async function(){
     const extensionInfo = await lib.init.promises.json(`${basic.extensionDirectoryPath}info.json`);
     // 扫描 image/newbackground 文件夹，填充设置页中的背景列表
@@ -41,7 +38,5 @@ export default async function(){
         files:{'character':[],'card':[],'skill':[],'audio':[]}
     };
     Object.keys(extensionInfo).filter(key=>key!='name').forEach(key=>extension.package[key]=extensionInfo[key]);
-    // [旧样式层] 启动时按模式设置同步一次
-    applyLegacyAssets();
     return extension;
 }
