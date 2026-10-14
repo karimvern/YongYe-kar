@@ -891,6 +891,287 @@ export async function precontent(config, pack) {
         },
     });
 
+    //叠置牌机制的封装函数（触发逻辑在 globalskill.js 的 _xinxqp_diezhi 全局技能）。
+    //叠置数据：牌 storage.xinxqp_stack（叠置列表）、storage.xinxqp_master（叠置归属）；
+    //壳牌 gaintag 中 "xinxqp:" 前缀载荷为断线重连的数据通道。
+    //授予叠置能力的技能：init 中调用 lib.skill._xinxqp_diezhi.install()，效果里调用 game.xinxqp.stackOn(player, base, tops)
+    game.xinxqp = {
+        //读取壳牌（底牌）上的叠置列表（从下到上的叠置顺序；自动初始化空数组）
+        getStack(card) {
+            if (!card?.storage) return [];
+            if (!Array.isArray(card.storage.xinxqp_stack)) card.storage.xinxqp_stack = [];
+            return card.storage.xinxqp_stack;
+        },
+        //============查询接口（技能与结算统一从这里读叠置数据，勿直接摸 storage）============
+        //是否为带叠置的壳牌（底牌）
+        isShell(card) {
+            return card?.storage?.xinxqp_stack?.length > 0;
+        },
+        //叠置数量（card非壳牌时为0）
+        countStack(card) {
+            return card?.storage?.xinxqp_stack?.length || 0;
+        },
+        //最上方（最后叠置）的一张叠置牌；无叠置时返回null
+        getTopCard(card) {
+            const stack = this.getStack(card);
+            return stack[stack.length - 1] || null;
+        },
+        //最下方底牌：card本身是壳牌时返回自身；card是叠置牌（或任意牌）时反查其所属壳牌（含装备区），找不到返回null
+        getBase(card) {
+            if (!card) return null;
+            if (this.isShell(card)) return card;
+            for (const player of game.players) {
+                for (const hand of player.getCards("he")) {
+                    if (this.getStack(hand).includes(card)) return hand;
+                }
+            }
+            return null;
+        },
+        //获取叠置整体中的实体牌：
+        //默认返回 [最下方底牌, ...叠置牌]（叠置牌按从下到上的叠置顺序）；
+        //options.includeBase为false时只返回叠置牌；card可为壳牌或其叠置牌（内部自动定位底牌）；非有效叠置返回[]
+        getAllCards(card, options) {
+            const base = this.getBase(card);
+            if (!base) return [];
+            const stack = this.getStack(base).slice();
+            if (options?.includeBase === false) return stack;
+            return [base, ...stack];
+        },
+        //============事件取数（失去叠置牌时从lose/loseAsync事件中取数据）============
+        //解析壳牌gaintag中的"xinxqp:"载荷 → [suit, number, name, nature, cardid] 列表（非载荷返回[]）
+        parsePayload(payload) {
+            if (typeof payload != "string" || !payload.startsWith("xinxqp:")) return [];
+            //"xinxqp:"前缀长度为7，slice(7)去除前缀（此前slice(6)会把冒号带进花色字段）
+            return payload.slice(7).split("|").map(seg => seg.split(",")).filter(info => info.length >= 5);
+        },
+        //按cardid反查实体牌（lib.cardOL为引擎的cardid→牌对象映射，牌在任何区域都能查到）
+        getCardsByIds(ids) {
+            return (ids || []).map(id => lib.cardOL[id]).filter(card => card);
+        },
+        //获取一次失去事件中，所失去壳牌上的叠置实体牌（默认不含底牌）：
+        //①storage未清（收回机制未先执行）：直接读壳牌storage；
+        //②已被收回机制清理：读lose结算存档gaintag_map中的载荷，按cardid经lib.cardOL反查实体牌（无论牌被收回手牌还是留在ui.special）；
+        //③使用/打出壳牌：沿事件祖先链读useCard/respond的xinxqp_stash暂存（仅当失去的牌就是该壳牌本体时计入）
+        //覆盖手牌与装备区（hs+es）；options.includeBase为true时，每张底牌插在其叠置牌之前返回（[底牌,...叠置牌,底牌2,...]）
+        getLostStackCards(event, player, options) {
+            const evt = event.name == "loseAsync" ? event.getl?.(player) : event;
+            const hs = (evt?.hs || []).concat(evt?.es || []);
+            const gaintag_map = evt?.gaintag_map || {};
+            const cards = [];
+            for (const shell of hs) {
+                let stack = null;
+                if (this.isShell(shell)) {
+                    stack = this.getStack(shell);
+                } else {
+                    const payload = (gaintag_map[shell.cardid] || []).find(
+                        tag => typeof tag == "string" && tag.startsWith("xinxqp:")
+                    );
+                    if (payload) stack = this.getCardsByIds(this.parsePayload(payload).map(info => info[4]));
+                }
+                if (stack?.length) {
+                    if (options?.includeBase) cards.push(shell);
+                    cards.addArray(stack);
+                }
+            }
+            let anc = event;
+            while (anc) {
+                if (anc.xinxqp_stash?.length) {
+                    if ((anc.cards || []).some(c => hs.includes(c))) {
+                        if (options?.includeBase) cards.addArray(anc.cards.filter(c => hs.includes(c)));
+                        cards.addArray(anc.xinxqp_stash);
+                    }
+                    break;
+                }
+                anc = anc.parent;
+            }
+            return cards;
+        },
+        //向上偏移的实色阴影，模拟卡牌层叠
+        stackShadows: [
+            "0 -3px 0 #bdbdbd",
+            "0 -3px 0 #bdbdbd, 0 -6px 0 #9e9e9e",
+            "0 -3px 0 #bdbdbd, 0 -6px 0 #9e9e9e, 0 -9px 0 #7f7f7f",
+            "0 -3px 0 #bdbdbd, 0 -6px 0 #9e9e9e, 0 -9px 0 #7f7f7f, 0 -12px 0 #606060",
+        ],
+        //重写壳牌gaintag标签：隐藏"xinxqp:"载荷，显示"叠置×N"与原有标签
+        refreshGaintag(card, num) {
+            if (!card?.node?.gaintag) return;
+            const list = (card.gaintag || []).filter(tag => !String(tag).startsWith("xinxqp:"));
+            let str = "";
+            for (let i = 0; i < list.length; i++) {
+                const tag = list[i];
+                let trans = get.translation(tag);
+                if (trans == tag && tag.startsWith("eternal_")) trans = get.translation(tag.slice(8));
+                if (trans != "invisible") str += trans + (i < list.length - 1 ? " " : "");
+            }
+            if (num > 0) str += (str ? " " : "") + "叠置×" + num;
+            card.node.gaintag.innerHTML = str;
+        },
+        //显示层兜底（幂等安装）：包装Card.addGaintag，重渲染时隐藏"xinxqp:"载荷并显示"叠置×N"
+        installUI() {
+            const proto = lib.element.Card?.prototype || lib.element.card?.prototype;
+            if (!proto || proto._xinxqp_addGaintag) return;
+            proto._xinxqp_addGaintag = proto.addGaintag;
+            proto.addGaintag = function (gaintag) {
+                const result = proto._xinxqp_addGaintag.apply(this, arguments);
+                const tags = this.gaintag || [];
+                const payload = tags.find(tag => typeof tag == "string" && tag.startsWith("xinxqp:"));
+                //仅按storage实时叠置数显示；载荷只负责被隐藏，不据此补标签（引擎lose结算会剥离并暂存载荷，
+                //若按载荷补标签，叠置收回后残留的"叠置×N"会跟着牌进入获得者手牌区）
+                if (payload || this.storage?.xinxqp_stack?.length) {
+                    game.xinxqp.refreshGaintag(this, this.storage?.xinxqp_stack?.length || 0);
+                }
+                return result;
+            };
+        },
+        //刷新一名角色手牌/装备区的叠置显示（堆叠阴影、标签、右键简介）
+        refreshVisual(player) {
+            if (!player?.node?.handcards1) return;
+            //简介适配挂在卡的父容器上（get/index.js按parentNode.cardMod读取），手牌与装备区都要注册
+            const introMod = node => {
+                const card = node.link || node;
+                const stack = card.storage?.xinxqp_stack;
+                if (!stack?.length) return;
+                const list = stack.map(cardx => `${get.translation(cardx)}`).join("、");
+                return ["叠置", `此牌叠置有${stack.length}张牌：${list}。你失去叠置牌后，收回此牌剩余的实体牌，若为使用或打出而失去，则可以使用这些牌，然后收回未使用的牌。`];
+            };
+            for (const hand of [player.node.handcards1, player.node.handcards2]) {
+                if (!hand) continue;
+                hand.cardMod ??= {};
+                hand.cardMod._xinxqp_diezhi ??= introMod;
+            }
+            if (player.node.equips) {
+                player.node.equips.cardMod ??= {};
+                player.node.equips.cardMod._xinxqp_diezhi ??= introMod;
+            }
+            for (const card of player.getCards("he")) {
+                const num = card.storage?.xinxqp_stack?.length || 0;
+                this.refreshGaintag(card, num);
+                card.style.boxShadow = num ? this.stackShadows[Math.min(num, this.stackShadows.length) - 1] : "";
+            }
+        },
+        //清除一枚壳牌的全部叠置痕迹（storage、载荷gaintag、视觉）
+        clearShell(shell) {
+            if (!shell) return;
+            if (shell.storage) delete shell.storage.xinxqp_stack;
+            if (Array.isArray(shell.gaintag)) {
+                const rest = shell.gaintag.filter(tag => !String(tag).startsWith("xinxqp:"));
+                //无条件重写显示：引擎lose结算会先剥离载荷gaintag（数组前后长度相等），
+                //若因此短路跳过addGaintag，此前被包装重新写回的"叠置×N"将残留在显示层
+                shell.addGaintag(rest);
+            } else if (shell.node?.gaintag) {
+                shell.node.gaintag.innerHTML = "";
+            }
+            if (shell.style?.boxShadow) shell.style.boxShadow = "";
+        },
+        //叠置变动后：录像记录+宿主载荷维护+联机同步+本地刷新
+        syncShell(player, shell) {
+            const stack = this.getStack(shell);
+            game.addVideo("skill", player, ["_xinxqp_diezhi", [shell.cardid, get.cardsInfo(stack)]]);
+            if (!game.online) {
+                //宿主侧将叠置编码进壳牌gaintag：手牌gaintag随getState序列化，是断线重连的数据通道
+                const gts = (shell.gaintag || []).filter(tag => !String(tag).startsWith("xinxqp:"));
+                if (stack.length) {
+                    gts.push("xinxqp:" + stack.map(card => [card.suit, card.number, card.name, card.nature || "", card.cardid].join(",")).join("|"));
+                }
+                shell.addGaintag(gts);
+            }
+            game.broadcastAll(function (player, shell, stack) {
+                shell.storage.xinxqp_stack = stack;
+                game.xinxqp.refreshVisual(player);
+            }, player, shell, stack);
+        },
+        //清除壳牌并同步所有客户端
+        broadcastClear(player, shells) {
+            for (const shell of shells) {
+                game.addVideo("skill", player, ["_xinxqp_diezhi", [shell.cardid, []]]);
+            }
+            game.broadcastAll(function (player, shells) {
+                for (const shell of shells) {
+                    game.xinxqp.clearShell(shell);
+                }
+                game.xinxqp.refreshVisual(player);
+            }, player, shells);
+        },
+        //整体并入：将壳牌top连同其叠置一起叠加到base上（不分解、不收回）
+        mergeShell(player, base, top) {
+            const topStack = this.getStack(top);
+            if (!topStack.length) return;
+            this.getStack(base).push(top, ...topStack.splice(0));
+            this.clearShell(top);
+            game.addVideo("skill", player, ["_xinxqp_diezhi", [top.cardid, []]]);
+            this.syncShell(player, base);
+            game.broadcastAll(function (player, top) {
+                game.xinxqp.clearShell(top);
+                game.xinxqp.refreshVisual(player);
+            }, player, top);
+        },
+        //核心操作：将tops按选择顺序叠置于base上（并入壳牌原有叠置→移入ui.special暂存→标记归属→登记→同步）
+        async stackOn(player, base, tops) {
+            //先整体并入所选壳牌自带的叠置（不分解收回，避免lose分支按离手处理）
+            for (const top of tops) {
+                if (Array.isArray(top.storage?.xinxqp_stack) && top.storage.xinxqp_stack.length) {
+                    this.mergeShell(player, base, top);
+                }
+            }
+            //牌可能来自任意角色的手牌/装备/判定区：按当前拥有者分组移入ui.special
+            const groups = new Map();
+            for (const top of tops) {
+                const owner = get.owner(top) || player;
+                if (!groups.has(owner)) groups.set(owner, []);
+                groups.get(owner).push(top);
+            }
+            for (const [owner, cards] of groups.entries()) {
+                owner.$give(cards, player, false);
+                await owner.lose(cards, ui.special, "visible");
+            }
+            for (const top of tops) {
+                if (!game.online) top.storage.xinxqp_master = player;
+                if (!this.getStack(base).includes(top)) this.getStack(base).push(top);
+                game.log(player, "将", top, "叠置于", base, "上");
+            }
+            this.syncShell(player, base);
+        },
+        //录像回放：按cardid恢复叠置
+        video(player, info) {
+            const shell = lib.cardOL[info?.[0]];
+            if (!shell) return;
+            shell.storage.xinxqp_stack = get.infoCards(info[1] || []);
+            game.xinxqp.refreshVisual(player);
+        },
+        //断线重连：在玩家与手牌区重建完成后，依据壳牌gaintag载荷恢复叠置数据与显示
+        rebuildAll() {
+            for (const player of game.players) {
+                for (const card of player.getCards("he")) {
+                    const payload = (card.gaintag || []).find(tag => typeof tag == "string" && tag.startsWith("xinxqp:"));
+                    if (!payload) continue;
+                    const stack = [];
+                    for (const info of this.parsePayload(payload)) {
+                        const item = get.infoCard([info[0], parseInt(info[1]) || 0, info[2], info[3] || "", info[4]]);
+                        if (get.itemtype(item) == "card") {
+                            if (item.parentNode !== ui.special) item.goto(ui.special);
+                            stack.push(item);
+                        }
+                    }
+                    card.storage.xinxqp_stack = stack;
+                }
+                this.refreshVisual(player);
+            }
+        },
+        //清除一名角色的全部叠置：壳牌（手牌/装备区）叠置与ui.special遗留牌收回手牌（授予技能被移除时调用）
+        clearAll(player) {
+            const shells = player.getCards("he").filter(card => card.storage?.xinxqp_stack?.length);
+            const spare = Array.from(ui.special.childNodes).filter(card => card.storage?.xinxqp_master === player);
+            for (const card of spare) delete card.storage.xinxqp_master;
+            for (const shell of shells) {
+                for (const card of shell.storage.xinxqp_stack) delete card.storage?.xinxqp_master;
+                player.gain(shell.storage.xinxqp_stack, "gain2");
+            }
+            if (spare.length) player.gain(spare, "gain2");
+            if (shells.length || spare.length) this.broadcastClear(player, shells);
+        },
+    };
+
 
 
     //皮肤多形态渲染兜底：凡是渲染"skin/武将/皮肤名/形态名.png"这类路径（预览按钮或头像数组），

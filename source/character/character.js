@@ -1,6 +1,14 @@
 
 //杏雅三国
 export const xinx1Character = {
+    xinxzhu_zhonghui:{
+        sex: "male",
+        group: "wei",
+        hp: 4,
+        trashBin: ['legend'],
+        skills: ['xinxnewquanpao','xinxlingyun'],//,'xinxlingyun'
+        dieAudios: ['xinxnew_zhonghui'],
+    },
     xinxzhu_jiangwei:{
         sex: "male",
         group: "shu",
@@ -365,6 +373,13 @@ export const xinx2Character = {
 
 //风雨如晦
 export const xinxfengyuCharacter = {
+    fyrh_caoshu:{
+        sex: "female",
+        group: "jin",
+        hp: 3,
+        trashBin: ['epic'],
+        skills: ['fyrhduren','fyrhqudu'],
+    },
     fyrh_kekeliya: {
         sex: "female",
         group: "xinx",
@@ -1267,6 +1282,45 @@ export const xinxfengyuCharacter = {
 
 //武将修改
 export const xinxhuaijiuCharacter = {
+    xinxhj_ol_lvlingqi: {
+		sex: "female",
+		group: "qun",
+		hp: 4,
+        img: "image/character/ol_lvlingqi.jpg",
+        dieAudios: ["ol_lvlingqi"],
+        trashBin: ['rare'],
+		skills: ["xinxhjolqiwu", "xinxhjolzhuangrong"],
+	},
+    xinxhj_shen_guojia: {
+		sex: "male",
+		group: "shen",
+		hp: 3,
+		skills: ["xinxhjshuishi", "xinxhjstianyi", "xinxhjsghuishi"],
+        img: "image/character/shen_guojia.jpg",
+        trashBin: ['rare'],
+        dieAudios: ["shen_guojia"],
+		groupInGuozhan: "wei",
+	},
+    xinxhj_dc_zhaotongzhaoguang: {
+		sex: "male",
+		group: "shu",
+		hp: 4,
+        img: "image/character/dc_zhaotongzhaoguang.jpg",
+		skills: ["xinxhjyizan_use", "xinxhjdcqingren", "xinxhjdclongyuan"],
+		dieAudios: ["zhaotongzhaoguang"],
+        tempname: ["dc_zhaotongzhaoguang"],
+        trashBin: ['rare'],
+		names: "赵|统-赵|广",
+	},
+    xinxhj_ol_jsrg_zhujun: {
+		sex: "male",
+		group: "qun",
+		hp: 4,
+        img: "image/character/ol_jsrg_zhujun.jpg",
+        trashBin: ['legend'],
+        dieAudios: ["ol_jsrg_zhujun"],
+		skills: ["xinxhjolfendi", "xinxhjoljuxiang"],
+	},
     xinxhj_pot_zhaoyun: {
         sex: "male",
         group: "shu",

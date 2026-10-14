@@ -466,6 +466,182 @@ Object.assign(lib.skill, {
             backup: {},
         },
     },
+    //叠置牌机制（权袍等技能共用）：任意角色使用/打出叠置牌时均触发，不依赖授予技能。
+    //叠置数据与封装函数见 precontent.js 的 game.xinxqp；授予叠置能力的技能应在 init 中
+    //调用 lib.skill._xinxqp_diezhi.install()，效果中调用 game.xinxqp.stackOn(player, base, tops)
+    _xinxqp_diezhi: {
+        ruleSkill: true,
+        charlotte: true,
+        silent: true,
+        //录像回放：game.addVideo("skill", player, ["_xinxqp_diezhi", info]) 由此恢复
+        video(player, info) {
+            game.xinxqp.video(player, info);
+        },
+        //机制安装（幂等）：包装addGaintag作显示层兜底 + 断线重连后按壳牌gaintag载荷重建叠置
+        install() {
+            game.xinxqp.installUI();
+            if (!_status.postReconnect._xinxqp_diezhi) {
+                _status.postReconnect._xinxqp_diezhi = [
+                    function () {
+                        const origin = ui.create.me;
+                        ui.create.me = function () {
+                            ui.create.me = origin;
+                            const result = origin.apply(this, arguments);
+                            game.xinxqp.rebuildAll();
+                            return result;
+                        };
+                    },
+                    [],
+                ];
+            }
+        },
+        subSkill: {
+            //使用/打出结算开始前（先于lose发生），将壳牌叠置转移至事件暂存，杜绝lose分支误收回
+            stash: {
+                trigger: { player: ["useCardBegin", "respondBegin"] },
+                charlotte:true,
+                forced: true,
+                silent: true,
+                popup: false,
+                filter(event, player) {
+                    //useCard/respond创建时next.card被get.autoViewAs包装成VCard（player.js:7481/8074），实体牌本体在event.cards[0]；
+                    //cardid一致即壳牌作为牌名本体被使用/打出（VCard构造器拷贝cardid），视为技材料不触发，由lose分支收回
+                    const card = event.cards?.[0];
+                    return game.xinxqp.isShell(card) && event.card?.cardid === card.cardid;
+                },
+                async content(event, trigger, player) {
+                    const shell = trigger.cards[0];
+                    trigger.xinxqp_stash = game.xinxqp.getStack(shell).slice();
+                    //使用时刻的完整牌组快照：[底牌, ...剩余实体牌]，供useCardAfter等处读取
+                    //（勿直接改trigger.cards：那会让叠置牌被useCard的lose一并带走，_loop将无牌可用）
+                    trigger.xinxqp_used_all = [shell, ...trigger.xinxqp_stash];
+                    game.xinxqp.broadcastClear(player, [shell]);
+                },
+            },
+            //底牌使用/打出结算后，依次选择使用剩余的叠置实体牌
+            loop: {
+                trigger: { player: ["useCardAfter", "respondAfter"] },
+                forced: true,
+                charlotte:true,
+                filter(event, player) {
+                    //叠置列表由stash分支在使用/打出开始时转移至事件暂存
+                    return event.xinxqp_stash?.length > 0;
+                },
+                async content(event, trigger, player) {
+                    //事件card是VCard包装（player.js:7481/8074），实体壳牌本体在cards[0]
+                    const shell = trigger.cards?.[0] ?? trigger.card;
+                    const stack = trigger.xinxqp_stash;
+                    delete trigger.xinxqp_stash;
+                    //使用被取消（底牌回到手牌）时，将叠置重新挂回壳牌
+                    if (player.getCards("h").includes(shell)) {
+                        game.xinxqp.getStack(shell).push(...stack);
+                        game.xinxqp.syncShell(player, shell);
+                        return;
+                    }
+                    const rest = stack.slice();
+                    while (rest.some(card => player.hasUseTarget(card))) {
+                        if (player.isDead() || _status.over) break;
+                        const result = await player
+                            .chooseButton([`###叠置###<div class="text center">选择使用一张叠置牌（剩余${rest.length}张，未使用则收回之）</div>`, rest])
+                            .set('filterButton', button => {
+                                return get.player().hasUseTarget(button.link);
+                            })
+                            .set("ai", button => (player.hasUseTarget(button.link) ? get.order(button.link) : -1))
+                            .forResult();
+                        if (!result?.bool || !result?.links?.length) break;
+                        const chosen = result.links[0];
+                        if (!player.hasUseTarget(chosen)) {
+                            //不可主动使用（如闪/无懈）：收回该牌后继续选择
+                            rest.remove(chosen);
+                            delete chosen.storage?.xinxqp_master;
+                            const next = player.gain(chosen, "gain2");
+                            next.xinxqp_recoup = true; //标记：本次gain为收回叠置实体牌，供技能（如重铸）识别
+                            await next;
+                            //game.log(player, "收回了暂无法使用的", chosen);
+                            continue;
+                        }
+                        //addCount:false绕过次数限制（如已用过杀）
+                        await player.chooseUseTarget(chosen, true, false);
+                        if (chosen.parentNode !== ui.special) {
+                            rest.remove(chosen); //已使用出去
+                        }
+                        //否则（使用被取消）留在剩余列表重新选择
+                    }
+                    for (const card of rest) delete card.storage?.xinxqp_master;
+                    if (rest.length) {
+                        if (player.isDead() || _status.over) {
+                           await game.cardsDiscard(rest);
+                        } else {
+                            const next = player.gain(rest, "gain2");
+                            next.xinxqp_recoup = true; //标记：本次gain为收回叠置实体牌，供技能（如重铸）识别
+                            await next;
+                        }
+                    }
+                },
+            },
+            //壳牌以非"作为自身被使用/打出"的方式离手（被弃置/偷取/作为材料等）时，叠置牌收回手牌
+            lose: {
+                trigger: { player: "loseAfter" },
+                forced: true,
+                charlotte:true,
+                silent: true,
+                popup: false,
+                filter(event, player) {
+                    //手牌（hs）与装备区（es）离手的壳牌都要收回叠置
+                    return (event.hs || []).concat(event.es || []).some(card => game.xinxqp.isShell(card));
+                },
+                async content(event, trigger, player) {
+                    const handled = [];
+                    for (const card of trigger.hs.slice().concat(trigger.es?.slice() || [])) {
+                        if (!game.xinxqp.isShell(card)) continue;
+                        const stack = game.xinxqp.getStack(card);
+                        //作为自身被使用/打出：由loop分支接管（沿祖先链检查useCard/respond的本身牌，避免误判）
+                        let evt = trigger;
+                        let inUse = false;
+                        while (evt) {
+                            //事件card被autoViewAs包装成VCard（player.js:7481/8074），需cardid比对实体牌本体
+                            if ((evt.name == "useCard" || evt.name == "respond") && (evt.card === card || evt.card?.cardid === card.cardid)) {
+                                inUse = true;
+                                break;
+                            }
+                            evt = evt.parent;
+                        }
+                        if (inUse) continue;
+                        handled.push(card);
+                        for (const cardx of stack) delete cardx.storage?.xinxqp_master;
+                        if (player.isDead() || _status.over) {
+                            await game.cardsDiscard(stack);
+                        } else {
+                            const next = player.gain(stack, "gain2");
+                            next.xinxqp_recoup = true; //标记：本次gain为收回叠置实体牌，供技能（如重铸）识别
+                            await next;
+                            //game.log(player, "收回了", card, "上的叠置牌");
+                        }
+                    }
+                    if (handled.length) game.xinxqp.broadcastClear(player, handled);
+                },
+            },
+            //角色死亡后，遗留于ui.special的叠置牌置入弃牌堆（死亡流程不走lose，需按归属标记清扫）
+            die: {
+                trigger: { player: "dieAfter" },
+                forced: true,
+                charlotte: true,
+                silent: true,
+                popup: false,
+                filter(event, player) {
+                    return Array.from(ui.special.childNodes).some(card => card.storage?.xinxqp_master === player);
+                },
+                async content(event, trigger, player) {
+                    const cards = Array.from(ui.special.childNodes).filter(card => card.storage?.xinxqp_master === player);
+                    for (const card of cards) delete card.storage.xinxqp_master;
+                    if (cards.length) {
+                        await game.cardsDiscard(cards);
+                        game.log(player, "的叠置牌被置入弃牌堆");
+                    }
+                },
+            },
+        },
+    },
 });
 
 

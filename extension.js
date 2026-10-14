@@ -12,7 +12,7 @@ import modePrepare from './source/mode/prepare.js'
 export let type = 'extension';
 lib.init.css(lib.assetURL + 'extension/永夜之境', 'extension');
 lib.init.css(lib.assetURL + 'extension/永夜之境', 'card');
-//无尽模式·永夜 的样式
+
 lib.init.css(lib.assetURL + 'extension/永夜之境/source/mode', 'style');
 export default async function(){
     const extensionInfo = await lib.init.promises.json(`${basic.extensionDirectoryPath}info.json`);

@@ -31,6 +31,7 @@ export let info = {
             'xinx_bengxiang': ['fyrhel_aixi', 'fyrhp_changyeyue', 'fyrhtang_huangyueying', 'fyrhtang_zhugeliang', 'fyrhtang_xuzhu', 'fyrhtang_yuanshao', 'fyrh_gongsunli'],
             'xinx_xie': ['fyrhx_zhangfei', 'fyrhx_simayi', 'fyrh_xusheng', 'fyrh_luxun', 'fyrh_liuxuan'],
             'xinx_kami': ['fyrhka_xiaolimao', 'fyrhka_caocao', 'fyrhka_caoren'],
+            'xinx_xxing': ['fyrh_caoshu'],
             'xinx_qitasheji': ['fyrh_guyu', 'fyrhbl_zhouyu', 'fyrh_xieqi', 'fyrh_fazheng', 'fyrh_zhenfu', 'fyrh_huaxiong', 'fyrh_zhengxiaotong',
                 'fyrh_dengai', 'fyrh_weijie', 'fyrh_zhangliao', 'fyrh_wangcheng', 'fyrh_weiyi', 'fyrh_gouxi', 'fyrh_simashao', 'fyrh_liuying',
                 'fyrh_sunchen', 'fyrh_wanglang', 'fyrh_chenggongying', 'fyrh_ruanji'],
@@ -83,6 +84,9 @@ export let info = {
     },
     //翻译
     translate: {
+        xinx_xxing: '杏',
+        fyrh_caoshu: '杏曹淑',
+        fyrh_caoshu_prefix: '杏',
         fyrh_kekeliya: '夏可可利亚',
         fyrh_kekeliya_prefix: '夏',
         fyrhx_zhangfei: '屑张飞',
@@ -363,6 +367,10 @@ export let info = {
 
 
         //技能翻译
+        fyrhduren: '妒刃',
+        fyrhduren_info: `你使用即时牌后将此牌的唯一实体牌置入一名角色的装备栏。每回合结束时，若其有与因此置入牌花色相同的手牌，你将这些手牌当【杀】对其使用。`,
+        fyrhqudu: '驱犊',
+        fyrhqudu_info: `你使用【杀】造成致命伤害时，获得此【杀】的底牌，受伤角色可以交给你装备区的所有牌以防止你获得。`,
         fyrhliewang: '冽妄',
         fyrhliewang_info: `昂扬技，出牌阶段，你可以摸一张牌并亮出牌堆顶两张牌，然后可以用任意张牌交换其中的等量张。<br>激昂：本回合弃牌堆的花色被补齐时，你洗牌，视为使用一张冰【万箭齐发】。`,
         fyrhduanshi: '断势',
@@ -1239,6 +1247,342 @@ export let info = {
     },
     //技能
     skill: {//group: ["xinxnewjishi_refresh"],
+        //曹淑
+        fyrhduren: {
+            createCard(type) {
+                if (!_status.postReconnect.fyrhduren) {
+                    _status.postReconnect.fyrhduren = [
+                        function (list) {
+                            for (const type2 of list) {
+                                lib.skill.fyrhduren.createCard(type2);
+                            }
+                        },
+                        [],
+                    ];
+                }
+                _status.postReconnect.fyrhduren[1].add(type);
+                if (!lib.card[`fyrhduren_${type}`]) {
+                    lib.translate[`fyrhduren_${type}`] = "妒刃";
+                    const card = {
+                        derivation: "fyrh_caoshu",
+                        fullskin: true,
+                        img: "extension/永夜之境/image/fyrh_caoshu.png",
+                        type,
+                        ai: { basic: { equipValue: 2 } },
+                        originalType: type,
+                        cardPrompt(card) {
+                            let str = `原本是一张${get.translation(this.originalType)}牌。`,
+                                subtypes = get.subtypes(card);
+                            if (subtypes?.length) {
+                                str = `${str.slice(0, -1)}，被置入了${subtypes.map(i => `${get.translation(i)}栏`).join("、")}。`;
+                            }
+                            return str;
+                        },
+                        async onLose(event, trigger, player) {
+                            event.cards.forEach(card => {
+                                card.fix();
+                                ui.discardPile.appendChild(card);
+                                game.log(card, "被置入了弃牌堆");
+                            });
+                            if (event.getParent(2).name == "gain") {
+                                const remove = event.getParent(2).cards.filter(card => card[card.cardSymbol] == event.card);
+                                event.getParent(2).cards.removeArray(remove);
+                            }
+                        },
+                    };
+                    lib.translate[`fyrhduren_${type}_info`] = `原本是一张${get.translation(type)}牌。`;
+                    lib.card[`fyrhduren_${type}`] = card;
+                    game.finishCard(`fyrhduren_${type}`);
+                }
+            },
+            video(player, info) {
+                for (const type of info[0]) {
+                    lib.skill.fyrhduren.createCard(type);
+                }
+            },
+            trigger: {
+                player: "useCardAfter",
+            },
+            forced: true,
+            locked: false,
+            filter(event, player) {
+                //if (get.type(event.card) !== "trick") return false;
+                if (!['basic','trick'].includes(get.type(event.card))){
+                    return false;
+                }
+                if(event.cards?.length > 1){
+                    return false;
+                }
+                //存在可置入装备栏的角色
+                return game.hasPlayer(current => {
+                    for (let i = 1; i <= 5; i++) {
+                        if (current.hasEquipableSlot(i)) return true;
+                    }
+                    return false;
+                });//&& event.isFirstTarget
+            },
+            async content(event, trigger, player) {
+                const cards = trigger.cards;
+                if (!cards?.length) return;
+                const result = await player
+                    .chooseTarget(get.prompt("fyrhduren"), `<div class="text center">将${get.translation(cards)}置入一名角色的装备栏</div>`, (card, player, target) => {
+                        for (let i = 1; i <= 5; i++) {
+                            if (target.hasEquipableSlot(i)) return true;
+                        }
+                        return false;
+                    })
+                    .set("ai", target => {
+                        const player = get.event().player;
+                        return - get.attitude(player, target);
+                    })
+                    .forResult();
+                if (!result?.bool || !result.targets?.length) return;
+                const target = result.targets[0];
+                //选择装备栏
+                const choices = [];
+                for (let i = 1; i <= 5; i++) {
+                    if (target.hasEquipableSlot(i)) {
+                        choices.push(`equip${i}`);
+                    }
+                }
+                if (!choices.length) return;
+                const result1 = await player
+                    .chooseControl(choices)
+                    .set("prompt", `妒刃：选择将${get.translation(cards)}置入${get.translation(target)}的一个装备栏`)
+                    .set("target", target)
+                    .set("ai", () => {
+                        const target = get.event().target;
+                        //优先置入没有置入妒刃牌的装备栏：空栏 > 已有其他装备的栏 > 已置入妒刃的栏
+                        const order = [5, 3, 4, 1, 2];
+                        const getPriority = i => {
+                            const equips = target.getEquips(i);
+                            if (!equips.length) return 0;
+                            return equips.some(card => typeof card.name == "string" && card.name.startsWith("fyrhduren_")) ? 2 : 1;
+                        };
+                        const slot = choices
+                            .map(c => parseInt(c.slice(5)))
+                            .sort((a, b) => {
+                                const p = getPriority(a) - getPriority(b);
+                                return p != 0 ? p : order.indexOf(a) - order.indexOf(b);
+                            })[0];
+                        return `equip${slot}`;
+                    })
+                    .forResult();
+                const slot = result1.control || choices[0];
+                //创建虚拟装备牌并置入（须显式携带原牌花色，供回合结束效果匹配）
+                const type = get.type2(cards[0]);
+                game.addVideo("skill", player, ["fyrhduren", [[type]]]);
+                game.broadcastAll(
+                    (player, list) => {
+                        for (const type of list) {
+                            lib.skill.fyrhduren.createCard(type);
+                        }
+                    },
+                    player,
+                    [type]
+                );
+                const vcard = get.autoViewAs({
+                    name: `fyrhduren_${type}`,
+                    suit: get.suit(cards[0]),
+                    number: get.number(cards[0]),
+                }, cards);
+                vcard.subtypes = [slot];
+                await target.equip(vcard);
+                game.log(cards, "被置入了", target, "的装备栏");
+                //await player.draw();
+            },
+            /* trigger: {
+                player: "useCardToBegin",
+            },
+            firstDo: true,
+            forced: true,
+            locked: false,
+            filter(event, player) {
+                const evt = event.getParent("useCard");
+                if (evt.fyrhduren_done) return false;
+                if (get.type(event.card) !== "trick") return false;
+                //存在可置入装备栏的角色
+                return game.hasPlayer(current => {
+                    for (let i = 1; i <= 5; i++) {
+                        if (current.hasEquipableSlot(i)) return true;
+                    }
+                    return false;
+                });//&& event.isFirstTarget
+            },
+            async content(event, trigger, player) {
+                const evt = trigger.getParent("useCard");
+                evt.fyrhduren_done = true;
+                //阻止此锦囊其余目标的正常结算（useCard内容的step11~15检查自身的all_excluded）
+                evt.all_excluded = true;
+                //结算方式已改变：在被转换的锦囊牌上标记nowuxie，使全局技能_wuxie不再询问无懈可击
+                //（本技能firstDo先于_wuxie执行）
+                const card = trigger.card;
+                if (card) {
+                    (card.storage ??= {}).nowuxie = true;
+                }
+                //将原锦囊的结算内容替换为"置入装备栏"（此时锦囊事件尚未进入content阶段，可安全替换）
+                trigger.setContent(async (event, trigger, player) => {
+                    const cards = event.cards;
+                    const user = event.player;
+                    if (!user.isIn() || !cards?.length) return;
+                    const result = await user
+                        .chooseTarget(get.prompt("fyrhduren"), `<div class="text center">将${get.translation(cards)}置入一名角色的装备栏并摸一张牌</div>`, (card, user, target) => {
+                            for (let i = 1; i <= 5; i++) {
+                                if (target.hasEquipableSlot(i)) return true;
+                            }
+                            return false;
+                        })
+                        .set("ai", target => {
+                            const user = get.event().player;
+                            return - get.attitude(user, target);
+                        })
+                        .forResult();
+                    if (!result?.bool || !result.targets?.length) return;
+                    const target = result.targets[0];
+                    //选择装备栏
+                    const choices = [];
+                    for (let i = 1; i <= 5; i++) {
+                        if (target.hasEquipableSlot(i)) {
+                            choices.push(`equip${i}`);
+                        }
+                    }
+                    if (!choices.length) return;
+                    const result1 = await user
+                        .chooseControl(choices)
+                        .set("prompt", `妒刃：选择将${get.translation(cards)}置入${get.translation(target)}的一个装备栏`)
+                        .set("target", target)
+                        .set("ai", () => {
+                            const target = get.event().target;
+                            //优先置入没有置入妒刃牌的装备栏：空栏 > 已有其他装备的栏 > 已置入妒刃的栏
+                            const order = [5, 3, 4, 1, 2];
+                            const getPriority = i => {
+                                const equips = target.getEquips(i);
+                                if (!equips.length) return 0;
+                                return equips.some(card => typeof card.name == "string" && card.name.startsWith("fyrhduren_")) ? 2 : 1;
+                            };
+                            const slot = choices
+                                .map(c => parseInt(c.slice(5)))
+                                .sort((a, b) => {
+                                    const p = getPriority(a) - getPriority(b);
+                                    return p != 0 ? p : order.indexOf(a) - order.indexOf(b);
+                                })[0];
+                            return `equip${slot}`;
+                        })
+                        .forResult();
+                    const slot = result1.control || choices[0];
+                    //创建虚拟装备牌并置入（须显式携带原牌花色，供回合结束效果匹配）
+                    const type = get.type2(cards[0]);
+                    game.addVideo("skill", user, ["fyrhduren", [[type]]]);
+                    game.broadcastAll(
+                        (user, list) => {
+                            for (const type of list) {
+                                lib.skill.fyrhduren.createCard(type);
+                            }
+                        },
+                        user,
+                        [type]
+                    );
+                    const vcard = get.autoViewAs({
+                        name: `fyrhduren_${type}`,
+                        suit: get.suit(cards[0]),
+                        number: get.number(cards[0]),
+                    }, cards);
+                    vcard.subtypes = [slot];
+                    await target.equip(vcard);
+                    game.log(cards, "被置入了", target, "的装备栏");
+                    await user.draw();
+                });
+            }, */
+            group: ["fyrhduren_effect"],
+            subSkill: {
+                effect: {
+                    trigger: { global: "phaseEnd" },
+                    forced: true,
+                    filter(event, player) {
+                        if (!player.isIn()) return false;
+                        return game.hasPlayer(current => current.countCards("e", card => typeof card.name == "string" && card.name.startsWith("fyrhduren_")));
+                    },
+                    async content(event, trigger, player) {
+                        /* const targets = game.filterPlayer(
+                            current => {
+                                return current.getCards("e", card => typeof card.name == "string" && card.name.startsWith("fyrhduren_")).length > 0;
+                            },
+                            undefined,
+                            true
+                        );
+                        const func = async target => {
+                            if (!target?.isIn() || !player.isIn()) {
+                                return;
+                            }
+                        };
+                        if (targets.length) {
+                            await game.doAsyncInOrder(targets, func);
+                        } */
+                        for (const current of game.filterPlayer().sortBySeat()) {
+                            const placed = current.getCards("e", card => typeof card.name == "string" && card.name.startsWith("fyrhduren_")).map(card => get.suit(card));
+                            const handcards = current.getCards("h", c => placed.includes(get.suit(c, current)));
+                            if (!handcards.length) continue;
+                            const sha = get.autoViewAs({ name: "sha", isCard: true }, handcards);
+                            //显式传入cards：params对象分支不会自动从VCard读取cards，
+                            //缺失时useCard的next.cards为空数组，手牌不会被失去、不会成为杀的实体牌
+                            if (player.canUse(sha, current, false)) {
+                                await player.useCard({ card: sha, targets: [current], cards: handcards, addCount: false });
+                            }
+                        }
+                    },
+                },
+            },
+        },
+        fyrhqudu: {
+            trigger: {
+                global: "damageBegin4",
+            },
+            filter(event, player) {
+                if (!event.source || event.source != player || event.player == player || get.name(event.card) !== 'sha') {
+                    return false;
+                }
+                if (!event.player.countCards('e')) {
+                    return false;
+                }
+                return event.num >= event.player.hp;
+            },
+            forced: true,
+            logTarget: "player",
+            async content(event, trigger, player) {
+                const target = trigger.player;
+                const cards = target.getCards('e');
+                const result = await target.chooseBool(`驱犊：是否交给${get.translation(player)}装备区所有牌以防止其获得${get.translation(trigger.cards)}`)
+                    .set("ai", () => {
+                        return get.player().countCards("e", card => typeof card.name == "string" && card.name.startsWith("fyrhduren_")) < 3;
+                    })
+                    .forResult();
+                if (result.bool) {
+                    //妒刃虚拟装备（fyrhduren_*)的壳牌离开装备区时，其onLose会把包裹的实体牌置入弃牌堆
+                    //而非跟随转移——故与普通装备分开处理：普通装备直接give，妒刃壳牌失去后由player从弃牌堆取回实体牌
+                    const normal = [];
+                    const fyrhShells = [];
+                    const fyrhReals = [];
+                    for (const card of cards) {
+                        if (typeof card.name == "string" && card.name.startsWith("fyrhduren_") && card.cards?.length) {
+                            fyrhShells.push(card);
+                            fyrhReals.push(card.cards[0]);
+                        } else {
+                            normal.push(card);
+                        }
+                    }
+                    if (normal.length) {
+                        await target.give(normal, player);
+                    }
+                    if (fyrhShells.length) {
+                        await target.lose(fyrhShells, 'visible');
+                        await player.gain(fyrhReals, 'gain2');
+                    }
+                } else {
+                    const cards1 = trigger.cards;
+                    await player.gain(cards1, 'gain2');
+                }
+            }
+        },
         //可可利亚
         fyrhliewang: {
             audio: "ext:永夜之境/audio:4",
@@ -1278,7 +1622,7 @@ export let info = {
                         ])
                         .set("filterOk", moved => moved[1].some(i => !get.owner(i)))
                         .set("processAI", list => {
-                                return 0;
+                            return 0;
                         })
                         .set("sum", sum)
                         .set("num", num)
@@ -1599,7 +1943,7 @@ export let info = {
                         if (evt.fyrhrulu_cleared) return false;
                         //不能要求player在targets中——绫华自己使用此杀调整到响应牌数0时，
                         //她是使用者而非目标，若按原条件判断则永远不会取消目标。
-                        //fyrhrulu_shan===0仅会被绫华的调整写入，足以限定作用范围
+                        //fyrhrulu_shan===0仅会被绫华的调整写入，以限定作用范围
                         return evt.fyrhrulu_shan === 0 && event.card?.name == "sha";
                     },
                     async content(event, trigger, player) {
@@ -8338,7 +8682,7 @@ export let info = {
                     };
                 },
                 prompt(links, player) {
-                    return `视为使用${get.translation(links[0][3]) || ""}【${get.translation(links[0][2])}】使用`;
+                    return `视为使用${get.translation(links[0][3]) || ""}【${get.translation(links[0][2])}】`;
                 },
             },
             ai: {
@@ -12360,24 +12704,31 @@ export let info = {
             audio: "ext:永夜之境/audio:2",
             enable: "phaseUse",
             filter(event, player) {
-                if (player.getStorage('fyrhjiaxie_used').length > 1) {
+                const used = player.getStorage('fyrhjiaxie_used');
+                if (used.length > 1) {
                     return false;
                 }
-                if (!player.getStorage('fyrhjiaxie_used').includes('tao') && player.getStorage('fyrhjiaxie_used').includes('wuzhong')) {
-                    return game.hasPlayer(current => current.isDamaged());
+                if (!used.includes('tao') && used.includes('wuzhong')) {
+                    //仅剩桃：存在可回复目标即可（转化使用不受原牌面 filterTarget 限制）
+                    return game.hasPlayer(current => lib.filter.targetEnabled2({ name: "tao", isCard: true }, player, current));
                 }
                 return player.hasCard(cardx => {
-                    return get.inpileVCardList(info => {
-                        const name = info[2];
-                        if (player.getStorage("xfyrhjiaxie_used").includes(name)) {
-                            return false;
+                    //无中生有：常规可用性判断
+                    if (!used.includes('wuzhong')) {
+                        const wuzhongCard = get.autoViewAs({ name: "wuzhong", isCard: true, cards: [cardx], storage: { jiaxiex: true } });
+                        if (event.filterCard(wuzhongCard, player, event)) {
+                            return true;
                         }
-                        return name === "wuzhong" || name === "tao";
-                    }).some(info => {
-                        const vcard = get.autoViewAs({ name: info[2], nature: info[3], isCard: true, cards: [cardx], storage: { jiaxiex: true } });
-                        if (!event.filterCard(vcard, player, event)) { return false; }
-                        return game.hasPlayer(target => player.canUse(vcard, target, false));
-                    });
+                    }
+                    //桃：按牌面 filterTarget/modTarget（即受伤目标）判断
+                    if (!used.includes('tao')) {
+                        const taoCard = get.autoViewAs({ name: "tao", isCard: true, cards: [cardx], storage: { jiaxiex: true } });
+                        if (event.filterCard(taoCard, player, event)
+                            && game.hasPlayer(current => lib.filter.targetEnabled2(taoCard, player, current))) {
+                            return true;
+                        }
+                    }
+                    return false;
                 }, "hes");
             },
             chooseButton: {
@@ -12388,7 +12739,7 @@ export let info = {
                             return event.filterCard({ name: "wuzhong", isCard: true }, player, event);
                         }
                         if (name === "tao") {
-                            return game.hasPlayer(current => current.isDamaged());
+                            return game.hasPlayer(current => lib.filter.targetEnabled2({ name: "tao", isCard: true }, player, current));
                         }
                         return false;
                     });
@@ -12417,7 +12768,7 @@ export let info = {
                         selectTarget: 1,
                         filterTarget(card, player, target) {
                             if (cardName === "tao") {
-                                return target.isDamaged();
+                                return lib.filter.targetEnabled2(card, player, target);
                             }
                             else if (cardName === "wuzhong") {
                                 return lib.filter.filterTarget({ name: "wuzhong", isCard: true }, player, player);
@@ -17942,7 +18293,7 @@ export let info = {
                     const soleTarget = validList[0];
                     const result = await player.chooseButton([`【翼佐】选择将牌当做以下牌令 ${get.translation(soleTarget)} 使用`, [buttons, 'vcard']], 1)
                         .set('filterButton', button => {
-                            if (button.link[2] === 'tao' && soleTarget.hp >= soleTarget.maxHp) return false;
+                            if (button.link[2] === 'tao' && !lib.filter.targetEnabled2({ name: "tao", isCard: true }, soleTarget, soleTarget)) return false;
                             return true;
                         })
                         .set("ai", button => {
@@ -17963,13 +18314,13 @@ export let info = {
                         filterTarget(card, player, target) {
                             // 只能选 player 或 target
                             if (!get.event().validList.includes(target)) return false;
-                            // 如果左边点选了【桃】，右边满血的角色就无法被选中
+                            // 如果左边点选了【桃】，无法回复体力（按牌面规则）的角色就无法被选中
                             const cardName = ui.selected.buttons[0]?.link[2];
-                            if (cardName === 'tao' && target.hp >= target.maxHp) return false;
+                            if (cardName === 'tao' && !lib.filter.targetEnabled2({ name: "tao", isCard: true }, target, target)) return false;
                             return true;
                         },
                         ai1(button) {
-                            return button.link[2] === 'wuzhong' ? 1 : (game.hasPlayer(p => p.hp < p.maxHp) ? 2 : 0);
+                            return button.link[2] === 'wuzhong' ? 1 : (game.hasPlayer(p => lib.filter.targetEnabled2({ name: "tao", isCard: true }, p, p)) ? 2 : 0);
                         },
                         ai2(target) {
                             const cardName = ui.selected.buttons[0]?.link[2];
@@ -20594,25 +20945,6 @@ export let info = {
                     }
                     return true;
                 });
-                /* return get
-                   .inpileVCardList(info => {
-                       const name = info[2];
-                       if (info[3]) {
-                           return false;
-                       }
-                       if (name != "sha" && name != "juedou") {
-                           return false;
-                       }
-                       return !banName.includes(name);
-                   })
-                   .some(card => {
-                       return event.filterCard({
-                           name: card[2] , 
-                           nature: card[3],
-                           isCard: true,   
-                           storage: { zhiwenss: true }   
-                       }, player, event);
-                   }); */
             },
             chooseButton: {
                 dialog(event, player) {
@@ -21266,7 +21598,7 @@ export let info = {
                     mark: true,
                     marktext: "🎴",
                     intro: {
-                        name:'',
+                        name: '🎴',
                         markcount(storage, player) {
                             return get.info("fyrhzaoju_mark").getSuits().size;
                         },
@@ -21310,7 +21642,7 @@ export let info = {
                         return `📔 ${get.info("fyrhzaoju_mark").getSuitText()}`;
                     },
                     trigger: {
-                        global: ["loseAfter","loseAsyncAfter","cardsDiscardAfter"],
+                        global: ["loseAfter", "loseAsyncAfter", "cardsDiscardAfter", 'cardsGotoPileAfter', 'washCard', 'phaseBegin'],
                     },
                     forced: true,
                     popup: false,
