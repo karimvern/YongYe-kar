@@ -1,5 +1,6 @@
 import {lib, game, ui, get, ai, _status} from '../../../noname.js';
 import { getBackgroundRowHTML, openBackgroundWindow } from './backgroundWindow.js';
+import { applyMenuStyle } from './menuStyle.js';
 export default {
 	loadUpdateContent: { //参考《忽悠宇宙》
 		// 👇 font-family: \'Songti SC\', \'SimSun\',
@@ -98,7 +99,7 @@ export default {
 	}, */
 	//========== 界面 ==========
 	background_divider: {
-		name: "<font size='4'>---------游戏背景切换---------</font>",
+		name: "<font size='4'>---------美化功能---------</font>",
 		clear: true,
 		nopointer: true,
 	},
@@ -113,6 +114,29 @@ export default {
 			// 返回 false 可以撤销点击产生的高亮状态
 			return false;
 		},
+	},
+	right_layout: {
+		name: "本体UI右手布局",
+		init: false,
+		intro: "切换后需重启游戏生效，十周年UI开启时保持关闭。",
+		onclick: function(item) {
+			game.saveConfig('extension_永夜之境_right_layout', item);
+			game.reload();
+		}
+	},
+	menu_prettify: {
+		name: "菜单美化",
+		init: false,
+		intro: "移植自《十周年UI》：开启后菜单变为全屏样式。",
+		onclick: function (item) {
+			game.saveConfig('extension_永夜之境_menu_prettify', item);
+			applyMenuStyle(Boolean(item));
+		},
+	},
+	mvp: {
+		name: "MVP结算",
+		init: false,
+		intro: "移植自《点绛唇》：游戏结束后显示MVP页面及结算页。",
 	},
 	/* card_button_skin: {
 		name: "选项按钮卡片美化",
@@ -153,24 +177,6 @@ export default {
 		name: "武将测试辅助",
 		intro: '<font color="#FFFF00">开启后可以使用一些测试武将的小功能。',
 	},
-	//========== 永夜将临 ==========
-	/* yeyeTextSizeOn: {
-		name: '【永夜将临】字体大小调整',
-		init: false,
-		intro: '是否开启永夜将临界面的字体调整开关',
-	},
-	yeyeTextSize: {
-		name: '【永夜将临】字体调整倍率',
-		init: '1',
-		input: true,
-		intro: '手机端字体调整倍率，输入数字',
-		onblur: function () {
-			const inputValue = this.innerHTML.replace(/<br>/g, "");
-			let value = parseFloat(inputValue);
-			if (isNaN(value)) value = 1;
-			this.innerHTML = value;
-			game.saveConfig("extension_永夜之境_yeyeTextSize", value);
-		},
-	}, */
+
 
 }

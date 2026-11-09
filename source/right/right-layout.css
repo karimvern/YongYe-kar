@@ -1,0 +1,184 @@
+/**
+ * 永夜之境 —— 本体UI右手布局
+ *
+ * 原理：rightLayout.js 给 #arena 打上
+ *   data-yongye-right="on"            总开关
+ *   data-yongye-right-base="<layout>" 本体布局名（mobile/long/long2/nova/newlayout）
+ * （特意避开十周年UI占用的 data-right-layout，防止两扩展互相干扰）
+ * 本文件把本体 layout/<name>/layout.css 中左锚定的玩家区/手牌区/控制按钮
+ * 镜像为右锚定（left 值原样搬到 right），不做整体 scaleX(-1)。
+ *
+ * 与本体选择器一一对应，位置数值全部来自本体原规则，便于对照维护：
+ *   mobile: layout/mobile/layout.css  long 继承 mobile
+ *   long2/nova: layout/long2|nova/layout.css（继承 newlayout）
+ *   newlayout: layout/newlayout/global.css
+ */
+
+/* ================= #control（结束回合等控制按钮） ================= */
+/* 本体按钮相对 #control 盒子居中排布，镜像盒子即可整体右移 */
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"] > #control,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"] > #control,
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"] > #control,
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"] > #control {
+	left: auto !important;
+	right: calc(-150% / 47 + 120px) !important;
+}
+#arena[data-yongye-right="on"][data-yongye-right-base="newlayout"] > #control {
+	left: auto !important;
+	right: 150px !important;
+}
+
+/* ================= #me / #mebg / #autonode（手牌区三件套） ================= */
+/* mobile/long 与 long2/nova 的基础规则相同（left:calc(-150%/47)），合并镜像 */
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #me,
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #mebg,
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #autonode,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess) > #me,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess) > #mebg,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess) > #autonode,
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"]:not(.chess) > #me,
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"]:not(.chess) > #mebg,
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"]:not(.chess) > #autonode,
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"]:not(.chess) > #me,
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"]:not(.chess) > #mebg,
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"]:not(.chess) > #autonode {
+	left: auto !important;
+	right: calc(-150% / 47) !important;
+}
+/* long2/nova：非单手牌变体（本体 left:0!important，需同用 !important 压制） */
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"]:not(.single-handcard):not(.chess) > #me,
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"]:not(.single-handcard):not(.chess) > #mebg,
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"]:not(.single-handcard):not(.chess) > #autonode,
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"]:not(.single-handcard):not(.chess) > #me,
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"]:not(.single-handcard):not(.chess) > #mebg,
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"]:not(.single-handcard):not(.chess) > #autonode {
+	left: auto !important;
+	right: 0 !important;
+}
+/* long2/nova：8人窄屏变体（本体 left:calc(...)!important） */
+@media screen and (max-width: 1105px) {
+	#arena[data-yongye-right="on"][data-yongye-right-base="long2"][data-number="8"]:not(.single-handcard):not(.chess) > #me,
+	#arena[data-yongye-right="on"][data-yongye-right-base="long2"][data-number="8"]:not(.single-handcard):not(.chess) > #mebg,
+	#arena[data-yongye-right="on"][data-yongye-right-base="long2"][data-number="8"]:not(.single-handcard):not(.chess) > #autonode,
+	#arena[data-yongye-right="on"][data-yongye-right-base="nova"][data-number="8"]:not(.single-handcard):not(.chess) > #me,
+	#arena[data-yongye-right="on"][data-yongye-right-base="nova"][data-number="8"]:not(.single-handcard):not(.chess) > #mebg,
+	#arena[data-yongye-right="on"][data-yongye-right-base="nova"][data-number="8"]:not(.single-handcard):not(.chess) > #autonode {
+		left: auto !important;
+		right: calc(-300% / 94 + 625% / 47 - 105px) !important;
+	}
+}
+/* mobile：带侧栏窗口变体 */
+#window.leftbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #me,
+#window.leftbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #mebg,
+#window.leftbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #autonode,
+#window.leftbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) .player[data-position="0"],
+#window.rightbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #me,
+#window.rightbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #mebg,
+#window.rightbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #autonode,
+#window.rightbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) .player[data-position="0"] {
+	left: auto !important;
+	right: calc(-150% / 47 - 50px - 75px / 47) !important;
+}
+#window.rightbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #me,
+#window.rightbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #mebg,
+#window.rightbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) > #autonode,
+#window.rightbar #arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) .player[data-position="0"] {
+	right: calc(-150% / 47 - 75px / 47) !important;
+}
+/* newlayout：基础定位为全宽/左零，镜像为右零 */
+#arena[data-yongye-right="on"][data-yongye-right-base="newlayout"] > #me,
+#arena[data-yongye-right="on"][data-yongye-right-base="newlayout"] > #mebg,
+#arena[data-yongye-right="on"][data-yongye-right-base="newlayout"] > #autonode {
+	left: auto;
+	right: 0;
+}
+
+/* ================= 层级：手牌从武将框下方穿过 ================= */
+/* 本体 #me > #handcards1:not(.scrollh) { z-index:3 } 高于 .player { z-index:2 }，
+   手牌多时右移会盖在武将框上。给 #me 建立独立层叠上下文并压到 .player 之下，
+   卡牌无论移到哪里都从武将框下方穿过；同时低于 .dialog(4)/#control(5)，弹窗不受影响 */
+#arena[data-yongye-right="on"] > #me {
+	z-index: 1;
+}
+
+/* ================= #handcards1（手牌容器，位于 #me 内） ================= */
+/* mobile/long：本体 left:120px（给左侧头像让位）→ 镜像为 right:120px */
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess):not(.single-handcard) #handcards1,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess):not(.single-handcard) #handcards1 {
+	left: auto !important;
+	right: 120px !important;
+}
+/* long2/nova：本体 > #me #handcards1 left:120px!important → 镜像 */
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"]:not(.single-handcard):not(.chess) > #me #handcards1,
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"]:not(.single-handcard):not(.chess) > #me #handcards1 {
+	left: auto !important;
+	right: 120px !important;
+}
+/* newlayout：本体 #handcards1 宽约半屏靠左 → 靠右 */
+#arena[data-yongye-right="on"][data-yongye-right-base="newlayout"] #handcards1 {
+	left: auto;
+	right: 0;
+}
+/* 卡牌列表（#handcards1 内的 .handcards）的对齐由 rightLayout.js 在
+   ui.updatehl 包装中用内联样式控制（左缘锚定在手牌区左界），
+   此处不再写对齐规则以免与内联样式互相覆盖 */
+
+/* ================= 主玩家头像（#me 内的假头像竖条） ================= */
+#arena[data-yongye-right="on"] > #me > .fakeme.avatar {
+	left: auto !important;
+	right: 0 !important;
+}
+
+/* ================= 主玩家（.player[data-position="0"]） ================= */
+/* mobile/long：主玩家拍平为底部横条，本体 left:calc(-150%/47) */
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) .player[data-position="0"],
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess) .player[data-position="0"] {
+	left: auto !important;
+	right: calc(-150% / 47) !important;
+}
+/* mobile/long：头像/副头像在横条左端 → 镜像到右端 */
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) .player[data-position="0"]:not(.minskin) > .avatar,
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) .player[data-position="0"]:not(.minskin) > .avatar2,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess) .player[data-position="0"]:not(.minskin) > .avatar,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess) .player[data-position="0"]:not(.minskin) > .avatar2 {
+	left: auto !important;
+	right: 0 !important;
+}
+/* mobile/long：装备栏在横条右端 → 镜像到左端（头像内侧） */
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) .player[data-position="0"]:not(.minskin) > .equips,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess) .player[data-position="0"]:not(.minskin) > .equips {
+	left: auto !important;
+	right: calc(100% - 120px) !important;
+}
+/* mobile/long：判定区在头像上方左侧 → 镜像到右侧；标记区相应对调 */
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) .player[data-position="0"] > .judges,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess) .player[data-position="0"] > .judges {
+	left: auto !important;
+	right: 6px !important;
+}
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"]:not(.chess) .player[data-position="0"] > .marks,
+#arena[data-yongye-right="on"][data-yongye-right-base="long"]:not(.chess) .player[data-position="0"] > .marks {
+	left: -6px !important;
+	right: auto !important;
+}
+/* mobile：主玩家聊天气泡/弹窗 */
+#arena[data-yongye-right="on"][data-yongye-right-base="mobile"] .popup[data-position="0"] {
+	left: auto !important;
+	right: calc(-150% / 47 + 15px) !important;
+}
+/* long2/nova：主玩家为站立武将，本体 left:0（8人时另有偏移） */
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"] > .player[data-position="0"],
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"] > .player[data-position="0"] {
+	left: auto !important;
+	right: 0 !important;
+}
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"][data-number="8"] > .player[data-position="0"],
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"][data-number="8"] > .player[data-position="0"] {
+	left: auto !important;
+	right: calc(-300% / 94 + 625% / 47 - 105px) !important;
+}
+/* long2/nova：站立玩家装备栏缩放基准从左下改为右下 */
+#arena[data-yongye-right="on"][data-yongye-right-base="long2"] > .player:not(.minskin) > .equips,
+#arena[data-yongye-right="on"][data-yongye-right-base="nova"] > .player:not(.minskin) > .equips {
+	transform-origin: bottom right;
+}

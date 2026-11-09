@@ -120,7 +120,7 @@ lib.poptip.add({
 lib.poptip.add({
     id: "xinx_dipai",
     name: "底牌",
-    info: "用于转化的实体牌",
+    info: "转化牌对应的实体牌",
 });
 lib.poptip.add({
     id: "xinx_baoliuhuihe",
@@ -145,7 +145,7 @@ lib.poptip.add({
 lib.poptip.add({
     id: "xinx_diezhi",
     name: "叠置",
-    info: `将两者叠放。叠置牌显示为最下方的牌。你失去叠置牌后，收回此牌剩余的实体牌，若为使用或打出而失去，则可以使用剩余牌，然后收回未使用的牌。`,
+    info: `将两者叠放。叠置牌显示为最下方的牌。你失去叠置牌后，收回此牌的剩余牌；若为使用或打出而失去，则可以使用剩余牌，然后收回未使用的牌。`,
 });
 lib.poptip.add({
     id: "xinx_zyjinengshiji",

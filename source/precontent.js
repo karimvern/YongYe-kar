@@ -2,7 +2,7 @@ import { lib, game, ui, get, ai, _status } from '../../../noname.js';
 import { voices } from './voices.js';
 import { poptip } from './poptip.js';
 import { characterIntro } from './characterIntro.js';
-import { } from "./js/correct.js";
+//import { } from "./js/correct.js";
 import { } from "./js/globalskill.js";
 import {
     cardPileObsever,
@@ -11,6 +11,8 @@ import {
     specialObsever,
 } from "./MatationObsever/PileObsever.js";
 import { initExtraContent } from './js/index.js';
+//MVP结算（默认关闭，开关在扩展设置里）；副作用导入：注册样式与lib.onover钩子
+import './mvp/mvp.js';
 import { installBackgroundWatcher } from './background.js';
 
 export let charPack = {
@@ -235,9 +237,14 @@ export async function precontent(config, pack) {
             nature: 'watermm',
             showName: 'ka',
         });
+        lib.namePrefix.set('晓', {
+            color: '#F4F4C2',
+            nature: 'watermm',
+            showName: '晓',
+        });
 
         const xinxCombinition = ['杏', '新杀谋', '势', '谋', '新杀', '汉', '星', '骥', '闪', '族', 'SP', '界','手杀界','神','夏','手杀',
-            '乐', '华', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友', '雁翎','新杀|神','嗔','武'];
+            '乐', '华', 'OL谋', 'OL', '廷', '玄蝶', 'OL界', '手杀神', '夏', '手杀界', '族', '☆', '友', '雁翎','新杀|神','嗔','武','晋'];
         for (let n of xinxCombinition) {
             lib.namePrefix.set(`旧${n}`, {
                 getSpan: (prefix, name) => `${get.prefixSpan('旧')}${get.prefixSpan(n)}`
@@ -927,6 +934,12 @@ export async function precontent(config, pack) {
             }
             return null;
         },
+        //玩家的手牌壳牌的剩余实体牌中，是否存在指定牌名（含关联nature）的牌（供hiddenCard/inpileVCardList过滤用）
+        hasStackName(player, name, nature) {
+            return player.getCards("h").some(shell =>
+                this.getStack(shell).some(card => get.name(card) == name && (get.nature(card) || "") == (nature || ""))
+            );
+        },
         //获取叠置整体中的实体牌：
         //默认返回 [最下方底牌, ...叠置牌]（叠置牌按从下到上的叠置顺序）；
         //options.includeBase为false时只返回叠置牌；card可为壳牌或其叠置牌（内部自动定位底牌）；非有效叠置返回[]
@@ -936,6 +949,36 @@ export async function precontent(config, pack) {
             const stack = this.getStack(base).slice();
             if (options?.includeBase === false) return stack;
             return [base, ...stack];
+        },
+        //互换壳牌与其叠置中的一张实体牌的位置：stackCard成为新底牌（进入手牌区原底牌位置），原底牌降为叠置牌（进入ui.special最下层）
+        //用于"将叠置牌当作其剩余实体牌使用/打出"类技能（如回廊）：互换后照常使用/打出新底牌即可，物理牌流与描述完全一致
+        //成功返回true；shell非有效壳牌、stackCard不在其叠置中时返回false
+        swapBase(player, shell, stackCard) {
+            if (!this.isShell(shell) || !stackCard) return false;
+            const stack = this.getStack(shell);
+            const idx = stack.indexOf(stackCard);
+            if (idx < 0) return false;
+            //新叠置序列：原底牌放最下层（贴近新底牌），其余保持相对顺序
+            const rest = stack.slice();
+            rest.splice(idx, 1);
+            rest.unshift(shell);
+            //原底牌降级为叠置牌：清壳牌痕迹→移入暂存区→标归属
+            this.clearShell(shell);
+            shell.goto(ui.special);
+            if (!game.online) shell.storage.xinxqp_master = player;
+            //新底牌入手牌区原位置并接管叠置
+            const handNode = player.node.handcards1;
+            if (shell.parentNode === handNode) {
+                handNode.insertBefore(stackCard, shell);
+            } else {
+                stackCard.fix();
+                handNode.insertBefore(stackCard, handNode.firstChild);
+            }
+            stackCard.storage.xinxqp_stack = rest;
+            //录像：旧壳牌清空+新壳牌载入；syncShell负责载荷/联机同步/刷新显示
+            game.addVideo("skill", player, ["_xinxqp_diezhi", [shell.cardid, []]]);
+            this.syncShell(player, stackCard);
+            return true;
         },
         //============事件取数（失去叠置牌时从lose/loseAsync事件中取数据）============
         //解析壳牌gaintag中的"xinxqp:"载荷 → [suit, number, name, nature, cardid] 列表（非载荷返回[]）
@@ -1066,6 +1109,8 @@ export async function precontent(config, pack) {
         },
         //叠置变动后：录像记录+宿主载荷维护+联机同步+本地刷新
         syncShell(player, shell) {
+            //自愈兜底（幂等）：确保addGaintag包装已安装，防止载荷被引擎重渲染时原样显示成乱码
+            this.installUI();
             const stack = this.getStack(shell);
             game.addVideo("skill", player, ["_xinxqp_diezhi", [shell.cardid, get.cardsInfo(stack)]]);
             if (!game.online) {

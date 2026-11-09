@@ -1,4 +1,4 @@
-import { lib, game, ui, get, ai, _status } from '../../../noname.js';
+﻿import { lib, game, ui, get, ai, _status } from '../../../noname.js';
 export let voices = {
 
     //流萤
@@ -799,6 +799,37 @@ export let voices = {
     '#ext:永夜之境/audio/xinxruwo8': '嗯哼♪',
     '#ext:永夜之境/audio/xinxruwo9': '每一段回忆，都化作涟漪。',
     '#ext:永夜之境/audio/xinxruwo10': '嗯…想荡秋千了呢。',
+
+    '#ext:永夜之境/audio/xinxhuilang1': '浮世易朽，入画如初。',
+    '#ext:永夜之境/audio/xinxhuilang2': '以此笔触，珠玉长存。',
+    '#ext:永夜之境/audio/xinxhuilang3': '着墨繁星，徜徉漫步。',
+    '#ext:永夜之境/audio/xinxhuilang4': '信笔由疆，点染星月。',
+    '#ext:永夜之境/audio/xinxshizhui1': '我欲入深海，打捞遗珠——',
+    '#ext:永夜之境/audio/xinxshizhui2': '灵韵，定格此刻。',
+    '#ext:永夜之境/audio/xinxshizhui3': '世间雪月风花，也一样令我留恋。',
+    '#ext:永夜之境/audio/xinxshizhui4': '万千数据，只为描摹灵魂的色彩。',
+    '#ext:永夜之境/audio/xinxshizhui5': '每一次落笔，都更接近完美。',
+    '#ext:永夜之境/audio/xinxshizhui6': '美的瞬间，短暂而易逝。',
+    '#ext:永夜之境/audio/xinxshizhui7': '最后一抹神韵，会在何处？',
+    '#ext:永夜之境/audio/xinxshizhui8': '稍作润色。',
+
+
+    '#ext:永夜之境/audio/xinxlingju1': '硬着陆！',
+    '#ext:永夜之境/audio/xinxlingju2': '胜局已定，开怀畅饮吧。',
+    '#ext:永夜之境/audio/xinxlingju3': '尽情享用，都算我的。',
+    '#ext:永夜之境/audio/xinxlingju4': '好运带来财富，一如既往。',
+    '#ext:永夜之境/audio/xinxlingju5': '顺势而行？我选逆风向上。',
+    '#ext:永夜之境/audio/xinxlingju6': '别紧张，只是助兴节目。',
+    '#ext:永夜之境/audio/xinxlingju7': '暗流汹涌…该入场了。',
+    '#ext:永夜之境/audio/xinxlingju8': '不速之客…我喜欢！',
+
+    '#ext:永夜之境/audio/xinxzhilang1': '全归你了，朋友。',
+    '#ext:永夜之境/audio/xinxzhilang2': '机会的暗流，只会被冒险者捕捉。',
+    '#ext:永夜之境/audio/xinxzhilang3': '放松下来，总会有些意外收获。',
+    '#ext:永夜之境/audio/xinxzhilang4': '这一杯，敬你们。',
+    '#ext:永夜之境/audio/xinxzhilang5': '这一杯，敬你们的溃败。',
+
+
     
 
 
@@ -1391,6 +1422,8 @@ export let voices = {
 
 
     //杏雅三国
+    '#ext:永夜之境/audio/xinxnewzhiyi1': '众将听令，此战，可进不可退！',
+    '#ext:永夜之境/audio/xinxnewzhiyi2': '伯约莫慌，援军来矣！',
     //姜维
     '#ext:永夜之境/audio/xinxnewpixing1': '维行丞相之策，方有兴复之机。',
     '#ext:永夜之境/audio/xinxnewpixing2': '大任在肩，维定竭尽心力。',
@@ -1488,6 +1521,14 @@ export let voices = {
 
 
     //武将修改
+    "#ext:永夜之境/audio/xinxhjfenyin1": "奋音震天，力荡山河。",
+    "#ext:永夜之境/audio/xinxhjfenyin2": "昂首长歌，振奋作声。",
+    "#ext:永夜之境/audio/xinxhjfenyin3": "引吭高歌，震怒呵斥。",
+    "#ext:永夜之境/audio/xinxhjfenyin4": "长音啸天，鼓舞士气。",
+    "#ext:永夜之境/audio/xinxhjliji1": "蓄势待发，全力一搏！",
+    "#ext:永夜之境/audio/xinxhjliji2": "以寡敌众，遂相腾击。",
+
+
     "#ext:永夜之境/audio/xinxhjjianying1": "主公坐占胜机，缓行亦无所碍。",
     "#ext:永夜之境/audio/xinxhjjianying2": "得胜已是定局，何必急功近利？",
     "#ext:永夜之境/audio/xinxhjjianying3": "遣精骑抄其边鄙，彼不得安，我取其逸。",

@@ -1,82 +1,82 @@
-//import {lib,game,ui,get,ai,_status} from '../../../noname.js'
-import { lib, game, ui, get, ai, _status } from "noname";
+import { lib, game, ui, get, ai, _status } from '../../../../noname.js';
+//import { lib, game, ui, get, ai, _status } from "noname";
 
 //本体技能AI修正
 
-
+export async function correctContent(config, pack) {
 /* lib.skill.dcsbtaozhou = {
     inherit: "dcsbtaozhou",
 } */
 lib.skill.tiqi = {
     audio: 2,
-		trigger: { global: ["phaseDrawEnd", "phaseDrawSkipped", "phaseDrawCancelled"] },
-		filter(event, player) {
-			if (player === event.player) {
-				return false;
-			}
-			const num = event.player
-				.getHistory("gain", evt => evt.getParent().name === "draw" && evt.getParent("phaseDraw") === event)
-				.map(evt => evt.cards.length)
-				.reduce((a, b) => a + b, 0);
-			return num !== 2;
-		},
-		frequent: true,
-		logTarget: "player",
-		async content(event, trigger, player) {
-			let num = trigger.player
-				.getHistory("gain", evt => evt.getParent().name === "draw" && evt.getParent("phaseDraw") === trigger)
-				.map(evt => evt.cards.length)
-				.reduce((a, b) => a + b, 0);
-			num = Math.abs(num - 2);
-			event.num = num;
-			await player.draw(num);
-			if (!trigger.player.isIn()) {
-				return;
-			}
-			const result = await player
-				.chooseControl({
-					controls: [` +${num} `, ` -${num} `, "cancel2"],
-					prompt: `是否改变${get.translation(trigger.player)}本回合的手牌上限？`,
-					ai: () => {
-						const sgn = get.sgn(get.attitude(player, trigger.player));
-						if (sgn === 0) {
-							return 2;
-						}
-						if (sgn === 1) {
-							return 0;
-						}
-						return 1;
-					},
-				})
-				.forResult();
-			if (result.index < 2) {
-				const target = trigger.player;
-				player.line(target);
-				if (!target.storage.tiqi_effect) {
-					target.storage.tiqi_effect = 0;
-				}
-				target.storage.tiqi_effect += num * get.sgn(0.5 - result.index);
-				target.addTempSkill("tiqi_effect");
-				target.markSkill("tiqi_effect");
-			}
-		},
-		subSkill: {
-			effect: {
-				mod: {
-					maxHandcard(player, num) {
-						if (typeof player.storage.tiqi_effect === "number") {
-							return num + player.storage.tiqi_effect;
-						}
-					},
-				},
-				charlotte: true,
-				onremove: true,
-				mark: true,
-				intro: {
-					content: num => `手牌上限${num < 0 ? "" : "+"}${num}`,
-				},
-			},
-		},
+    trigger: { global: ["phaseDrawEnd", "phaseDrawSkipped", "phaseDrawCancelled"] },
+    filter(event, player) {
+        if (player === event.player) {
+            return false;
+        }
+        const num = event.player
+            .getHistory("gain", evt => evt.getParent().name === "draw" && evt.getParent("phaseDraw") === event)
+            .map(evt => evt.cards.length)
+            .reduce((a, b) => a + b, 0);
+        return num !== 2;
+    },
+    frequent: true,
+    logTarget: "player",
+    async content(event, trigger, player) {
+        let num = trigger.player
+            .getHistory("gain", evt => evt.getParent().name === "draw" && evt.getParent("phaseDraw") === trigger)
+            .map(evt => evt.cards.length)
+            .reduce((a, b) => a + b, 0);
+        num = Math.abs(num - 2);
+        event.num = num;
+        await player.draw(num);
+        if (!trigger.player.isIn()) {
+            return;
+        }
+        const result = await player
+            .chooseControl({
+                controls: [` +${num} `, ` -${num} `, "cancel2"],
+                prompt: `是否改变${get.translation(trigger.player)}本回合的手牌上限？`,
+                ai: () => {
+                    const sgn = get.sgn(get.attitude(player, trigger.player));
+                    if (sgn === 0) {
+                        return 2;
+                    }
+                    if (sgn === 1) {
+                        return 0;
+                    }
+                    return 1;
+                },
+            })
+            .forResult();
+        if (result.index < 2) {
+            const target = trigger.player;
+            player.line(target);
+            if (!target.storage.tiqi_effect) {
+                target.storage.tiqi_effect = 0;
+            }
+            target.storage.tiqi_effect += num * get.sgn(0.5 - result.index);
+            target.addTempSkill("tiqi_effect");
+            target.markSkill("tiqi_effect");
+        }
+    },
+    subSkill: {
+        effect: {
+            mod: {
+                maxHandcard(player, num) {
+                    if (typeof player.storage.tiqi_effect === "number") {
+                        return num + player.storage.tiqi_effect;
+                    }
+                },
+            },
+            charlotte: true,
+            onremove: true,
+            mark: true,
+            intro: {
+                content: num => `手牌上限${num < 0 ? "" : "+"}${num}`,
+            },
+        },
+    },
 }
 lib.skill.olzongluan = {
     audio: 2,
@@ -119,583 +119,448 @@ lib.skill.olzongluan = {
         },
     },
 }
+//防止梁燕让队友弃牌
+    Object.assign(lib.skill.starliangyan, {
+        ai: {
+            order(item, player) {
+                if (
+                    !game.hasPlayer(current => current !== player && get.attitude(player, current) > 0) &&
+                    game.hasPlayer(current => get.attitude(player, current) <= 0)
+                ) {
+                    return 10;
+                }
+                if (
+                    game.hasPlayer(current => {
+                        const del = player.countCards("h") - current.countCards("h"),
+                            toFind = [2, 4].find(num => Math.abs(del) === num);
+                        if (toFind === 4 && del < 0 && get.attitude(player, current) <= 0) {
+                            return true;
+                        }
+                        return false;
+                    })
+                ) {
+                    return 10;
+                }
+                return 1;
+            },
+            result: {
+                target(player, target) {
+                    return -1;
+                },
+            },
+        },
+    });
 
-lib.skill.starchengfeng = {
-    marktext: "匡",
-    intro: {
-        name: "匡祚",
-        markcount: "expansion",
-        content: "expansion",
-    },
-    audio: 2,
-    usable: 1,
-    enable: "chooseToUse",
-    filter(event, player) {
-        for (const name of ["shan", "wuxie"]) {
-            if (name == "wuxie") {
-                let info = event.info_map;
-                if (info && player != info.target) {
+Object.assign(lib.skill.starchengfeng, {
+        filter(event, player) {
+            for (const name of ["shan", "wuxie"]) {
+                if (name == "wuxie") {
+                    let info = event.info_map;
+                    if (info && player != info.target) {
+                        continue;
+                    }
+                } else if (!event.respondTo) {
                     continue;
                 }
-            } else if (!event.respondTo) {
-                continue;
+                const color = name == "shan" ? "red" : "black";
+                if (!event.filterCard(get.autoViewAs({ name: name }, "unsure"), player, event)) {
+                    continue;
+                }
+                if (player.getExpansions("starchengfeng").some(card => get.color(card) == color)) {
+                    return true;
+                }
             }
+            return false;
+        },
+        hiddenCard(player, name) {
             const color = name == "shan" ? "red" : "black";
-            if (!event.filterCard(get.autoViewAs({ name: name }, "unsure"), player, event)) {
-                continue;
+            if (name == "wuxie") {
+                let evt = _status.event;
+                let wuxieEvt = evt.name === '_wuxie' ? evt : evt.getParent('_wuxie');
+                if (wuxieEvt && wuxieEvt._info_map && wuxieEvt._info_map.target !== player) {
+                    return false;
+                }
             }
             if (player.getExpansions("starchengfeng").some(card => get.color(card) == color)) {
                 return true;
             }
-        }
-        return false;
-    },
-    chooseButton: {
-        dialog(event, player) {
-            return ui.create.dialog("承奉", player.getExpansions("starchengfeng"), "hidden");
         },
-        filter(button, player) {
-            const card = button.link;
-            if (!game.checkMod(card, player, "unchanged", "cardEnabled2", player)) {
-                return false;
-            }
-            const evt = _status.event.getParent();
-            const name = get.color(card) == "red" ? "shan" : "wuxie";
-            return evt.filterCard(get.autoViewAs({ name: name }, [card]), player, evt);
-        },
-        check(button) {
-            if (_status.event.getParent().type != "phase") {
-                return 1;
-            }
-            var player = _status.event.player;
-            return player.getUseValue({
-                name: button.link[2],
-                nature: button.link[3],
-            });
-        },
-        backup(links, player) {
-            return {
-                audio: "starchengfeng",
-                selectCard: -1,
-                position: "x",
-                filterCard: card => card == lib.skill.starchengfeng_backup.card,
-                viewAs(cards, player) {
-                    const name = get.color(cards[0]) == "red" ? "shan" : "wuxie";
-                    return { name: name };
-                },
-                card: links[0],
-            };
-        },
-        prompt(links, player) {
-            return "将一张基本牌当做" + get.translation(links[0][2]) + "使用";
-        },
-    },
-    hiddenCard(player, name) {
-        const color = name == "shan" ? "red" : "black";
-        if (name == "wuxie") {
-            let evt = _status.event;
-            let wuxieEvt = evt.name === '_wuxie' ? evt : evt.getParent('_wuxie');
-            if (wuxieEvt && wuxieEvt._info_map && wuxieEvt._info_map.target !== player) {
-                return false;
-            }
-        }
-        if (player.getExpansions("starchengfeng").some(card => get.color(card) == color)) {
-            return true;
-        }
-    },
-    ai: {
-        respondShan: true,
-        skillTagFilter(player, tag) {
-            if (player.getExpansions("starchengfeng").some(card => get.color(card) == "red")) {
-                return true;
-            }
-        },
-        order: 1,
-        result: {
-            player(player) {
-                if (_status.event.dying) {
-                    return get.attitude(player, _status.event.dying);
-                }
-                return 1;
-            },
-        },
-    },
-    group: "starchengfeng_use",
-    subSkill: {
-        backup: {},
-        use: {
-            audio: "starchengfeng",
-            trigger: { player: "useCardAfter" },
-            filter(event, player) {
-                let colors = [];
-                for (let card of player.getExpansions("starchengfeng")) {
-                    colors.add(get.color(card));
-                }
-                return event.skill == "starchengfeng_backup" && colors.length < 2;
-            },
-            prompt2: "将牌堆顶一张牌置入“匡祚”",
-            content() {
-                player.addToExpansion(get.cards(1), "gain2").gaintag.add("starchengfeng");
-            },
-        },
-    },
-},
+    });
 
 
-    lib.translate.starliangyan_info =
-    "出牌阶段限一次。你可以选择一名其他角色，你摸/弃置至多两张牌，令其弃置/摸等量的牌。然后若你与其手牌数相同，以此法摸牌的角色跳过其下一个弃牌阶段。";
-//防止梁燕让队友弃牌
-lib.skill.starliangyan = {
-    audio: 2,
-    enable: "phaseUse",
-    usable: 1,
-    filterTarget: lib.filter.notMe,
-    chooseButton: {
-        dialog(event, player) {
-            const name = get.translation(event.result.targets[0]);
-            const list = ["你摸一张牌，其弃置一张牌", "你弃置一张牌，其摸一张牌", "你摸两张牌，其弃置两张牌", "你弃置两张牌，其摸两张牌"].map(
-                (item, i) => [i, item]
-            );
-            const dialog = ui.create.dialog(
-                `梁燕：请选择你与${name}要执行的选项`,
-                [list.slice(0, 2), "tdnodes"],
-                [list.slice(2, 4), "tdnodes"],
-                "hidden"
-            );
-            return dialog;
-        },
-        filter(button, player) {
-            const link = button.link;
-            if (link % 2 === 0) {
-                return true;
-            }
-            return player.countDiscardableCards(player, "he") >= (link + 1) / 2;
-        },
-        check(button) {
-            const player = get.player(),
-                target = get.event().getParent().result.targets[0];
-            const link = button.link;
-            if (get.attitude(player, target) <= 0 && link === 2) {
-                return 100;
-            }
-            const ph = player.countCards("h"),
-                th = target.countCards("h");
-            if (link % 2 === 0) {
-                const num = link / 2 + 1;
-                if (ph + num === th - num) {
-                    return 10;
-                }
-            } else {
-                const num = (link + 1) / 2;
-                if (ph - num === th + num) {
-                    return 10;
-                }
-            }
-            return 5;
-        },
-        backup(links) {
-            return {
-                audio: "starliangyan",
-                target: get.event().result.targets[0],
-                link: links[0],
-                filterTarget(card, player, target) {
-                    return target === lib.skill.starliangyan_backup.target;
-                },
-                selectTarget: -1,
-                async content(content, trigger, player) {
-                    const target = lib.skill.starliangyan_backup.target;
-                    const link = lib.skill.starliangyan_backup.link;
-                    const num = link <= 1 ? 1 : 2;
-                    const fn = ["draw", "chooseToDiscard"];
-                    if (link % 2 === 1) {
-                        fn.reverse();
-                    }
-                    await player[fn[0]](num, true, "he");
-                    await target[fn[1]](num, true, "he");
-                    if (player.countCards("h") === target.countCards("h")) {
-                        const skipper = [player, target][link % 2];
-                        skipper.skip("phaseDiscard");
-                        game.log(skipper, "跳过了下一个", "#y弃牌阶段");
-                    }
-                },
-            };
-        },
-        prompt(links) {
-            return "点击“确定”以执行效果";
-        },
-    },
-    subSkill: {
-        backup: {},
-    },
-    ai: {
-        order(item, player) {
-            if (
-                !game.hasPlayer(current => current !== player && get.attitude(player, current) > 0) &&
-                game.hasPlayer(current => get.attitude(player, current) <= 0)
-            ) {
-                return 10;
-            }
-            if (
-                game.hasPlayer(current => {
-                    const del = player.countCards("h") - current.countCards("h"),
-                        toFind = [2, 4].find(num => Math.abs(del) === num);
-                    if (toFind === 4 && del < 0 && get.attitude(player, current) <= 0) {
-                        return true;
-                    }
-                    return false;
-                })
-            ) {
-                return 10;
-            }
-            return 1;
-        },
-        result: {
-            target(player, target) {
-                return -1;
-            },
-        },
-    },
+
+/* ============================================================================
+ * 【过河拆桥】【顺手牵羊】AI 修正
+ * 注意：卡牌信息保存在 lib.card[牌名] 中（lib.skill 只保存技能），
+ * 所以覆写 lib.skill.guohe / lib.skill.shunshou 对卡牌 AI 无效，
+ * 反而会让 get.info("guohe") 取到空对象，必须改为覆写 lib.card。
+ *
+ * 修改点：
+ *   ① result.target：队友判定区有【乐不思蜀】/【兵粮寸断】时，大幅提高对该目标的评分
+ *   ② basic.order  ：手里有拆/顺且队友判定区有上述牌时，提前使用
+ *   ③ ai.button    ：结算时必定优先拆/顺判定区的那张【乐不思蜀】/【兵粮寸断】
+ *   ④ 视为使用类虚拟牌 guohe_copy / shunshou_copy 的 result 同步覆写，
+ *      使技能 AI 在“视为拆/顺”时也优先选择该队友
+ * ==========================================================================*/
+
+/** 判定区中“对持有者不利、需要帮队友拆掉”的延时锦囊 */
+const _yeyeBadJudge = ["lebu", "bingliang"];
+
+/** 取判定区牌的实际牌名（视为牌的名字保存在 viewAs 中） */
+function _yeyeJudgeName(card) {
+    const viewAs = card.viewAs;
+    if (typeof viewAs === "string") {
+        return viewAs;
+    }
+    if (viewAs && typeof viewAs === "object" && viewAs.name) {
+        return viewAs.name;
+    }
+    return card.name;
 }
 
+/**
+ * 目标判定区是否有需要帮忙拆掉的【乐不思蜀】/【兵粮寸断】
+ * @param {Player} target 判定区的主人
+ * @param {Player} viewer 评估者（拆/顺的使用者）
+ * @param {(card: Card) => boolean} [filter] 额外的可选性判断（如能否被弃置/获得）
+ */
+function _yeyeHasBadJudge(target, viewer, filter) {
+    return target.getCards("j").some(card => {
+        const name = _yeyeJudgeName(card);
+        if (!_yeyeBadJudge.includes(name)) {
+            return false;
+        }
+        if (filter && !filter(card)) {
+            return false;
+        }
+        // 用这张牌对目标的实际收益来判断，避免把“无效果的乐不思蜀”也当成负面牌
+        return get.effect(target, { name: name }, target, viewer) < 0;
+    });
+}
 
-lib.translate.guohe_info = "出牌阶段，对区域里有牌的一名其他角色使用。你弃置其区域里的一张牌。",
-    lib.skill.guohe = {
-        inherit: "guohe",
-        ai: {
-            wuxie: (target, card, player, viewer, status) => {
-                if (
-                    !target.countCards("hej") ||
-                    status * get.attitude(viewer, player._trueMe || player) > 0 ||
-                    (target.hp > 2 &&
-                        !target.hasCard(i => {
-                            let val = get.value(i, target),
-                                subtypes = get.subtypes(i);
-                            if (val < 8 && target.hp < 2 && !subtypes.includes("equip2") && !subtypes.includes("equip5")) {
-                                return false;
-                            }
-                            return val > 3 + Math.min(5, target.hp);
-                        }, "e") &&
-                        target.countCards("h") * _status.event.getRand("guohe_wuxie") > 1.57)
-                ) {
-                    return 0;
-                }
-            },
-            basic: {
-                order: 9,
-                useful: (card, i) => 10 / (3 + i),
-                value: (card, player) => {
-                    let max = 0;
-                    game.countPlayer(cur => {
-                        max = Math.max(max, lib.card.guohe.ai.result.target(player, cur) * get.attitude(player, cur));
-                    });
-                    if (max <= 0) {
-                        return 5;
-                    }
-                    return 0.42 * max;
-                },
-            },
-            yingbian(card, player, targets, viewer) {
-                if (get.attitude(viewer, player) <= 0) {
-                    return 0;
-                }
-                if (
-                    game.hasPlayer(function (current) {
-                        return !targets.includes(current) && lib.filter.targetEnabled2(card, player, current) && get.effect(current, card, player, player) > 0;
-                    })
-                ) {
-                    return 6;
-                }
-                return 0;
-            },
-            button: button => {
-                let player = _status.event.player,
-                    target = _status.event.target;
-                if (!lib.filter.canBeDiscarded(button.link, player, target)) {
-                    return 0;
-                }
-                let att = get.attitude(player, target),
-                    val = get.buttonValue(button),
-                    pos = get.position(button.link),
-                    viewAs = button.link.viewAs,
-                    name = get.name(button.link);
-                if (att > 0 && pos === "j") {
-                    if (viewAs === "lebu" || name === "lebu") {
-                        return 100 + btv;
-                    }
-                    if (viewAs === "bingliang" || name === "bingliang") {
-                        return 50 + btv;
-                    }
-                }
-                if (pos === "j") {
-                    let viewAs = button.link.viewAs;
-                    if (viewAs === "lebu") {
-                        let needs = target.needsToDiscard(2);
-                        val *= 1.08 + 0.2 * needs;
-                    } else if (viewAs === "shandian" || viewAs === "fulei") {
-                        val /= 2;
-                    }
-                }
-                if (att > 0) {
-                    val = -val;
-                }
-                if (pos !== "e") {
-                    return val;
-                }
-                let sub = get.subtypes(button.link);
-                if (sub.includes("equip1")) {
-                    return (val * Math.min(3.6, target.hp)) / 3;
-                }
-                if (sub.includes("equip2")) {
-                    if (name === "baiyin" && pos === "e" && target.isDamaged()) {
-                        let by = 3 - 0.6 * Math.min(5, target.hp);
-                        return get.sgn(get.recoverEffect(target, player, player)) * by;
-                    }
-                    return 1.57 * val;
-                }
-                if (att <= 0 && (sub.includes("equip3") || sub.includes("equip4")) && (player.hasSkill("shouli") || player.hasSkill("psshouli"))) {
-                    return 0;
-                }
-                if (sub.includes("equip6")) {
-                    return val;
-                }
-                if (sub.includes("equip4")) {
-                    return val / 2;
-                }
-                if (
-                    sub.includes("equip3") &&
-                    !game.hasPlayer(cur => {
-                        return !cur.inRange(target) && get.attitude(cur, target) < 0;
-                    })
-                ) {
-                    return 0.4 * val;
-                }
-                return val;
-            },
-            result: {
-                target(player, target) {
-                    const att = get.attitude(player, target);
-                    const hs = target.getDiscardableCards(player, "h");
-                    const es = target.getDiscardableCards(player, "e");
-                    const js = target.getDiscardableCards(player, "j");
-                    if (!hs.length && !es.length && !js.length) {
-                        return 0;
-                    }
-                    if (att > 0) {
-                        if (
-                            js.some(card => {
-                                const cardj = card.viewAs ? { name: card.viewAs } : card;
-                                if (cardj.name === "xumou_jsrg") {
-                                    return false;
-                                }
-                                return get.effect(target, cardj, target, player) < 0;
-                            })
-                        ) {
-                            return 3;
-                        }
-                        if (target.isDamaged() && es.some(card => card.name === "baiyin") && get.recoverEffect(target, player, player) > 0) {
-                            if (target.hp === 1 && !target.hujia) {
-                                return 1.6;
-                            }
-                        }
-                        if (
-                            es.some(card => {
-                                return get.value(card, target) < 0;
-                            })
-                        ) {
-                            return 1;
-                        }
-                        return -1.5;
-                    } else {
-                        const noh = hs.length === 0 || target.hasSkillTag("noh");
-                        const noe = es.length === 0 || target.hasSkillTag("noe");
-                        const noe2 =
-                            noe ||
-                            !es.some(card => {
-                                return get.value(card, target) > 0;
-                            });
-                        const noj =
-                            js.length === 0 ||
-                            !js.some(card => {
-                                const cardj = card.viewAs ? { name: card.viewAs } : card;
-                                if (cardj.name === "xumou_jsrg") {
-                                    return true;
-                                }
-                                return get.effect(target, cardj, target, player) < 0;
-                            });
-                        if (noh && noe2 && noj) {
-                            return 1.5;
-                        }
-                        return -1.5;
-                    }
-                },
-            },
-            tag: {
-                loseCard: 1,
-                discard: 1,
-            },
-        },
-    }
-lib.skill.shunshou = {
-    inherit: "shunshou",
-    ai: {
-        wuxie(target, card, player, viewer) {
-            if (!target.countCards("hej") || get.attitude(viewer, player._trueMe || player) > 0) {
-                return 0;
-            }
-        },
-        basic: {
-            order: 7.5,
-            useful: (card, i) => 8 / (3 + i),
-            value: (card, player) => {
-                let max = 0;
-                game.countPlayer(cur => {
-                    max = Math.max(max, lib.card.shunshou.ai.result.target(player, cur) * get.attitude(player, cur));
-                });
-                if (max <= 0) {
-                    return 2;
-                }
-                return 0.53 * max;
-            },
-        },
-        button: button => {
-            let player = _status.event.player,
-                target = _status.event.target;
-            if (!lib.filter.canBeGained(button.link, player, target)) {
-                return 0;
-            }
-            let att = get.attitude(player, target),
-                val = get.value(button.link, player) / 60,
-                btv = get.buttonValue(button),
-                pos = get.position(button.link),
-                viewAs = button.link.viewAs,
-                name = get.name(button.link);
-            if (att > 0 && pos === "j") {
-                if (viewAs === "lebu" || name === "lebu") {
-                    return 100 + btv;
-                }
-                if (viewAs === "bingliang" || name === "bingliang") {
-                    return 50 + btv;
-                }
-            }
-            if (pos === "j") {
-                let viewAs = button.link.viewAs;
-                if (viewAs === "lebu") {
-                    let needs = target.needsToDiscard(2);
-                    btv *= 1.08 + 0.2 * needs;
-                } else if (viewAs === "shandian" || viewAs === "fulei") {
-                    btv /= 2;
-                }
-            }
-            if (att > 0) {
-                btv = -btv;
-            }
-            if (pos !== "e") {
-                if (pos === "h" && !player.hasSkillTag("viewHandcard", null, target, true)) {
-                    return btv + 0.1;
-                }
-                return btv + val;
-            }
-            let sub = get.subtype(button.link);
-            if (sub === "equip1") {
-                return (btv * Math.min(3.6, target.hp)) / 3;
-            }
-            if (sub === "equip2") {
-                if (name === "baiyin" && pos === "e" && target.isDamaged()) {
-                    let by = 3 - 0.6 * Math.min(5, target.hp);
-                    return get.sgn(get.recoverEffect(target, player, player)) * by;
-                }
-                return 1.57 * btv + val;
-            }
-            if (att <= 0 && (sub === "equip3" || sub === "equip4") && (player.hasSkill("shouli") || player.hasSkill("psshouli"))) {
-                return 0;
-            }
-            if (sub === "equip3" && !game.hasPlayer(cur => !cur.inRange(target) && get.attitude(cur, target) < 0)) {
-                return 0.4 * btv + val;
-            }
-            if (sub === "equip4") {
-                return btv / 2 + val;
-            }
-            return btv + val;
-        },
-        result: {
-            player(player, target) {
-                const hs = target.getGainableCards(player, "h");
-                const es = target.getGainableCards(player, "e");
-                const js = target.getGainableCards(player, "j");
-                const att = get.attitude(player, target);
-                if (att < 0) {
-                    if (
-                        !hs.length &&
-                        !es.some(card => {
-                            return get.value(card, target) > 0 && card !== target.getEquip("jinhe");
-                        }) &&
-                        !js.some(card => {
-                            var cardj = card.viewAs ? { name: card.viewAs } : card;
-                            if (cardj.name === "xumou_jsrg") {
-                                return true;
-                            }
-                            return get.effect(target, cardj, target, player) < 0;
-                        })
-                    ) {
-                        return 0;
-                    }
-                } else if (att > 1) {
-                    return es.some(card => {
-                        return get.value(card, target) <= 0;
-                    }) ||
-                        js.some(card => {
-                            var cardj = card.viewAs ? { name: card.viewAs } : card;
-                            if (cardj.name === "xumou_jsrg") {
-                                return false;
-                            }
-                            return get.effect(target, cardj, target, player) < 0;
-                        })
-                        ? 1.5
-                        : 0;
-                }
-                return 1;
-            },
-            target(player, target) {
-                const hs = target.getGainableCards(player, "h");
-                const es = target.getGainableCards(player, "e");
-                const js = target.getGainableCards(player, "j");
+/** 场上是否存在判定区有待拆除的乐/兵粮的队友 */
+function _yeyeHasTeammateWithBadJudge(player) {
+    return game.hasPlayer(current => {
+        if (current === player || get.attitude(player, current) <= 0) {
+            return false;
+        }
+        return _yeyeHasBadJudge(current, player);
+    });
+}
 
-                if (get.attitude(player, target) <= 0) {
-                    if (hs.length > 0) {
-                        return -1.5;
-                    }
-                    return es.some(card => {
-                        return get.value(card, target) > 0 && card !== target.getEquip("jinhe");
-                    }) ||
-                        js.some(card => {
-                            var cardj = card.viewAs ? { name: card.viewAs } : card;
-                            if (cardj.name === "xumou_jsrg") {
-                                return true;
-                            }
-                            return get.effect(target, cardj, target, player) < 0;
-                        })
-                        ? -1.5
-                        : 1.5;
-                }
-                return es.some(card => {
-                    return get.value(card, target) <= 0;
-                }) ||
-                    js.some(card => {
-                        var cardj = card.viewAs ? { name: card.viewAs } : card;
-                        if (cardj.name === "xumou_jsrg") {
-                            return false;
-                        }
-                        return get.effect(target, cardj, target, player) < 0;
-                    })
-                    ? 1.5
-                    : -1.5;
-            },
-        },
-        tag: {
-            loseCard: 1,
-            gain: 1,
-        },
+// ============================== 过河拆桥 ==============================
+if (lib.card.guohe && !lib.card.guohe.ai._yeyePatched) {
+    const guoheAi = lib.card.guohe.ai;
+    guoheAi._yeyePatched = true;
+
+    // ① 目标收益：队友判定区有乐/兵粮时，显著提升拆该队友的分数
+    const _guoheTarget = guoheAi.result.target;
+    guoheAi.result.target = function (player, target) {
+        const result = _guoheTarget.apply(this, arguments);
+        if (
+            !get.is.single() &&
+            get.attitude(player, target) > 0 &&
+            _yeyeHasBadJudge(target, player, card => lib.filter.canBeDiscarded(card, player, target))
+        ) {
+            return result + 6;
+        }
+        return result;
+    };
+
+    // ② 出牌顺序：条件满足时提前使用【过河拆桥】（原 order 为 9）
+    const _guoheOrder = guoheAi.basic.order;
+    guoheAi.basic.order = function (card, player) {
+        if (player && !get.is.single() && _yeyeHasTeammateWithBadJudge(player)) {
+            return 11;
+        }
+        return typeof _guoheOrder === "function" ? _guoheOrder(card, player) : _guoheOrder;
+    };
+
+    // ③ 拆牌选择：队友判定区的乐/兵粮必定最优先
+    const _guoheButton = guoheAi.button;
+    guoheAi.button = function (button) {
+        const result = _guoheButton.apply(this, arguments);
+        const player = _status.event.player;
+        const target = _status.event.target;
+        if (!player || !target || get.attitude(player, target) <= 0) {
+            return result;
+        }
+        if (get.position(button.link) !== "j") {
+            return result;
+        }
+        if (!_yeyeBadJudge.includes(_yeyeJudgeName(button.link))) {
+            return result;
+        }
+        if (!lib.filter.canBeDiscarded(button.link, player, target)) {
+            return result;
+        }
+        return result + 20;
+    };
+}
+
+// ============================== 顺手牵羊 ==============================
+if (lib.card.shunshou && !lib.card.shunshou.ai._yeyePatched) {
+    const shunshouAi = lib.card.shunshou.ai;
+    shunshouAi._yeyePatched = true;
+
+    // ai.result.target + 6	队友判定区有乐 / 兵粮时，把“拆 / 顺该队友”的评分从原来的 3 / 1.5 提到 9 / 7.5
+    // （因为 effect_use 对 3 张以上手牌的目标会乘 0.5，所以刻意给足分）
+    // ai.basic.order → 过河 11、顺手 10	手上有拆 / 顺且存在目标时，提前在出牌阶段使用（原为 9 / 7.5）
+    // ai.button + 20结算选牌时必定优先选中判定区那张乐 / 兵粮，而不是手牌或装备；并保留 canBeDiscarded / canBeGained 校验，避免给不可操作的牌加分
+
+    // ① 目标收益
+    const _shunshouTarget = shunshouAi.result.target;
+    shunshouAi.result.target = function (player, target) {
+        const result = _shunshouTarget.apply(this, arguments);
+        if (
+            !get.is.single() &&
+            get.attitude(player, target) > 0 &&
+            _yeyeHasBadJudge(target, player, card => lib.filter.canBeGained(card, player, target))
+        ) {
+            return result + 6;
+        }
+        return result;
+    };
+
+    // ①-2 使用者收益（原有分支要求 att > 1，队友常见 att 只有 1，这里补齐）
+    const _shunshouPlayer = shunshouAi.result.player;
+    shunshouAi.result.player = function (player, target) {
+        const result = _shunshouPlayer.apply(this, arguments);
+        if (!get.is.single() && get.attitude(player, target) > 0 && _yeyeHasBadJudge(target, player)) {
+            return result + 2;
+        }
+        return result;
+    };
+
+    // ② 出牌顺序（原 order 为 7.5）
+    const _shunshouOrder = shunshouAi.basic.order;
+    shunshouAi.basic.order = function (card, player) {
+        if (player && !get.is.single() && _yeyeHasTeammateWithBadJudge(player)) {
+            return 10;
+        }
+        return typeof _shunshouOrder === "function" ? _shunshouOrder(card, player) : _shunshouOrder;
+    };
+
+    // ③ 顺牌选择：队友判定区的乐/兵粮必定最优先
+    const _shunshouButton = shunshouAi.button;
+    shunshouAi.button = function (button) {
+        const result = _shunshouButton.apply(this, arguments);
+        const player = _status.event.player;
+        const target = _status.event.target;
+        if (!player || !target || get.attitude(player, target) <= 0) {
+            return result;
+        }
+        if (get.position(button.link) !== "j") {
+            return result;
+        }
+        if (!_yeyeBadJudge.includes(_yeyeJudgeName(button.link))) {
+            return result;
+        }
+        if (!lib.filter.canBeGained(button.link, player, target)) {
+            return result;
+        }
+        return result + 20;
+    };
+}
+
+// =================== 视为使用类的虚拟牌（guohe_copy / shunshou_copy） ===================
+// 很多技能用 get.effect(target, { name: "guohe_copy", position: "hej" }, player, player)
+// 来评估“视为拆/顺”的收益，这里同步覆写。
+// 注：guohe_copy2 / shunshou_copy2 内部实时调用 _copy 的 result，无需单独处理；
+// 它们的 position 固定为 "he"，不含判定区，因此不会误加成分。
+/**
+ * @param {string} name 虚拟牌名
+ * @param {"discard"|"gain"} mode 判定区那张牌需要“被弃置”还是“被获得”
+ */
+function _yeyePatchCopyCard(name, mode) {
+    const info = lib.card[name];
+    if (!info || !info.ai || !info.ai.result || info.ai._yeyePatched) {
+        return;
     }
+    const ai = info.ai;
+    ai._yeyePatched = true;
+    const canOperate = (card, player, target) =>
+        mode === "gain" ? lib.filter.canBeGained(card, player, target) : lib.filter.canBeDiscarded(card, player, target);
+
+    /** 该虚拟牌能否拆/顺到队友判定区的乐/兵粮 */
+    const check = (player, target, card) => {
+        if (get.is.single() || !player || !target || get.attitude(player, target) <= 0) {
+            return false;
+        }
+        // 该虚拟牌允许操作的区域，缺省为 hej；不含 j 时不可能碰到判定区
+        const position = String((card && card.position) || "hej");
+        if (!position.includes("j")) {
+            return false;
+        }
+        return _yeyeHasBadJudge(target, player, cardj => canOperate(cardj, player, target));
+    };
+
+    if (typeof ai.result.target === "function") {
+        const originTarget = ai.result.target;
+        ai.result.target = function (player, target, card) {
+            const result = originTarget.apply(this, arguments);
+            return check(player, target, card) ? result + 6 : result;
+        };
+    }
+    if (typeof ai.result.player === "function") {
+        const originPlayer = ai.result.player;
+        ai.result.player = function (player, target, card) {
+            const result = originPlayer.apply(this, arguments);
+            return check(player, target, card) ? result + 2 : result;
+        };
+    }
+}
+
+_yeyePatchCopyCard("guohe_copy", "discard");
+_yeyePatchCopyCard("shunshou_copy", "gain");
+
+// ==================== 【南蛮入侵】【万箭齐发】AI 修正 ====================
+// 1血的真人队友是这两张牌的高危目标，但“桃+卖血”这种二选一太粗糙。
+// 改为逐项评估实际风险：
+//   ① 有【藤甲】/ 护甲扛得住 / 稳定能打出【杀】【闪】 → 完全无风险，正常使用
+//   ② 会进濒死，但自己能救（桃、酒、急救类技能）     → 小幅惩罚；
+//      有卖血技能或救命牌≥2张时惩罚更小（吃了伤害基本是白赚）
+//   ③ 会进濒死，自己救不了，但其他队友能出桃         → 中等惩罚，收益够大才用
+//   ④ 会进濒死且没人救得回来                        → 硬禁这张牌
+// ②③ 的具体分值在 _YEYE_AOE_PENALTY 里调整，越负越保守。
+
+const _YEYE_AOE_PENALTY = {
+    /** 自救 + 卖血，或手里有 2 张以上救命牌 */
+    selfSaveGood: -1,
+    /** 只有 1 张救命牌且没卖血：会白亏一张桃 */
+    selfSave: -3,
+    /** 要队友出桃，但自己有卖血收益 */
+    allySaveMaixie: -5,
+    /** 要队友出桃，自己没收益 */
+    allySave: -8,
+    /** 没人救得回来（同时会硬禁这张牌） */
+    fatal: -99,
+};
+
+/** 是否为“真人”玩家（本地人类或联机真人） */
+function _yeyeIsHumanPlayer(target) {
+    return target === game.me || target.isOnline() || target.isOnline2();
+}
+
+/** 这张牌对目标的预计伤害（【酒】等 damageBonus 会使伤害+1） */
+function _yeyeAoeDamage(user, target, cardName) {
+    return user.hasSkillTag("damageBonus", true, { target, card: { name: cardName } }) ? 2 : 1;
+}
+
+/** 护甲是否能生效（绝情/刚直会让护甲失效） */
+function _yeyeHujiaWorks(user, target) {
+    return !user.hasSkillTag("jueqing", false, target) && !target.hasSkill("gangzhi");
+}
+
+/**
+ * 能否“稳定”打出【杀】/【闪】：只认已知牌和转化类技能，概率估计不在此列
+ * 想更激进的话，可以在这里补一条 mayHaveSha / mayHaveShan 概率 ≥ 0.85 也算安全
+ */
+function _yeyeCanRespondForSure(target, cardName, viewer) {
+    const isNanman = cardName === "nanman";
+    if (target.hasSkillTag(isNanman ? "respondSha" : "respondShan", true, "respond", true)) {
+        return true;
+    }
+    const name = isNanman ? "sha" : "shan";
+    return target.getKnownCards(viewer).some(card => get.name(card, target) === name && lib.filter.cardRespondable(card, target));
+}
+
+/** 可用于自救的手牌数（【桃】【酒】等带 save 标签且当前可救自己的牌） */
+function _yeyeSaveCards(target) {
+    return target.countCards("h", card => get.tag(card, "save") > 0 && lib.filter.cardSavable(card, target, target));
+}
+
+/** 除目标外，使用者一方一共能凑出多少张能救他的牌（包含使用者自己） */
+function _yeyeAllySaveCount(user, target) {
+    let num = 0;
+    for (const current of game.players) {
+        if (current === target) {
+            continue;
+        }
+        if (current !== user && get.attitude(user, current) <= 0) {
+            continue;
+        }
+        num += current.countCards("h", card => get.tag(card, "save") > 0 && lib.filter.cardSavable(card, current, target));
+    }
+    return num;
+}
+
+/**
+ * 评估这张 AOE 对某个 1 血真人队友的风险
+ * @returns {{ penalty: number, fatal: boolean }} penalty 为对目标收益的修正分（0 表示无风险）
+ */
+function _yeyeAoeAllyRisk(user, target, cardName) {
+    const safe = { penalty: 0, fatal: false };
+    if (!target || target === user || target.hp > 1) {
+        return safe;
+    }
+    if (get.attitude(user, target) <= 0 || !_yeyeIsHumanPlayer(target)) {
+        return safe;
+    }
+
+    // ① 【藤甲】对这两张牌完全免疫（除非使用者有无视防具类技能）
+    if (target.hasSkill("tengjia1") && !user.hasSkillTag("unequip", false, { name: cardName, target, card: { name: cardName } })) {
+        return safe;
+    }
+
+    // ② 护甲能扛住这一下
+    const damage = _yeyeAoeDamage(user, target, cardName);
+    if (damage > 0 && _yeyeHujiaWorks(user, target) && target.hujia >= damage) {
+        return safe;
+    }
+    // ③ 稳定能打出杀/闪 → 根本不会掉血
+    if (_yeyeCanRespondForSure(target, cardName, user)) {
+        return safe;
+    }
+
+    // ④ 必然进濒死，评估自救与被救成本
+    //    需要几张救命牌才能救回：打掉 1 点体力只需 1 张，伤害+1 时则要 2 张
+    const need = Math.max(1, damage - target.hp + 1);
+    const maixie = target.hasSkillTag("maixie") || target.hasSkillTag("maixie_hp");
+    const selfSave = _yeyeSaveCards(target) + (target.hasSkillTag("save", true) ? 1 : 0);
+    if (selfSave >= need) {
+        // 自己就能救：手里还有余量时更从容
+        return {
+            penalty: maixie || selfSave >= need + 1 ? _YEYE_AOE_PENALTY.selfSaveGood : _YEYE_AOE_PENALTY.selfSave,
+            fatal: false,
+        };
+    }
+    if (_yeyeAllySaveCount(user, target) >= need) {
+        return {
+            penalty: maixie ? _YEYE_AOE_PENALTY.allySaveMaixie : _YEYE_AOE_PENALTY.allySave,
+            fatal: false,
+        };
+    }
+    // ⑤ 谁也救不回来
+    return { penalty: _YEYE_AOE_PENALTY.fatal, fatal: true };
+}
+
+for (const name of ["nanman", "wanjian"]) {
+    if (!lib.card[name] || !lib.card[name].ai || !lib.card[name].ai.result || lib.card[name].ai._yeyePatched) {
+        continue;
+    }
+    const ai = lib.card[name].ai;
+    ai._yeyePatched = true;
+
+    // ① 存在“救不回来”的1血真人队友时，本回合不主动使用这张牌
+    const originOrder = ai.basic.order;
+    ai.basic.order = function (card, player) {
+        player = player || get.player();
+        if (player && game.hasPlayer(current => _yeyeAoeAllyRisk(player, current, name).fatal)) {
+            return -1;
+        }
+        return typeof originOrder === "function" ? originOrder(card, player) : originOrder;
+    };
+
+    // ② 把“有代价但不会死”的风险折算进目标收益，让原版 AI 自己权衡
+    const originTarget = ai.result.target;
+    ai.result.target = function (player, target) {
+        const result = originTarget.apply(this, arguments);
+        const { penalty } = _yeyeAoeAllyRisk(player, target, name);
+        return penalty ? result + penalty : result;
+    };
+}
+
 }
 
 

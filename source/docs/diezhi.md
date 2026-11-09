@@ -36,7 +36,7 @@ game.xinxqp.countStack(card)          // 叠置数量，非壳牌为 0
 game.xinxqp.getTopCard(card)          // 最上方（最后叠置）的牌，无则 null
 game.xinxqp.getBase(card)             // 最下方底牌：传壳牌返回自身；传叠置牌反查所属壳牌，找不到 null
 game.xinxqp.getAllCards(card, opts)   // 叠置整体所有实体牌，默认 [底牌,...叠置牌(从下到上)]
-                                      // opts.includeBase===false 时只返回叠置牌；传叠置牌会自动定位底牌
+                                      // opts.includeBase===false 时只返回剩余叠置牌；传叠置牌会自动定位底牌
 
 // ——事件取数（失去叠置牌时从 lose/loseAsync 事件中取数据）——
 game.xinxqp.parsePayload(payload)     // 解析壳牌gaintag中的"xinxqp:"载荷 → [花色,点数,牌名,关联,cardid] 列表
@@ -53,6 +53,11 @@ game.xinxqp.mergeShell(player, base, top) // 整体并入：top 连同其叠置�
 game.xinxqp.clearShell(shell)             // 清除单张壳牌全部叠置痕迹（storage/载荷/显示/阴影）
 game.xinxqp.broadcastClear(player, shells)// clearShell + 录像 + 全客户端同步 + 刷新显示
 game.xinxqp.clearAll(player)              // 清除一名角色全部叠置并收回手牌（授予技能 onremove 时调用）
+game.xinxqp.swapBase(player, shell, stackCard)
+                                          // 互换底牌与某张叠置实体牌：stackCard成为新底牌（入手牌区原位置），
+                                          // 原底牌降为叠置牌（ui.special最下层）。用于"当作剩余实体牌使用/打出"类技能
+                                          // （回廊、绘浪）：在 useCardBegin/respondBegin 触发技里调用，
+                                          // 并改写事件 cards + 写 xinxqp_stash + broadcastClear（见第五节第11条）。成功返回true
 
 // ——同步/恢复——
 game.xinxqp.syncShell(player, shell)      // 叠置变动后：录像+维护壳牌gaintag载荷+联机同步+刷新显示
@@ -140,6 +145,7 @@ _status.postReconnect._xinxqp_diezhi → ui.create.me 包装 → rebuildAll()
 8. **收回标记**：`_lose`/`_loop` 收回叠置实体牌时，会给收回的 **gain 事件**打 `xinxqp_recoup = true` 标记（不是给牌打标记，牌上的标记会随转移残留造成误触发）。技能可在 `player: "gainAfter"` 用 `event.xinxqp_recoup === true` 识别并结算（如重铸收回的牌）。注意：`clearAll` 收回不打此标记。
 9. **装备区壳牌**：底牌可以是装备区牌。显示（`refreshVisual` 对 `he` 区刷新 + 装备容器注册 cardMod）、失去收回（`_lose` 处理 `es`）、`getBase` 反查、`rebuildAll`/`clearAll` 扫描均已覆盖。**联机重连限制**：引擎 getState 只序列化手牌 gaintag，装备区牌的载荷不随状态同步，重连后装备区叠置可能无法恢复（离线/单机无影响）；如需支持，要给 `state.equips_map` 补 gaintag 通道。
 10. **useCard 快照**：`_stash` 会在 useCard/respond 事件上存 `xinxqp_used_all = [底牌,...剩余实体牌]`（使用时刻快照，`_loop` 不删除），供 `useCardAfter` 等处读取完整牌组；`trigger.cards` 始终只含底牌，勿改动（见"使用/打出壳牌"链路说明）。
+11. **把叠置牌当其他牌名使用/打出的技能**（如 `xinxhuilang`）：这类牌走 `viewAs`，事件 `card` 是**没有 cardid** 的 VCard，`_stash` 的“壳牌本体”判定不会命中，叠置会被 `_lose` 当普通失去收回、loop 不触发；`precontent` 也不是可靠时机（引擎只在非联机且走 chooseToUse 收尾时创建它）。正确做法是给技能挂一个 `useCardBegin`/`respondBegin` 触发技：`swapBase` 互换底牌 → `trigger.cards = [新底牌]`（同步 `trigger.card.cards/suit/number`）→ 写 `trigger.xinxqp_stash` 与 `xinxqp_used_all` → `broadcastClear`，后续由 `_loop` 接管。
 
 ## 六、常用写法示例
 
