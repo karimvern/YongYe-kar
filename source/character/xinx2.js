@@ -22,9 +22,11 @@ export let info = {
             'heita': ['xinxzhu_daheita', 'xinx_daheita', 'xinx_ruanmei'],
             'erxiangleyuan': ['xinxzhu_qianyeren', 'xinx_zhenzhu', 'xinx_huohua', 'xinx_yaoguang', 'xinx_feiying'],
             'beiluoboge': ['xinx_xier', 'xinx_buluoniya', 'xinx_luka'],
-            'yishilvren': ['xinx_yunmodanxin', 'xinxnew_xinyanlvzhe', 'xinx_sikeke', 'xinx_yeshunguang', 'xinx_laite', 'xinx_aimisi', 'xinx_yixuan', 'xinx_yuanbanlin', 'xinx_Archer', 'xinx_xinyanlvzhe'],
+            'yishilvren': ['xinx_yunmodanxin', 'xinxnew_xinyanlvzhe', 'xinx_sikeke', 'xinx_yeshunguang', 'xinx_laite', 'xinx_yixuan', 'xinx_yuanbanlin', 'xinx_Archer', 'xinx_xinyanlvzhe'],
+            'xinx_mingchao': ['xinx_aimisi',],
             'gongsi': ['xinx_tuopa','xinx_shajinxl'],
             'xinxxugou': ['xinx_xiao'],
+            
 
 
 
@@ -108,11 +110,12 @@ export let info = {
     },
     //翻译
     translate: {
+        xinx_mingchao:'鸣潮',
         xinx_shajinxl: '杏砂金·戏浪',
         xinx_shajinxl_prefix: '杏',
         xinxnew_xier: '杏希儿',
         xinxnew_xier_prefix: '杏',
-        xinxzhu_qianyeren: '逐千冶刃',
+        xinxzhu_qianyeren: '逐千冶·刃',
         xinxzhu_qianyeren_prefix: '逐',
         xinx_zhenzhu: '杏真珠',
         xinx_zhenzhu_prefix: '杏',
@@ -1338,10 +1341,6 @@ export let info = {
                 player: 'changeHpAfter',
                 global: ["loseAfter", "loseAsyncAfter", "cardsDiscardAfter", "cardsGotoPileAfter", "washCard", "equipAfter", "addJudgeAfter", "addToExpansionAfter", "gainAfter"],
             },
-            //usable: 2,
-            /* usable(skill, player) {
-                return player.getHp();
-            }, */
             logAudio: (event, player) => {
                 let num = player.getHistory("useSkill", evt => evt.skill == 'xinxhailiao').length;
                 if (num < 1) {

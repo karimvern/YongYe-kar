@@ -237,7 +237,7 @@ export let info = {
 
         //技能翻译
         xinxyihuo: '移祸',
-        xinxyihuo_info: `出牌阶段每种牌名限一次。若你本轮未造成/造成过伤害，你可以将一名角色半数向上张牌当作由你指定目标的【兵临城下】/【决斗】使用，期间目标可以将一个区域的所有牌当作【杀】/【闪】来打出/使用。`,
+        xinxyihuo_info: `出牌阶段每种牌名限一次。若你本轮未造成/造成过伤害，你可以选择一名角色半数向上张牌，令其将这些牌当作由你指定目标的【兵临城下】/【决斗】使用，期间目标可以将一个区域的所有牌当作【闪】/【杀】来使用/打出。`,
         xinxjiece:'劫策',
         xinxjiece_info: `每回合限一次，有角色使用或打出转化牌后，你可以获得${get.poptip('xinx_dipai')}，或令其对自己依次使用底牌。`,
         xinxfenyin: '奋音',
@@ -247,7 +247,7 @@ export let info = {
         xinxqiedai: '且待',
         xinxqiedai_info: `你使用实体${get.poptip('xinx_jishipai')}结算后，将之${get.poptip('xinx_diezhi')}于一张牌A上，然后可以视为使用牌A中的一张牌且仅能指定一名目标。`,
         xinxqiezhi: '且至',
-        xinxqiezhi_info: `①你的叠置牌不计入手牌上限且无法使用。②准备阶段，你可以失去本项，选择你上轮造成或受到伤害数的之一，然后分配等量火焰伤害（至多为3）。每有一名角色因此进入濒死，你回复1点体力并摸两张牌。`,
+        xinxqiezhi_info: `①你的叠置牌不计入手牌上限且无法使用。②准备阶段，你可以失去本项，选择你上轮造成或受到伤害数的之一，然后分配等量火焰伤害（至多为3）。期间有角色因此进入濒死时，你回复1点体力并摸两张牌。`,
         xinxnewzhiyi: "执义",
         xinxnewzhiyi_info: `你每回合使用或打出前三张实体${get.poptip('xinx_jishipai')}时，摸一张牌并可以于此牌结算后视为使用一张无距离限制的同名牌。（若响应了牌，则视为使用被响应的牌）`,
         xinxnewquanpao: '权袍',
@@ -1569,6 +1569,9 @@ export let info = {
             mod: {
                 ignoredHandcard(card) {
                     if (game.xinxqp.isShell(card)) return true;
+                },
+                cardDiscardable(card, player, name) {
+                    if (name == 'phaseDiscard' && game.xinxqp.isShell(card)) return false;
                 },
                 cardEnabled(card) {
                     if (game.xinxqp.isShell(card)) return false;
